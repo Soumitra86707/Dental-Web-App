@@ -1,0 +1,317 @@
+/* .signup-login-container {
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0px 5px 15px rgb(11, 122, 122);
+} */
+ .login-body {
+  background-image: url('./images/login-bg.jpeg');
+  background-size: cover;  /* Ensures the image covers the entire screen */
+  background-position: center;  /* Centers the background image */
+  background-repeat: no-repeat;  /* Prevents the image from repeating */
+  width: 100%;  /* Makes sure the container covers the full width */
+  height: 100vh;  /* Ensures the height covers the full viewport height */
+
+  justify-content: center;
+  align-items: center;
+
+ 
+} 
+
+/* 
+h1 {
+  font-size: 2em;
+}
+
+h3 {
+  font-size: 1.4em;
+  margin-bottom: 20px;
+}
+
+.login-div {
+  padding-top: 0.8rem;
+  background-color: transparent;
+  font-size: 17px;
+  text-align: center;
+}
+
+input[type="text"], input[type="password"] {
+  padding: 12px;
+  font-size: 1.2rem;
+}
+
+input[type="button"]:hover {
+  background-color: #03C1C0;
+ 
+  color: white;
+}
+
+
+.toggle-password {
+  cursor: pointer;
+  font-size: 17px;
+  opacity: 0.7;
+}
+
+.toggle-password:hover {
+  opacity: 1;
+}
+ */
+ /*
+.signup-login-container {
+
+   width: 400px;
+   margin: 600px;
+  margin-top: 50px;
+ 
+  padding: 20px;
+  text-align: center;
+  border: 0px solid rgb(14, 94, 92);
+  border-radius: 10px;
+  box-shadow: 0px 5px 15px rgb(26, 124, 124);
+
+}
+
+
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2em;
+  }
+  
+
+  .login-div, .signup-div{
+    padding-top: 0.8rem;
+    border-radius: 20px;
+
+    background-color: transparent;
+    color: #03C1C0;
+ 
+    font-size: 17px;
+    text-align: center;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+
+  .lab.active, .doctor.active {
+    background-color: #03C1C0;
+    color: #fff;
+  }
+  
+  .username {
+
+    display: flex;
+    align-items: center;
+    padding: 10px ;
+    background-color: #f2f2f2;
+   
+    border: 1px solid  #BBBBBB;
+    border-radius: 25px;
+    width: 100%;
+    height: 3rem;
+
+    margin-bottom: 20px;
+  }
+  .password {
+    background-color: #f2f2f2;
+    display: flex;
+    align-items: center;
+    padding: 10px ;
+    border: 1px solid  #BBBBBB;
+    border-radius: 25px;
+    width: 100%;
+    height: 3rem;
+    margin-bottom: 20px;
+  }
+  
+
+  .icon {
+    font-size: 1.5em;
+    opacity: 0.7;
+
+    
+  }
+
+  
+
+  .username .input input {
+    width: 100%;
+    margin-left: 10px;
+    padding: 10px;
+    font-size: 1em;
+    outline: none;
+    border: none;
+    background-color: #f2f2f2;
+   
+  }
+  .phone-number .input input {
+    border: none;
+    outline: none;
+  } 
+
+  .login-btn input[type="button"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #03c1c0;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 1em;
+    cursor: pointer;
+  }
+  
+ 
+  .login input[type="button"]:hover {
+    background-color: #007F80;
+    color: #fff;
+  }
+.password .input input {
+    font-size: 1.5rem;
+    
+    margin-left: 10px;
+    width: 200px;
+    padding: 10px;
+    font-size: 1em;
+    outline : none;
+    border: none;
+    background-color: #f2f2f2;
+    margin-right: 4.3rem;
+
+}
+
+.toggle-password {
+    
+    cursor: pointer;
+    font-size: 17px;
+    color: #333;
+    opacity: 0.7;
+  }
+
+  .toggle-password:hover {
+
+    opacity: 0.7;
+  }
+
+
+
+
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2em;
+}
+h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.4em;
+}
+.heading {
+  display: flex;
+
+  
+  width: 50%;
+  margin-bottom: 20px;
+  border: 1px solid #03C1C0;
+  border-radius: 20px;
+
+}
+
+.section {
+  width: calc(100%/2);
+  padding: 10px 20px;
+
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.section.active {
+  background-color: #03C1C0;
+  color: white;
+  border: 1px solid #03C1C0;
+}
+
+
+.username, .phone-number, .email, .password{
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #f2f2f2;
+  border: 1px solid #BBBBBB;
+  border-radius: 5px;
+  width: 100%;
+  height: 3rem;
+  margin-bottom: 20px;
+}
+
+
+.icon {
+  font-size: 1.5em;
+  opacity: 0.7;
+}
+
+
+.input input {
+  width: 100%;
+  margin-left: 10px;
+  padding: 10px;
+  font-size: 1em;
+  outline: none;
+  border: none;
+  background-color: #f2f2f2;
+}
+
+.signup-button input[type="button"] {
+  width: 100%;
+  padding: 10px;
+  background-color: #03c1c0;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.login input[type="button"]:hover {
+  background-color: #007F80;
+  color: #fff;
+}
+
+.confirm-password{
+
+  display: flex;
+  align-items: center;
+  padding: 10px ;
+  background-color: #f2f2f2;
+  border: 1px solid  #BBBBBB;
+  border-radius: 5px;
+  width: 100%;
+  height: 3rem;
+  margin-bottom: 20px;
+
+}
+.confirm-password input{
+  font-size: 1.5rem;
+  width: 100%;
+  margin-left: 10px;
+  width: auto;
+  padding: 10px;
+  font-size: 1em;
+  outline : none;
+  border: none;
+  background-color: #f2f2f2;
+  margin-right: 4.3rem;
+  
+}
+.confirm-password .toggle-password {
+  
+  cursor: pointer;
+  font-size: 17px;
+  color: #333;
+  opacity: 0.7;
+}
+  */

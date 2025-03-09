@@ -1,0 +1,172 @@
+/* Main container */
+.cancel-container {
+  display: block;
+  max-width: 1500px;
+  margin-top: 50px;
+  margin-left: 400px;
+  margin-right: 300px;
+  text-align: center;
+  padding: 30px;
+  background: linear-gradient(135deg, #ffefba, #ffffff);
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  font-family: "Arial", sans-serif;
+}
+
+/* Heading */
+.cancel-container h2 {
+  color: #333;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* Calendar container */
+.calendar-container {
+  display: block;
+  justify-items: center;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+/* Calendar styles */
+.react-calendar {
+  border: none !important;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Calendar navigation buttons */
+.react-calendar__navigation button {
+  color: #007bff;
+  font-weight: bold;
+  font-size: 16px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.react-calendar__navigation button:hover {
+  background: #18353f;
+  color: white;
+}
+
+/* Calendar weekdays */
+.react-calendar__month-view__weekdays {
+  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: bold;
+  color: #555;
+}
+
+/* Calendar tiles (dates) */
+.react-calendar__tile {
+  font-size: 16px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  padding: 10px;
+  background: #f8f9fa;
+}
+
+/* Hover effect on calendar dates */
+.react-calendar__tile:hover {
+  background: linear-gradient(135deg, #4c749f, #00bcd4);
+  color: white !important;
+  font-weight: bold;
+}
+
+/* Active (selected) date */
+.react-calendar__tile--active {
+  background: linear-gradient(135deg, #ff4081, #ff9100) !important;
+  color: white !important;
+  font-weight: bold;
+  border-radius: 10px;
+  box-shadow: 0 3px 6px rgba(255, 64, 129, 0.3);
+}
+
+/* Disabled dates */
+.react-calendar__tile--disabled {
+  color: #ccc;
+}
+
+/* Slots container */
+.slots-container {
+  margin: 20px;
+ 
+}
+
+.slots-container h3 {
+  
+  color: #444;
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+/* Slots layout */
+.slots {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  justify-content: center;
+  
+}
+
+/* Slot buttons */
+.slot {
+ margin: 10px;
+ justify-items: center;
+  padding: 12px 10px;
+  border: 2px solid #4c749f;
+  background: white;
+  color: #007bff;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.slot:hover {
+  background: linear-gradient(135deg, #4c749f, #00bcd4);
+  color: white;
+}
+
+.slot.selected {
+  background: linear-gradient(135deg, #ff4081, #ff9100);
+  color: white;
+  box-shadow: 0 3px 5px rgba(255, 64, 129, 0.3);
+}
+
+/* Cancel button */
+.cancel-btn {
+  margin-top: 25px;
+  padding: 12px 20px;
+  background:linear-gradient(135deg, #4c749f, #00bcd4);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background: linear-gradient(135deg, #0056b3, #008080);
+}
+
+.cancel-btn:disabled {
+  background: gray;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .slots {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

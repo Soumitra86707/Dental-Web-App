@@ -1,0 +1,175 @@
+
+
+.appointment-container {
+  max-width: 1500px;
+  margin-top: 50px;
+  margin-left: 400px;
+  margin-right: 300px;
+
+  text-align: center;
+  padding: 30px;
+  background: linear-gradient(135deg, #ffefba, #ffffff);
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  font-family: "Arial", sans-serif;
+}
+
+
+.appointment-container h2 {
+  color: #333;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+/* Calendar container */
+.calendar-container {
+  display: flex;
+  justify-content: center;
+  padding: 15px;
+/*   background: #ffffff; 
+  border-radius: 12px;
+ /*  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1); */
+  margin-bottom: 20px;
+}
+
+/* Styling calendar */
+.react-calendar {
+  border: none !important;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Calendar navigation (month/year switch) */
+.react-calendar__navigation button {
+  color: #007bff;
+  font-weight: bold;
+  
+  font-size: 16px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.react-calendar__navigation button:hover {
+  background: #18353f;
+  color: black;
+  
+}
+
+/* Calendar weekday labels */
+.react-calendar__month-view__weekdays {
+  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: bold;
+  color: #555;
+}
+
+/* Default date styling */
+.react-calendar__tile {
+  font-size: 16px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  padding: 10px;
+  color: #333;
+  background: #f8f9fa;
+}
+
+/* Hover effect */
+.react-calendar__tile:hover {
+  background: linear-gradient(135deg, #4c749f, #00bcd4);
+  color: white !important;
+  font-weight: bold;
+}
+
+/* Selected date styling */
+.react-calendar__tile--active {
+  background: linear-gradient(135deg, #ff4081, #ff9100) !important;
+  color: white !important;
+  font-weight: bold;
+  border-radius: 10px;
+  box-shadow: 0 3px 6px rgba(255, 64, 129, 0.3);
+}
+
+/* Disabled dates */
+.react-calendar__tile--disabled {
+  color: #a52929;
+  background-color: #0056b3;
+  cursor: no-drop;
+}
+
+/* Slots section */
+.slots-container {
+  margin-top: 20px;
+}
+
+.slots-container h3 {
+  color: #444;
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+/* Slots layout */
+.slots {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  justify-content: center;
+}
+
+/* Slot buttons */
+.slot {
+  padding: 12px 10px;
+  border: 2px solid #4c749f;/*#007bff;*/
+  background: white;
+  color:#007bff;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.slot:hover {
+  background: linear-gradient(135deg, #4c749f, #00bcd4);/*linear-gradient(135deg, #007bff, #00bcd4);*/
+  color: white;
+}
+
+.slot.selected {
+  background: linear-gradient(135deg, #ff4081, #ff9100);
+  color: white;
+  box-shadow: 0 3px 5px rgba(255, 64, 129, 0.3);
+}
+
+/* Submit button */
+.submit-btn {
+  margin-top: 25px;
+  padding: 12px 20px;
+  background:linear-gradient(135deg, #4c749f, #00bcd4);/* linear-gradient(135deg, #007bff, #00bcd4);*/
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+  background: linear-gradient(135deg, #0056b3, #008080);
+}
+
+.submit-btn:disabled {
+  background: gray;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .slots {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

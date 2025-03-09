@@ -1,0 +1,71 @@
+.login-navbar {
+  display: flex;
+  background-color: #084458;
+  padding: 5px 20px;
+  box-shadow: 2px 1px 5px #03C0C1;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: Auto;
+  z-index: 1000;
+  /* align-items: center; */
+  flex-wrap: wrap;
+}
+.login-navbar-left {
+    display: flex;
+    align-items: center;
+}
+
+.login-logo {
+  border-radius: 50%;
+  height: 50px;
+  margin-right: 15px;
+}
+
+.login-clinic-name {
+  font-size: 1.2rem;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-weight: bold;
+  color: rgb(216, 244, 251);
+  text-align: left;
+}
+.login-clinic-name-1{
+  font-size: 1rem;
+}
+
+.login-login-icon a {
+    align-items: center;
+      position: fixed; 
+      
+      gap:20px;
+      right:10px;
+      padding: 10px;
+      text-decoration: none;
+      list-style: none;
+       font-size: 26px;
+       color: #fff;
+       cursor: pointer;
+       font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+     }
+   
+     .login-login-icon:hover a{
+       color:#03C0C1;
+      
+     }  
+     @media (max-width: 768px) {
+        .login-navbar {
+            padding: 5px 10px;
+        }
+        .login-clinic-name {
+          font-size: 1.2rem;
+          font-weight: bold;
+          color: rgb(216, 244, 251);
+          text-align: left;
+        }
+        .login-clinic-name-1 {
+          font-size: 0.9rem;
+        }
+        .login-login-icon a {
+          font-size: 22px;
+        }
+    }

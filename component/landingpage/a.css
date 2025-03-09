@@ -1,0 +1,13 @@
+.login-body {
+    background-image: url('./images/login-bg.jpeg');
+    background-size: cover;  /* Ensures the image covers the entire screen */
+    background-position: center;  /* Centers the background image */
+    background-repeat: no-repeat;  /* Prevents the image from repeating */
+    width: 100%;  /* Makes sure the container covers the full width */
+    height: 100vh;  /* Ensures the height covers the full viewport height */
+  
+    justify-content: center;
+    align-items: center;
+  
+   
+  } 

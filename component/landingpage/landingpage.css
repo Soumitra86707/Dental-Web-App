@@ -1,0 +1,1120 @@
+.landingpage-container{
+  width: 100%;
+}
+.landingpage-navbar {
+  display: flex;
+  background-color: #084458;
+  padding: 5px 20px;
+  box-shadow: 2px 1px 5px #03C0C1;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: Auto;
+  z-index: 1000;
+  /* align-items: center; */
+  flex-wrap: wrap;
+}
+
+.landingpage-navbar-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 200px; /* Ensures logo and name fit on small screens */
+}
+
+.landingpage-logo {
+  border-radius: 50%;
+  height: 50px;
+  margin-right: 15px;
+}
+
+.landingpage-clinic-name {
+  font-size: 1.2rem;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-weight: bold;
+  color: rgb(216, 244, 251);
+  text-align: left;
+}
+.landingpage-clinic-name-1{
+  font-size: 1rem;
+}
+.landingpage-navbar-menu {
+  display: flex;
+  flex: 2;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.landingpage-navber-menu-button{
+  display: none;
+}
+.landingpage-navbar-menu a {
+  display: inline-block;
+  color: #95cbcb;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 18px;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  padding: 5px 10px;
+  transition: color 0.3s ease;
+}
+
+.landingpage-login-icon:hover {
+  color: white;
+}
+
+.login-btn:hover {
+  background-color: rgb(181, 110, 28);
+  border-radius: 50px;
+}
+
+/* Media Queries for Responsiveness */
+
+/* Small devices (max-width: 768px) *//*
+@media (max-width: 768px) {
+  .landingpage-navbar {
+    height: auto;
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .landingpage-navbar-left {
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
+  .landingpage-logo {
+    height: 60px;
+  }
+
+  .landingpage-clinic-name {
+    font-size: 1.4rem;
+    text-align: center;
+  }
+
+  .landingpage-navbar-menu {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .landingpage-navbar-menu a {
+    font-size: 16px;
+    padding: 5px 0;
+  }
+}
+*/
+/* Extra Small devices (max-width: 480px) */
+@media (max-width: 768px) {
+  .landingpage-clinic-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: rgb(216, 244, 251);
+    text-align: left;
+  }
+  .landingpage-clinic-name-1 {
+    font-size: 0.9rem;
+  }
+/*   .landingpage-navbar-menu{
+    display: none;
+  } */
+  .landingpage-navbar-menu.hidden {
+    display: none;
+  }
+  
+  .landingpage-navbar-menu.visible {
+    display: flex;
+    padding-top: 10px;
+    gap: 1px;
+    
+    
+  }
+
+  
+
+  .landingpage-navber-menu-button {
+    margin-left: auto; /* Pushes this element to the far right */
+    display: flex;
+    align-items: center; /* Centers the content vertically */
+    justify-content: center; /* Centers the content horizontally */
+    cursor: pointer; /* Makes it clear this is clickable */
+    position: fixed;
+    right: 10px;
+    top: 15px;
+    font-size: 1.5rem;
+    color: white;
+    /* display: none; */
+  }
+
+  .landingpage-navber-menu-button-1 {
+    margin-left: auto; /* Pushes this element to the far right */
+    display: flex;
+    align-items: center; /* Centers the content vertically */
+    justify-content: center; /* Centers the content horizontally */
+    cursor: pointer; /* Makes it clear this is clickable */
+    position: fixed;
+    right: 12px;
+    top: 15px;
+    font-size: 1.5rem;
+    /* display: none; */
+  }
+  .landingpage-navbar-menu a {
+    
+    font-size: 14px;
+  }
+}
+
+.landingpage-start-container {
+  background: linear-gradient(to right, rgb(18, 237, 153), rgb(66, 224, 255));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap; /* Ensure wrapping on smaller screens */
+  background-color: #f5f5f5;
+  max-width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+  padding: 5%;
+}
+
+.landingpage-start {
+  flex: 1;
+  text-align: left;
+  animation: fadeInLeft 1s ease-out;
+  max-width: 600px; /* Limit width for better readability */
+}
+
+.landingpage-start-title {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  
+  font-size: 3rem;
+  font-weight: bold;
+  color: #14268e;
+
+  animation: fadeInUp 1.5s ease-out;
+}
+
+.landingpage-description {
+  font-size: 1.2rem;
+  color: #aa21b4;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  margin: 20px 0;
+  animation: fadeInUp 2s ease-out;
+}
+
+.landingpage-highlights {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.landingpage-highlights li {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #8e094b8c;
+}
+
+.landingpage-highlights li::before {
+  content: "✔️";
+  margin-right: 0.5rem;
+  color: #e96380;
+}
+
+.explore-btn {
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  color: rgb(171, 31, 31);
+  font-weight: bold;
+  background-color: #f3ad35;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  animation: fadeInUp 2.5s ease-out;
+}
+
+.explore-btn:hover {
+  background-color: #794e05;
+  color: #fff;
+}
+
+.landingpage-start-img {
+  flex: 1;
+  margin-left: 5%;
+  display: flex;
+  justify-content: center;
+}
+
+.landingpage-start-img img {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  animation: fadeInRight 1.5s ease-out;
+}
+
+/* Media Queries */
+
+/* Medium screens (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .landingpage-start-container {
+    flex-direction: column;
+    height: auto; /* Allow height to adjust */
+  }
+
+  .landingpage-start {
+    margin: 0;
+    text-align: center; /* Center-align text for smaller screens */
+  }
+
+  .landingpage-start-title {
+    font-size: 2.5rem;
+  }
+
+  .landingpage-description {
+    font-size: 1.1rem;
+  }
+
+  .landingpage-start-img {
+    margin: 20px 0;
+  }
+}
+
+/* Small screens (max-width: 768px) */
+@media (max-width: 768px) {
+  .landingpage-start-title {
+    font-size: 2rem;
+  }
+
+  .landingpage-description {
+    font-size: 1rem;
+  }
+
+  .explore-btn {
+    font-size: 1rem;
+    padding: 8px 15px;
+  }
+
+  .landingpage-start-img img {
+    max-width: 400px;
+  }
+}
+
+/* Extra small screens (max-width: 480px) */
+@media (max-width: 480px) {
+  .landingpage-start-title {
+    font-size: 1.8rem;
+  }
+
+  .landingpage-description {
+    font-size: 0.9rem;
+  }
+
+  .landingpage-highlights li {
+    font-size: 0.9rem;
+  }
+
+  .explore-btn {
+    font-size: 0.9rem;
+    padding: 6px 10px;
+  }
+
+  .landingpage-start-img img {
+    max-width: 300px;
+  }
+}
+
+
+.landingpage-about-main {
+  padding: 50px 20px;
+  font-family: Arial, sans-serif;
+  background: url('./images/d5.jpeg') no-repeat center center;
+  background-size: cover;
+  color: rgb(141, 26, 26);
+  text-align: center;
+}
+
+.landingpage-about {
+  font-size: 20px;
+  max-width: 800px; /* Limit width for better readability */
+  margin: 0 auto;
+  animation: fadeIn 3s ease-in-out;
+  opacity: 1;
+  background: rgba(239, 212, 212, 0.8); /* Add a translucent background for better text readability */
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.landingpage-about:hover {
+  transform: scale(1.02);
+  transition: transform 0.3s ease;
+}
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Media Queries */
+
+/* Medium screens (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .landingpage-about-main {
+    padding: 40px 15px;
+  }
+
+  .landingpage-about {
+    font-size: 18px;
+    padding: 15px;
+  }
+
+  .landingpage-about div {
+    font-size: 40px;
+  }
+}
+
+/* Small screens (max-width: 768px) */
+@media (max-width: 768px) {
+  .landingpage-about-main {
+    padding: 30px 10px;
+  }
+
+  .landingpage-about {
+    font-size: 16px;
+  }
+
+  .landingpage-about div {
+    font-size: 35px;
+  }
+}
+
+/* Extra small screens (max-width: 480px) */
+@media (max-width: 480px) {
+  .landingpage-about-main {
+    padding: 20px 5px;
+  }
+
+  .landingpage-about {
+    font-size: 14px;
+  }
+
+  .landingpage-about div {
+    font-size: 30px;
+  }
+}
+
+
+.landingpage-health {
+  background: url('./images/d7.jpeg');
+}
+.landingpage-scroll-container {
+  display: flex;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 20px;
+  
+  background: url('./images/d7.jpeg');
+  position: relative;
+}
+
+.landingpage-scroll-content {
+
+  display: flex;
+}
+
+.landingpage-image-container {
+  width: 250px;
+  height: 350px;
+  perspective: 1000px;
+  margin: 0 10px;
+  cursor: pointer;
+  transition: transform 0.6s;
+  position: relative;
+}
+
+.landingpage-image-front,
+.landingpage-image-back {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  backface-visibility: hidden;
+  transition: transform 0.6s;
+}
+
+.landingpage-image-front img, .landingpage-image-back img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.landingpage-image-back {
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: rotateY(180deg);
+}
+
+.landingpage-image-container.flipped .landingpage-image-front {
+  transform: rotateY(180deg);
+}
+
+.landingpage-image-container.flipped .landingpage-image-back {
+  transform: rotateY(0);
+}
+
+
+.landingpage-service-container {
+  display: flex;
+  flex-direction: column; /* Stack content vertically */
+  align-items: center;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-image: url("./images/d6.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: white;
+}
+
+.landingpage-service {
+  width: 100%;
+  max-width: 1200px; /* Limit the maximum width for large screens */
+  text-align: center;
+}
+
+.landingpage-treat {
+  display: flex;
+  flex-wrap: wrap; /* Allow wrapping for cards */
+  justify-content: center; /* Center the cards */
+  gap: 20px; /* Add spacing between cards */
+}
+
+.landingpage-card {
+  background-color: #13272b;
+  border: 4px solid #03C0C1;
+  border-radius: 10px;
+  padding: 20px;
+  width: 100%; /* Default width to fit container */
+  max-width: 300px; /* Limit maximum card width */
+  height: auto; /* Let height adjust dynamically */
+  box-shadow: 0px 5px 10px #03C0C1;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.landingpage-card-header {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.landingpage-service-logo {
+  margin-right: 10px;
+  color: #03C0C1;
+}
+
+.landingpage-card-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.landingpage-card-text {
+  font-size: 14px;
+}
+
+.landingpage-card:hover {
+  transform: scale(1.1);
+  box-shadow: 0px 10px 20px #03C0C1;
+}
+
+/* Media Queries */
+
+/* Medium screens (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .landingpage-card {
+    max-width: 250px; /* Slightly smaller cards */
+  }
+
+  .landingpage-card-title {
+    font-size: 16px;
+  }
+
+  .landingpage-card-text {
+    font-size: 13px;
+  }
+}
+
+/* Small screens (max-width: 768px) */
+@media (max-width: 768px) {
+  .landingpage-service {
+    padding: 10px;
+  }
+
+  .landingpage-treat {
+    gap: 15px; /* Reduce gap between cards */
+  }
+
+  .landingpage-card {
+    max-width: 220px; /* Smaller cards for small screens */
+    padding: 15px;
+  }
+
+  .landingpage-card-title {
+    font-size: 14px;
+  }
+
+  .landingpage-card-text {
+    font-size: 12px;
+  }
+}
+
+/* Extra small screens (max-width: 480px) */
+@media (max-width: 480px) {
+  .landingpage-treat {
+    flex-direction: column; /* Stack cards vertically */
+    align-items: center;
+  }
+
+  .landingpage-card {
+    width: 90%; /* Adjust card width to fit screen */
+    max-width: 300px;
+    padding: 10px;
+  }
+
+  .landingpage-card-title {
+    font-size: 14px;
+  }
+
+  .landingpage-card-text {
+    font-size: 12px;
+  }
+}
+
+.landingpage-mob {
+  background-image: url('./images/d8.jpeg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  text-align: center;
+  padding-bottom: 20px;
+}
+
+.landingpage-mobile-container {
+  padding: 30px;
+  font-family: Arial, sans-serif;
+  display: block;
+  align-items: center;
+  background-size: cover;
+}
+
+.landingpage-title {
+  text-align: center;
+  color: whitesmoke;
+  font-style: bold;
+  font-family: cursive;
+  font-size: 45px;
+}
+
+.landingpage-flex-container {
+  display: flex;
+  padding: 50px;
+}
+
+.landingpage-left-explanation,
+.landingpage-ex {
+  font-size: 22px;
+  overflow: hidden;
+  text-align: justify;
+  word-wrap: break-word;
+  width: 100%;
+  max-width: 500px;
+  margin: 10px auto;
+  padding: 15px;
+  line-height: 1.5;
+  display: block; /* Ensure block display */
+}
+
+.landingpage-box {
+  padding: 10px;
+  border-radius: 20px;
+  transition: background-color 0.3s;
+}
+
+#box1 {
+  background: lightyellow;
+}
+#box1:hover{
+  background-color: yellow;
+}
+
+#box2 {
+  background: lightblue;
+}
+#box2:hover{
+  background-color: skyblue;
+}
+
+#box3 {
+  background: lightgrey;
+}
+#box3:hover{
+  background-color: grey;
+}
+
+#box4 {
+  background: pink;
+}
+#box4:hover{
+  background-color: lightpink;
+}
+
+#box5 {
+  background: lightgreen;
+}
+#box5:hover{
+  background-color: yellowgreen;
+}
+
+#box6 {
+  background: lightcyan;
+}
+#box6:hover{
+  background-color: cyan;
+}
+
+.landingpage-box:hover {
+  background-color: yellow;
+}
+
+.landingpage-right-screenshot {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.landingpage-android-frame {
+  width: 330px; /* Fixed width */
+  height: 680px; /* Fixed height */
+  border: 16px solid rgba(149, 37, 37, 0.053);
+  border-radius: 40px;
+  overflow: hidden;
+  background-color: #362f2f;
+}
+
+.landingpage-android-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.landingpage-arrows {
+  position: absolute;
+  top: 15%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.arrow-left,
+.arrow-right {
+  background-color: #00a19e;
+  color: white;
+  font-size: 1.2rem;
+  padding: 10px 20px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.arrow-left:hover,
+.arrow-right:hover {
+  background-color: #048f8f;
+}
+
+/* Media Queries */
+
+/* For small screens (max-width: 768px) */
+@media (max-width: 768px) {
+  .landingpage-mobile-container {
+    padding: 15px;
+    
+  }
+.landingpage-flex-container{
+  display: block;
+}
+  .landingpage-left-explanation,
+  .landingpage-ex {
+   
+    font-size: 18px;
+    max-width: 100%;
+    margin: 10px;
+    padding: 10px;
+    display: block; /* Ensure block display */
+  }
+
+  .landingpage-right-screenshot {
+    margin-top: 20px;
+  }
+
+  /* Keep the phone screen size fixed */
+  .landingpage-android-frame {
+    width: 330px;
+    height: 680px; /* Fixed height */
+  }
+}
+
+/* For very small screens (max-width: 480px) */
+@media (max-width: 480px) {
+  .landingpage-left-explanation,
+  .landingpage-ex {
+    font-size: 16px;
+    max-width: 100%;
+    margin: 10px;
+    padding: 8px;
+    line-height: 1.4; /* Adjust line-height for better readability */
+    display: block; /* Ensure block display */
+  }
+  .landingpage-flex-container{
+    display: block;
+  }
+  .landingpage-right-screenshot {
+    margin-top: 20px;
+  }
+
+  /* Keep the phone screen size fixed */
+  .landingpage-android-frame {
+    width: 330px;
+    height: 680px; /* Fixed height */
+  }
+
+  .landingpage-arrows {
+    top: 20%;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .arrow-left,
+  .arrow-right {
+    margin-bottom: 10px;
+    padding: 8px 16px;
+    font-size: 1rem;
+  }
+}
+
+
+
+
+
+
+/* General Styles */
+.landingpage-footer {
+  background-color: #2c3e50; 
+  color: white;
+  display: flex;
+/*   justify-content: space-between; */
+  padding: 20px;
+  font-family: monotone;
+ /*  font-family: Arial, sans-serif; */
+  height: 350px;
+ /*  position: relative; */
+font-size: 16px;
+  height: 100%;
+}
+
+.landingpage-footer-left {
+  padding-top: 40px;
+  width: 30%;
+  padding-left:40px;
+ 
+}
+
+.landingpage-footer-left a {
+  font-family: monotone;
+  text-decoration: none;
+  color: rgb(188, 230, 231);
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+.landingpage-footer-left a:hover {
+  color: #03C0C1;
+}
+
+.landingpage-social-media {
+  text-align: center;
+  width:5%;
+  padding:5px;
+  padding-top: 80px;
+ 
+  
+  justify-content: center;
+  display:flex-grid;
+  
+}
+
+.landingpage-social-media a {
+  color: #cdf2fa; /* Default icon color */
+  font-size: 24px;
+ 
+  margin: 0 10px;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.landingpage-social-media a:hover {
+  color: #03C0C1; /* Highlight color on hover */
+}
+.landingpage-footer-link{
+  padding-top:40px;
+  font-size: 14px;
+  color: #1abc9c;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  width:35%;
+
+  text-align: center;
+  
+}
+.landingpage-footer-link ul{
+list-style: none;
+}
+.landingpage-footer-link a{
+  font-size: 19px;
+  font-family: monotone;
+  color: #bcddd6;
+  text-decoration: none;
+  
+}
+.landingpage-footer-link a:hover{
+  color:#ebf1f1;
+}
+
+.landingpage-footer-right {
+  
+  width: 35%;
+  padding: 40px;
+  text-align: left;
+ /*  position: absolute; */
+
+
+}
+
+
+.landingpage-footer-right h3 {
+  margin-bottom: 15px;
+  font-size: 28px;
+  font-style: bold;
+  color: #1abc9c;
+}
+
+.landingpage-contact-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.landingpage-contact-form input,
+.landingpage-contact-form textarea {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+}
+
+.landingpage-contact-form input {
+  font-size: 17px;
+}
+
+.landingpage-contact-form textarea {
+  font-size: 17px;
+  resize: none;
+}
+
+.landingpage-contact-submit {
+  background-color: #1abc9c;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.landingpage-contact-submit:hover {
+  background-color: #16a085;
+}
+
+.landingpage-footer-bottom {
+  text-align: center;
+  margin-top: 20px;
+  color: #ccc;
+  font-size: 12px;
+  width: 100%;
+  bottom: 0;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 768px) {
+  .landingpage-footer {
+      flex-direction: column;
+      height: auto;
+      padding: 20px 10px;
+     
+  }
+
+  .landingpage-footer-left,
+  .landingpage-footer-right,.landingpage-footer-map {
+      width: 100%;
+      padding: 10px;
+  }
+
+  .landingpage-footer-left a {
+      font-size: 16px;
+  }
+
+  .landingpage-footer-right {
+      /* position: static; */
+      margin-top: 0px;
+  }
+
+  .landingpage-contact-form input,
+  .landingpage-contact-form textarea {
+      font-size: 16px;
+  }
+
+  .landingpage-contact-submit {
+      font-size: 16px;
+      padding: 12px;
+  }
+
+  .landingpage-footer-bottom {
+      font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .landingpage-footer {
+      padding: 10px;
+  }
+
+  .landingpage-footer-left {
+      padding-top: 20px;
+      text-align: center;
+      width: 100%;
+
+ 
+  }
+
+  .landingpage-footer-left a {
+      font-size: 14px;
+  }
+
+  .landingpage-footer-right {
+      padding: 20px;
+      width: 100%;
+      text-align: center;
+      /* position: static; */
+      
+  }
+  .landingpage-footer-map {
+    padding: 20px;
+    width: 100%;
+    text-align: center;
+    /* position: static; */
+    display: flex;
+}
+
+  .landingpage-footer-right h3 {
+      font-size: 16px;
+  }
+
+  .landingpage-contact-form input,
+  .landingpage-contact-form textarea {
+      font-size: 16px;
+      padding: 8px;
+  }
+
+  .landingpage-contact-submit {
+      font-size: 16px;
+      padding: 10px;
+  }
+
+  .landingpage-footer-bottom {
+      font-size: 12px;
+  }
+}
+
+/* Button Styles */
+.landingpage-download-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #03C0C1;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.landingpage-download-button:hover {
+  background-color: #1a787d;
+}
+
+/* Additional Mobile Optimization */
+@media screen and (max-width: 768px) {
+  .landingpage-download-button {
+      width: 100%;
+      font-size: 18px;
+      padding: 15px;
+      text-align: center;
+  }
+}
+
+
+
+

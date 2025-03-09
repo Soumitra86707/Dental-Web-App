@@ -1,0 +1,24 @@
+
+/* Default styles (for desktop) */
+/* Default styles (for desktop) */
+.filter-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Mobile: Each element takes full width on small screens */
+@media screen and (max-width: 768px) {
+/*     .filter-container {
+        flex-direction: column;
+        align-items: stretch; 
+        gap: 5px;
+    } */
+    .hide-on-mobile {
+        display: none;
+    }
+/*     .filter-container input,
+    .filter-container select {
+        width: 100%;
+    } */
+}

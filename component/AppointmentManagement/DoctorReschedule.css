@@ -1,0 +1,229 @@
+
+.reschedule-container {
+    max-width: 1500px;
+    margin-top: 50px;
+    margin-left: 400px;
+    margin-right: 300px;
+    text-align: center;
+    padding: 30px;
+    background: linear-gradient(135deg, #ffefba, #ffffff);
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    font-family: "Arial", sans-serif;
+  }
+  
+
+  .reschedule-container h2 {
+    color: #333;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+
+  .appointments-list {
+    margin-bottom: 20px;
+  }
+  
+  .appointments-list h3 {
+    font-size: 20px;
+    color: #555;
+    margin-bottom: 10px;
+  }
+  
+
+  .appointment {
+    display: block;
+    width: 90%;
+    margin: 5px auto;
+    padding: 10px;
+    background: #ffffff;
+    border: 2px solid  #4c749f;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #007bff;
+    cursor: pointer;
+    transition: 0.3s ease;
+  }
+  
+  .appointment:hover {
+    background: linear-gradient(135deg, #4c749f, #00bcd4);
+    color: white;
+  }
+  
+  .appointment.selected {
+    background: linear-gradient(135deg, #ff4081, #ff9100);
+    color: white;
+    box-shadow: 0 3px 5px rgba(255, 64, 129, 0.3);
+  }
+  
+  
+  .calendar-container {
+    display: inline-block;
+ 
+    padding: 15px;
+    justify-items: center;
+  
+    border-radius: 12px;
+    
+    margin-bottom: 20px;
+  }
+  
+ 
+  .react-calendar {
+   
+    border: none !important;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .react-calendar__tile {
+    font-size: 16px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    padding: 10px;
+    background: #f8f9fa;
+  }
+  
+  .react-calendar__tile:hover {
+    background: linear-gradient(135deg, #4c749f, #00bcd4);
+    color: white !important;
+    font-weight: bold;
+  }
+  
+  .react-calendar__tile--active {
+    background: linear-gradient(135deg, #ff4081, #ff9100) !important;
+    color: white !important;
+    font-weight: bold;
+  }
+  
+  
+  .slots-container {
+    margin-top: 20px;
+  }
+  
+  .slots-container h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+  
+
+  .slots {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+  
+  .slot {
+    padding: 12px;
+    border: 2px solid #4c749f;
+    background: white;
+    color: #007bff;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s ease;
+    text-align: center;
+  }
+  
+  .slot:hover {
+    background: linear-gradient(135deg, #4c749f, #00bcd4);
+    color: white;
+  }
+  
+  .slot.selected {
+    background: linear-gradient(135deg, #ff4081, #ff9100);
+    color: white;
+  }
+  
+ 
+  .submit-btn {
+    margin-top: 25px;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #4c749f, #00bcd4);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .submit-btn:hover {
+    background: linear-gradient(135deg, #0056b3, #008080);
+  }
+  
+
+  /* DoctorReschedule.css */
+
+.reschedule-container {
+  padding: 20px;
+}
+
+.appointments-list {
+  margin-bottom: 20px;
+}
+
+.appointments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.appointment {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.appointment.selected {
+  background-color: #f0f0f0;
+  border-color: #bbb;
+}
+
+.calendar-container,
+.slots-container {
+  margin-top: 20px;
+}
+
+.slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.slot {
+  padding: 10px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.slot.selected {
+  background-color: #f0f0f0;
+  border-color: #bbb;
+}
+
+.submit-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+.submit-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+.disabled-tile {
+  background-color: red;
+  pointer-events: none; /* Disables clicks */
+}
+
