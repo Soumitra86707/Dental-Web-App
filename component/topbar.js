@@ -8,7 +8,8 @@ import $ from "jquery";
 import { Link, Outlet } from "react-router-dom";
 import "./topbar.css"
 import myIcon from "../d2.ico";
-
+import { doc,getDoc} from "firebase/firestore";
+import { db } from "./Config/FirebaseConfig"; 
 import {useNavigate} from 'react-router-dom';
 
 
@@ -19,6 +20,8 @@ function Topbar({ onLogout }) {
     const [openAppointment, setOpenAppointment] = useState(false);
     const [openConsultant, setOpenConsultant] = useState(false);
     const [openDiary, setOpenDiary] = useState(false);
+    const [doctorNane, setDoctorName] = useState("");
+    const [oldImageUrl, setOldImageUrl] = useState("");
     const dropdownRef = useRef(null);
     const navigate = useNavigate();
 
@@ -62,7 +65,7 @@ function Topbar({ onLogout }) {
     
         // **Close Sidebar on Link Click in Mobile or Tablet**
         $(".left-side-bar a").on("click", function () {
-          if (window.innerWidth <= 768) {
+          if (window.innerWidth <= 1024) {
             $(".left-side-bar").removeClass("open");
             $(".menu-icon").removeClass("open");
             $(".mobile-menu-overlay").removeClass("show");
@@ -77,6 +80,30 @@ function Topbar({ onLogout }) {
           $(".left-side-bar a").off("click");
         };
       }, []);
+
+    useEffect(() => {
+        const fetchProfileData = async () => {
+          try {
+            const userId = "1234"; // Replace with the actual logged-in user ID
+            const docRef = doc(db, "profile", userId); // Fetch from 'profiles' collection
+            const docSnap = await getDoc(docRef);
+    
+            if (docSnap.exists()) {
+
+              setDoctorName(docSnap.data().fullName || "");
+              setOldImageUrl(docSnap.data().profilePicture || "");
+              console.log("Profile pic:",docSnap.data().profilePictureName);
+            } else {
+              console.log("No profile found!");
+            }
+          } catch (error) {
+            console.error("Error fetching profile data:", error);
+          }
+        };
+    
+        fetchProfileData();
+      }, []);
+
 
       const handleLogout = () => {
         // Clear any stored authentication details (optional)
@@ -110,7 +137,7 @@ return (
                     </form> */}
                 </div>
             </div>
-            <div className="header-right" style={{ paddingRight: "100px" }}>
+            <div className="header-right" style={{ paddingRight: "40px" }}>
                 {/* <div className="user-notification" ref={dropdownRef}>
                     <div className="dropdown">
                         <a
@@ -138,9 +165,9 @@ return (
                         <div className="dropdown">
                             <a className="dropdown-toggle" role="button">
                             <span className="user-icon" >
-                                <img src={myIcon} alt="myIcon" />
+                                <img src={oldImageUrl} alt="myIcon" />
                             </span>
-                            <span className="user-name"style={{ paddingLeft: "10px" ,fontSize:"20px",fontWeight:"bold" , color:"#34949C"}}  >Dr. Nithya</span>
+                            <span className="user-name"style={{ paddingLeft: "10px" ,fontSize:"20px",fontWeight:"bold" , color:"#34949C"}}  >{doctorNane}</span>
                             </a>
 
                             <div
@@ -164,8 +191,8 @@ return (
         </div>
         <div className="left-side-bar">
             <div className="brand-logo">
-                <a href="index.html">
-                    <img src={myIcon} alt="myIcon" style={{ marginTop:"120px",marginLeft:"20px",width: "200px", height: "130px", borderRadius:30 }} />
+                <a >
+                    <img src={myIcon} alt="myIcon" style={{ marginTop:"120px",marginLeft:"30px",width: "170px", height: "130px", borderRadius:30 }} />
 
                     {/* <img
                         src="d2.jpg"

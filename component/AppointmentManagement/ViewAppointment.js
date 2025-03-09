@@ -11,7 +11,9 @@ import { useNavigate } from "react-router-dom";
 
 function ViewAppointment() {
   const [appointments, setAppointments] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toLocaleDateString("en-CA") // Ensures local date in YYYY-MM-DD format
+  );
   const [filterDuration, setFilterDuration] = useState("1-day");
   const [searchQuery, setSearchQuery] = useState("");
   const [userType, setUserType] = useState("patient"); // Placeholder for dynamic user type
@@ -124,15 +126,21 @@ function ViewAppointment() {
                       <div className="font-14 text-secondary">Age: {appointment.age}</div>
                       <div className="font-14 text-secondary">Complaint: {appointment.reason_for_visit}</div>
                       <div className="font-14 text-secondary">Date: {appointment.appointment_date.replace(/_/g, "-")}</div>
-                      <div className="font-14 text-secondary">Slot: {appointment.slot_start_time} - {appointment.slot_end_time}</div>
-                      {appointment.appointment_date === todayFormatted && appointment.slot_end_time > recentTime && (
-                        <button 
-                          className="btn btn-primary mt-2" 
-                          onClick={() => handleAddPrescription(appointment.id)}
-                        >
-                          Add Prescription
-                        </button>
-                       )} 
+                      <div className="font-14 text-secondary">
+                        Slot: {appointment.slot_start_time} - {appointment.slot_end_time}
+                      </div>
+
+                      {/* Show 'Add Prescription' button only if the appointment is today and the current time is within the slot */}
+                      {appointment.appointment_date === todayFormatted &&
+                        recentTime >= appointment.slot_start_time &&
+                        recentTime <= appointment.slot_end_time && (
+                          <button
+                            className="btn btn-primary mt-2"
+                            onClick={() => handleAddPrescription(appointment.id)}
+                          >
+                            Add Prescription
+                          </button>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -140,6 +148,7 @@ function ViewAppointment() {
             ) : (
               <p>No Appointments Found</p>
             )}
+
           </div>
         </div>
       </div>

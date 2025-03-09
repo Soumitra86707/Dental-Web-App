@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams , useNavigate  } from "react-router-dom";
 import { db } from "../Config/FirebaseConfig";
 import { doc, getDoc , collection, query, where, getDocs } from "firebase/firestore";
 import jsPDF from "jspdf";
@@ -9,6 +9,7 @@ const DownloadPrescription = () => {
     const { prescriptionId } = useParams();
     const printRef = useRef(null);
     const [formData, setFormData] = useState(null);
+    const navigate = useNavigate();
     
     console.log("DownloadPrescription:", prescriptionId);
 
@@ -95,6 +96,10 @@ const DownloadPrescription = () => {
         if (!dateString) return "N/A"; // Handle missing values
         const [year, month, day] = dateString.split("-");
         return `${day}-${month}-${year}`;
+    };
+
+    const editPrescription = (prescriptionId) => () => {
+        navigate(`/Prescription/edit/${prescriptionId}`);
     };
     return (
         <div className="App">
@@ -187,7 +192,14 @@ const DownloadPrescription = () => {
                         </div>
                     </div>
 
-                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
+                    <div style={{ display: "flex",gao:"20px", justifyContent: "center", alignItems: "center"}}>
+                        <button 
+                            type="button" 
+                            onClick={editPrescription(prescriptionId)}
+                            style={{ marginBottom: "20px", padding: "10px 20px", fontSize: "16px" ,backgroundColor:"#0D6EFD",borderRadius: "15px"}}
+                        >
+                            Edit Precription
+                        </button>
                         <button 
                             type="button" 
                             onClick={handleDownloadPDF} 
