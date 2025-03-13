@@ -631,11 +631,12 @@ const generateinvoiceId = (length = 20) => {
                   justifyContent: "flex-end", // Aligns content to the right
                   width: "100%",
                   padding: "10px",
+                  marginLeft: "10px",
                 }}
               >
                 
               <div className="filter-container">
-                <input type="text" placeholder="Search" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}  style={{ padding: "5px", border: "1px solid #ccc", borderRadius: "5px", outline: "none", width: "150px" }} />
+                <input type="text" placeholder="Search" className="alloversearchbar" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}  style={{ padding: "5px", border: "1px solid #ccc", borderRadius: "5px", outline: "none" ,  }} />
                 <input type="date" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)}
                   style={{ padding: "5px", border: "1px solid #ccc", borderRadius: "5px", outline: "none", flexGrow: 1 }} />
 
@@ -653,7 +654,7 @@ const generateinvoiceId = (length = 20) => {
                 </select>
               </div>
             </div>
-            <table className="data-table table nowrap table-striped">
+            <table className="data-table table nowrap table-striped InvoicesTable">
                 <thead>
                   <tr>
                     

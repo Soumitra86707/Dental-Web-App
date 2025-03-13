@@ -260,14 +260,12 @@ return (
                                 fontSize: "inherit",
                                 display: "flex",
                                 alignItems: "center",
-                                gap: "50px",  // Adds space between text and arrow
+                                gap: "50px",  
                             }}
                             >
                                 <span className="micon bi bi-person-badge" aria-hidden="true"></span>
                             <span className="mtext">Consultant Management</span>
-                            {/* <span style={{ transition: "transform 0.3s", transform: openAppointment ? "rotate(180deg)" : "rotate(0deg)" }}>
-                                🔽
-                            </span> */}
+                            
                             </button>
                             <ul
                             className={`submenu ${openConsultant ? "show" : ""}`}

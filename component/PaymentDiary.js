@@ -284,7 +284,7 @@ console.log("kjhfdbsnjfh",uploadDate); // Output: "2025-03-08"
                 </div>
           </div>
           <div className="card-box pb-10">
-          <div
+            <div
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
@@ -292,42 +292,55 @@ console.log("kjhfdbsnjfh",uploadDate); // Output: "2025-03-08"
                   width: "100%",
                   padding: "10px",
                 }}
-              >
-                <div style={{ textAlign: "left", fontSize: "25px", fontWeight: "bold" }}>Payment History</div>
+            >
+              <div style={{ textAlign: "left", fontSize: "25px", fontWeight: "bold" }}>Payment History</div>
                                         
-                            </div>
-                                    <div
-                                style={{
-                                display: "flex",
-                                justifyContent: "flex-end", // Aligns content to the right
-                                width: "100%",
-                                padding: "10px",
-                                }}
-                            >
+            </div>
+            <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end", // Aligns content to the right
+                  width: "100%",
+                  padding: "10px",
+                  gap: "5px",
+                }}
+              >
                             
               <div className="filter-container">
-                <input type="text" placeholder="Search" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} 
-                  style={{ padding: "5px", border: "1px solid #ccc", borderRadius: "5px", outline: "none", width: "150px" }} />
-                  <input type="date" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)}
-                    style={{ padding: "5px", border: "1px solid #ccc", borderRadius: "5px", outline: "none", flexGrow: 1 }} />
-
-                <select value={quickFilter} onChange={(e) => setQuickFilter(e.target.value)}
-                  style={{ padding: "5px 10px", border: "1px solid #ccc", borderRadius: "5px", backgroundColor: "#fff", color: "#333", cursor: "pointer", outline: "none" }}
-                >
-                  <option value="1-day">1 Day</option>
-                  <option value="1-week">1 Week</option>
-                  <option value="15-days">15 Days</option>
-                  <option value="1-month">1 Month</option>
-                  <option value="6-months">6 Months</option>
-                  <option value="1-year">1 Year</option>
-                  <option value="All">All</option>
-                </select>
+{/*               <div className="col-md-3 col-sm-12">
+                <div className="form-group"> */}
+                  <input type="text" placeholder="Search" className="alloversearchbar" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} 
+                    style={{ padding: "5px", border: "1px solid #ccc", borderRadius: "5px", outline: "none",}} />
+{/*                 </div>
               </div>
+              <div className="col-md-2 col-sm-12">
+                <div className="form-group"> */}
+                    <input type="date" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)}
+                      style={{ padding: "5px", border: "1px solid #ccc", borderRadius: "5px", outline: "none", flexGrow: 1 }} 
+                    />
+{/*                 </div>
+              </div>
+              <div className="col-md-2 col-sm-12">
+                <div className="form-group"> */}
+                  <select value={quickFilter} onChange={(e) => setQuickFilter(e.target.value)}
+                    style={{ padding: "5px 10px", border: "1px solid #ccc", borderRadius: "5px", backgroundColor: "#fff", color: "#333", cursor: "pointer", outline: "none" }}
+                  >
+                    <option value="1-day">1 Day</option>
+                    <option value="1-week">1 Week</option>
+                    <option value="15-days">15 Days</option>
+                    <option value="1-month">1 Month</option>
+                    <option value="6-months">6 Months</option>
+                    <option value="1-year">1 Year</option>
+                    <option value="All">All</option>
+                  </select>
+{/*                 </div>
+              </div> */}
+            </div>
             </div>
 
-            <table className="data-table table nowrap   table-striped">
-              <thead>
-                <tr>
+            <table className="data-table table nowrap   table-striped PaymentTable">
+              <thead className="bg-gray" >
+                <tr >
                   <th>Serial No.</th>
                   <th className="table-plus">Payment By</th>
                   <th>Payment Date</th>
@@ -340,7 +353,7 @@ console.log("kjhfdbsnjfh",uploadDate); // Output: "2025-03-08"
                 </tr>
               </thead>
               <tbody>
-                {filteredReports.length === 0 ? (
+              {filteredReports.length === 0 ? (
                   <tr>
                     <td colSpan="7" style={{ textAlign: "center" }}>No data found</td>
                   </tr>

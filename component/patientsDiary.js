@@ -187,8 +187,8 @@ function App() {
                             >
                             
                                 <div className="filter-container">
-                                    <input type="text" placeholder="Search" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} 
-                                    style={{ padding: "5px", border: "1px solid #ccc", borderRadius: "5px", outline: "none", width: "150px" }} />
+                                    <input type="text" placeholder="Search" className="alloversearchbar" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} 
+                                    style={{ padding: "5px", border: "1px solid #ccc", borderRadius: "5px", outline: "none",}} />
 
                                     <input type="date" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)}
                                     style={{ padding: "5px", border: "1px solid #ccc", borderRadius: "5px", outline: "none", flexGrow: 1 }} />
@@ -208,7 +208,7 @@ function App() {
                                     </select>
                                 </div>
                         </div>
-                        <table className="data-table table nowrap  table-striped">
+                        <table className="data-table table nowrap  table-striped landingPage-Table">
                             <thead>
                                 <tr>
                                     <th>Phone Number</th>

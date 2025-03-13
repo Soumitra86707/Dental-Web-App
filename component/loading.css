@@ -9,11 +9,14 @@
 
 /* Mobile: Each element takes full width on small screens */
 @media screen and (max-width: 768px) {
-/*     .filter-container {
-        flex-direction: column;
-        align-items: stretch; 
-        gap: 5px;
-    } */
+    .filter-container {
+        display: flex;
+        align-items: center;
+        /* gap: 5px; */
+    }
+    .filter-container > input {
+        width: calc((100% / 3) - (10px * 2 / 3)); /* Adjusts for the gap */
+    }
     .hide-on-mobile {
         display: none;
     }

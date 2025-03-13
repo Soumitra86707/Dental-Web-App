@@ -18,7 +18,7 @@ import { Document, Packer, Paragraph, Table, TableCell, TableRow } from "docx";
 import { collection, query, orderBy, getDocs } from "firebase/firestore";
 import { ref, getDownloadURL } from "firebase/storage";
 import { FaDownload } from "react-icons/fa";
-import PatientForm from "./UploadReports";
+import PatientForm from "./ConsultantPayment";
 
 
 function ViewReport() {

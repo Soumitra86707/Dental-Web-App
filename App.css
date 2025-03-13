@@ -4,7 +4,9 @@
     width: 100%;
     min-height: 100vh;
 }
-
+/* .alloversearchbar{
+    width: 200px;
+} */
 .custom-toast {
     position: fixed;
     top: 10px;
@@ -40,6 +42,9 @@
     .data-table td:nth-child(2) {
         display: none;
     } */
+/*     .alloversearchbar{
+        width: 180px;
+    } */
 
     .content {
         padding: 10px;
@@ -72,6 +77,39 @@
 }
 
 @media screen and (max-width: 768px) {
+
+    .landingPage-Table th:nth-child(1),
+
+    .landingPage-Table td:nth-child(1) ,
+    .landingPage-Table th:nth-child(4),
+
+    .landingPage-Table td:nth-child(4) ,
+    .landingPage-Table th:nth-child(6),
+
+    .landingPage-Table td:nth-child(6) {
+        display: none;
+    }
+    .PaymentTable th:nth-child(1),
+
+    .PaymentTable td:nth-child(1){
+        display: none;
+    }
+
+    .ReportTable th:nth-child(5),
+
+    .ReportTable td:nth-child(5){
+        display: none;
+    }
+
+    .InvoicesTable th:nth-child(2),
+
+    .InvoicesTable td:nth-child(2){
+        display: none;
+    }
+/* .alloversearchbar{
+    width: 120px;
+} */
+
     .topbar {
         font-size: 0.8rem;
         padding: 10px;
@@ -115,3 +153,33 @@
         background: #555;
     }
 }
+/* @media screen and (max-width: 320px) {
+    .landingPage-Table th:nth-child(2),
+    .landingPage-Table td:nth-child(2),
+    .landingPage-Table th:nth-child(5),
+    .landingPage-Table td:nth-child(5) {
+        display: none;
+    }
+
+    .alloversearchbar {
+        width: 100px;
+    }
+    .PaymentTable th:nth-child(1),
+
+    .PaymentTable td:nth-child(1){
+        display: none;
+    }
+
+    .ReportTable th:nth-child(5),
+
+    .ReportTable td:nth-child(5){
+        display: none;
+    }
+
+    .InvoicesTable th:nth-child(2),
+
+    .InvoicesTable td:nth-child(2){
+        display: none;
+    }
+}
+ */

@@ -81,73 +81,90 @@ function BookAppointment() {
     "Sensitivity when Biting",
     "Sores or Growth in Your Mouth",
   ];
+  const [formData, setFormData] = useState([
+    { userType:"" ,patientsPhone: "", patientsName: "",custompatientsName:"", age:"", gender:"" , email: "" , reasonForVisit:"",customReasonForVisit:"",selectedIssues :[] },
+    { isBloodTest: "",BloodTestDate: "", isPregnant: "",isNursing: "",isTakingBirthControlPill: "", anyMedications:"" , anyAllergies: "" ,anyOperations: "" ,medicalHistory:[] },
+    { appointmentDate: "", slots: [] }
+  ]);
+  const [currentData, setCurrentData] = useState(formData[0]);
   const handlePatientSelect = async (e) => {
     const value = e.target.value;
     setSelectedPatient(value);
-    setCurrentData({ ...currentData, patientsName: e.target.value });
+    setCurrentData((prev) => ({ ...prev, patientsName: value }));
   
     if (value !== "other" && value !== "") {
-      // Fetch the latest record of the selected patient
-      const patientQuery = query(
-        patientsCollection,
-        where("patient_phone_number", "==", currentData.patientsPhone)
-      );
-      
-      const querySnapshot = await getDocs(patientQuery);
-      const filteredPatients = querySnapshot.docs
-      .map((doc) => doc.data())
-      .filter((patient) => patient.patient_name === value) // Match patient name
-      .sort((a, b) => b.modified_on - a.modified_on); // Sort by modified_on (newest first)
-      if (filteredPatients.length > 0) {
-        const latestRecord = filteredPatients[0]; // Get the most recent record
+      try {
+        // Fetch the latest record of the selected patient
+        const patientQuery = query(
+          patientsCollection,
+          where("patient_name", "==", value), // Directly filter by patient name
+          where("patient_phone_number", "==", currentData.patientsPhone)
+        );
   
-        // Update formData with patient's details
-        setFormData([
-          {
-            userType: "patient",
-            patientsPhone: latestRecord.patient_phone_number,
-            patientsName: latestRecord.patient_name,
-            custompatientsName: "",
-            age: latestRecord.age || "",
-            gender: latestRecord.gender || "",
-            email: latestRecord.email || "",
-            reasonForVisit:"",
-            customReasonForVisit:"",
-            selectedIssues: latestRecord.patient_dental_history || []
-          },
-          {
-            isBloodTest: latestRecord.has_patient_underwent_blood_transfusion || "",
-            BloodTestDate: latestRecord.patient_blood_transfusion_date || "",
-            isPregnant: latestRecord.is_pregnant || "",
-            isNursing: latestRecord.is_nursing || "",
-            isTakingBirthControlPill: latestRecord.is_taking_birth_control_pills || "",
-            anyMedications: latestRecord.patient_medications || "",
-            anyAllergies: latestRecord.patient_allergies || "",
-            anyOperations: latestRecord.patient_extra_illnesses || "",
-            medicalHistory: latestRecord.patient_medical_history|| []
-          },
-          {
-            appointmentDate: "",
-            slots:[]
-          }
-        ]);
-        setUserEmail(latestRecord.email || "");
-        setUserAge(latestRecord.age || "");
-        
-        setUserGender(latestRecord.gender || "");
-        setSelectedIssues(latestRecord.patient_dental_history || []);
-        setMedicalHistory(latestRecord?.patient_medical_history || []);
-
+        const querySnapshot = await getDocs(patientQuery);
+        const filteredPatients = querySnapshot.docs
+          .map((doc) => doc.data())
+          .sort((a, b) => b.modified_on - a.modified_on); // Sort by modified_on (newest first)
+  
+        if (filteredPatients.length > 0) {
+          const latestRecord = filteredPatients[0]; // Get the most recent record
+  
+          // Update formData state
+          const newFormData = [
+            {
+              userType: "patient",
+              patientsPhone: latestRecord.patient_phone_number,
+              patientsName: latestRecord.patient_name,
+              custompatientsName: "",
+              age: latestRecord.age,
+              gender: latestRecord.gender,
+              email: latestRecord.email || "",
+              reasonForVisit: "",
+              customReasonForVisit: "",
+              selectedIssues: latestRecord.patient_dental_history || [],
+            },
+            {
+              isBloodTest: latestRecord.has_patient_underwent_blood_transfusion || "",
+              BloodTestDate: latestRecord.patient_blood_transfusion_date || "",
+              isPregnant: latestRecord.is_pregnant || "",
+              isNursing: latestRecord.is_nursing || "",
+              isTakingBirthControlPill: latestRecord.is_taking_birth_control_pills || "",
+              anyMedications: latestRecord.patient_medications || "",
+              anyAllergies: latestRecord.patient_allergies || "",
+              anyOperations: latestRecord.patient_extra_illnesses || "",
+              medicalHistory: latestRecord.patient_medical_history || [],
+            },
+            {
+              appointmentDate: "",
+              slots: [],
+            },
+          ];
+  
+          setFormData(newFormData);
+          setUserEmail(latestRecord.email);
+          setUserAge(latestRecord.age );
+          setUserGender(latestRecord.gender );
+          setSelectedIssues(latestRecord.patient_dental_history || []);
+          setMedicalHistory(latestRecord.patient_medical_history || []);
+  
+          // ✅ Logging after state updates (useEffect is better for confirming state)
+          console.log("Latest FormData:", newFormData);
+          console.log("Gender:", latestRecord.gender);
+          console.log("Age:", latestRecord.age);
+          console.log("Gender2:", userGender);
+        } else {
+          console.log("No patient records found.");
+        }
+      } catch (error) {
+        console.error("Error fetching patient data:", error);
       }
     }
   };
+  useEffect(() => {
+    console.log("Updated Gender:", userGender);
+  }, [userGender]); // This will log whenever userGender changes
   
 
-// Simulated patient records
-/* const patientRecords = {
-  "1234567890": ["John Doe", "Jane Doe", "Mark Smith"],
-  "9876543210": ["Alice Brown", "Bob White"],
-}; */
 
 const handleCustomPatientName = (e) => {
   const customName = e.target.value;
@@ -185,12 +202,7 @@ const handlePhoneChange = async (e) => {
     setSelectedPatient("");
   }
 };
-  const [formData, setFormData] = useState([
-    { userType:"" ,patientsPhone: "", patientsName: "",custompatientsName:"", age:"", gender:"" , email: "" , reasonForVisit:"",customReasonForVisit:"",selectedIssues :[] },
-    { isBloodTest: "",BloodTestDate: "", isPregnant: "",isNursing: "",isTakingBirthControlPill: "", anyMedications:"" , anyAllergies: "" ,anyOperations: "" ,medicalHistory:[] },
-    { appointmentDate: "", slots: [] }
-  ]);
-  const [currentData, setCurrentData] = useState(formData[0]);
+
   const handleCheckboxChange = (issue) => {
     setSelectedIssues((prevIssues) =>
       prevIssues.includes(issue)
@@ -235,15 +247,42 @@ const handlePhoneChange = async (e) => {
       alert("Please select at least one slot!");
       return;
     } */
+
+
+
   
     try {
       const appointment_date = moment(date).tz("Asia/Kolkata").format("YYYY_MM_DD");
   
       // Ensure selectedSlot is always an array
       const slotsArray = Array.isArray(selectedSlot) ? selectedSlot : [selectedSlot];
-  
+      let patientsPhone = formData[0].patientsPhone;
+      let patientsName = formData[0].patientsName === "other" ? formData[0].custompatientsName : formData[0].patientsName;
+      const reasonForVisit = 
+      formData[0].reasonForVisit === "other" && formData[0].customReasonForVisit?.trim() 
+        ? formData[0].customReasonForVisit.trim() 
+        : formData[0].reasonForVisit || "";
       // Loop through each selected slot and push data to Firestore
-      
+        if (!selectedSlots || selectedSlots.length === 0) 
+          {
+            alert("Please select at least one slot!");
+            return;
+          }
+        if(!patientsPhone )
+        {
+          alert("Please Select Phonenumber !");
+          return;
+        }
+        if(!patientsName )
+          {
+            alert("Please Select or Write Patients name !");
+            return;
+          }
+          if(!reasonForVisit)
+            {
+              alert("Please Select Reason For Visit!");
+              return;
+            }
         const slotStartTime = moment(selectedSlots[0], "HH:mm").tz("Asia/Kolkata");
         const slotEndTime = slotStartTime.clone().add(30, "minutes").format("HH:mm"); // Add 30 min
         let slot_no = 0; // Default slot number
@@ -278,8 +317,6 @@ const handlePhoneChange = async (e) => {
         const bookingTimestamp = moment()
         .tz("Asia/Kolkata")
         .format("YYYY_MM_DD_HH_mm_ss.ss");
-        let patientsPhone = formData[0].patientsPhone;
-        let patientsName = formData[0].patientsName === "other" ? formData[0].custompatientsName : formData[0].patientsName;
         let patientId = ""; // Declare globally
         
         // Ensure the value of patientsName is set before generating patientId
@@ -287,52 +324,53 @@ const handlePhoneChange = async (e) => {
             patientId = generatePatientId(patientsPhone, patientsName);
         }
         
-        const reasonForVisit = 
-  formData[0].reasonForVisit === "other" && formData[0].customReasonForVisit?.trim() 
-    ? formData[0].customReasonForVisit.trim() 
-    : formData[0].reasonForVisit || "";
 
-    const AppointmentData = userType === "doctor" 
-    ? {
-        userType,
-        appointment_date, // Static date
-        appointment_id: appointmentId, // Static appointment ID
-        booking_time_stamp: new Date().toISOString(), // Current timestamp
-        doc_id: "dr. Nithya", 
-        gender: "N/A", 
-        is_nursing: false, 
-        is_pregnant: false, 
-        is_taking_birth_control_pills: false, 
-        patient_account_id: "0000000000", // Static phone number
-        patient_dental_history: [], // Empty array as default
-        patient_id: "Dr. Nithya", 
-        patient_name: "N/A", 
-        age: "N/A", 
-        reason_for_visit: "N/A", // Static reason
-        slot_no, 
-        slot_start_time: slotStartTime.format("HH:mm"), 
-        slot_end_time: slotEndTime // Static slot end time
-      } 
-    : {
-        userType,
-        appointment_date,
-        appointment_id: appointmentId,
-        booking_time_stamp: bookingTimestamp,
-        doc_id: "Dr. Nithya",
-        gender: formData[0].gender,
-        is_nursing: formData[1].isNursing,
-        is_pregnant: formData[1].isPregnant,
-        is_taking_birth_control_pills: formData[1].isTakingBirthControlPill,
-        patient_account_id: patientsPhone,
-        patient_dental_history: selectedIssues,
-        patient_id: patientId,
-        patient_name: patientsName,
-        age: formData[0].age,
-        reason_for_visit: reasonForVisit,
-        slot_no,
-        slot_start_time: slotStartTime.format("HH:mm"),
-        slot_end_time: slotEndTime
-      };
+    let AppointmentData;
+
+    if (userType === "doctor") {
+        AppointmentData = {
+            userType,
+            appointment_date,
+            appointment_id: appointmentId,
+            booking_time_stamp: new Date().toISOString(),
+            doc_id: "Dr. Nithya",
+            gender: "N/A",
+            is_nursing: false,
+            is_pregnant: false,
+            is_taking_birth_control_pills: false,
+            patient_account_id: "0000000000",
+            patient_dental_history: [],
+            patient_id: "Dr. Nithya",
+            patient_name: "N/A",
+            age: "N/A",
+            reason_for_visit: "N/A",
+            slot_no,
+            slot_start_time: slotStartTime.format("HH:mm"),
+            slot_end_time: slotEndTime
+        };
+    } else {
+        AppointmentData = {
+            userType,
+            appointment_date,
+            appointment_id: appointmentId,
+            booking_time_stamp: bookingTimestamp,
+            doc_id: "Dr. Nithya",
+            gender: userGender,
+            is_nursing: formData[1].isNursing,
+            is_pregnant: formData[1].isPregnant,
+            is_taking_birth_control_pills: formData[1].isTakingBirthControlPill,
+            patient_account_id: patientsPhone,
+            patient_dental_history: selectedIssues,
+            patient_id: patientId,
+            patient_name: patientsName,
+            age: userAge,
+            reason_for_visit: reasonForVisit,
+            slot_no,
+            slot_start_time: slotStartTime.format("HH:mm"),
+            slot_end_time: slotEndTime
+        };
+    }
+    
   
         
         // Save to Firestore (each slot as a separate entry)
@@ -351,58 +389,69 @@ const handlePhoneChange = async (e) => {
 
         if (userType === "patient") {
           if (!patientSnapshot.empty) {
-            // Patient exists, update data
-            const patientDocRef = patientSnapshot.docs[0].ref;
-            await setDoc(patientDocRef, {
-              modified_on:bookingTimestamp,
-              patient_extra_illnesses:formData[1].anyOperations,
-              is_nursing: formData[1].isNursing,
-              is_pregnant: formData[1].isPregnant,
-              is_taking_birth_control_pills: formData[1].isTakingBirthControlPill,
-              patient_dental_history: selectedIssues,
-              has_patient_underwent_blood_transfusion:formData[1].isBloodTest,
-              patient_allergies:formData[1].anyAllergies,
-              patient_medications:formData[1].anyMedications,
-              patient_blood_transfusion_date:formData[1].BloodTestDate,
-              patient_medical_history:medicalHistory,
-              email: formData[0].email,
-              appointmentId: arrayUnion(appointmentId),
-              age: formData[0].age,
-              gender: formData[0].gender,
-              reason_for_visit: arrayUnion(reasonForVisit),
-            }, { merge: true });
+              // Patient exists, update data
+              const patientDocRef = patientSnapshot.docs[0].ref;
+              const updatedData = {
+                  modified_on: bookingTimestamp,
+                  patient_extra_illnesses: formData[1].anyOperations,
+                  is_nursing: formData[1].isNursing,
+                  is_pregnant: formData[1].isPregnant,
+                  is_taking_birth_control_pills: formData[1].isTakingBirthControlPill,
+                  patient_dental_history: selectedIssues,
+                  has_patient_underwent_blood_transfusion: formData[1].isBloodTest,
+                  patient_allergies: formData[1].anyAllergies,
+                  patient_medications: formData[1].anyMedications,
+                  patient_blood_transfusion_date: formData[1].BloodTestDate,
+                  patient_medical_history: medicalHistory,
+                  email: userEmail,
+                  appointmentId: arrayUnion(appointmentId),
+                  age: userAge,
+                  gender: userGender,
+                  reason_for_visit: arrayUnion(reasonForVisit),
+              };
+      
+              await setDoc(patientDocRef, updatedData, { merge: true });
+      
+              // Log updated data to the console
+              console.log("Updated Patient Data:", updatedData);
           } else {
-            // Add new patient
-            await addDoc(patientsCollection, {
-              appointmentId: arrayUnion(appointmentId),
-              createdAt:bookingTimestamp,
-              modified_on:bookingTimestamp,
-              patient_extra_illnesses:formData[1].anyOperations,
-              doc_id: "dr. Nithya",
-              has_patient_underwent_blood_transfusion:formData[1].isBloodTest,
-              patient_allergies:formData[1].anyAllergies,
-              is_nursing: formData[1].isNursing,
-              is_pregnant: formData[1].isPregnant,
-              is_taking_birth_control_pills: formData[1].isTakingBirthControlPill,
-              patient_dental_history: selectedIssues,
-              patient_medications:formData[1].anyMedications,
-              patient_blood_transfusion_date:formData[1].BloodTestDate,
-              patient_medical_history:medicalHistory,
-              patient_name: patientsName,
-              age: formData[0].age,
-              email: formData[0].email,
-              gender: formData[0].gender,
-              patient_account_id: formData[0].patientsPhone,
-              patient_phone_number:patientsPhone,
-              reason_for_visit: arrayUnion(reasonForVisit),
-              patient_id: patientId,
-            });
+              // Add new patient
+              const newPatientData = {
+                  appointmentId: arrayUnion(appointmentId),
+                  createdAt: bookingTimestamp,
+                  modified_on: bookingTimestamp,
+                  patient_extra_illnesses: formData[1].anyOperations,
+                  doc_id: "dr. Nithya",
+                  has_patient_underwent_blood_transfusion: formData[1].isBloodTest,
+                  patient_allergies: formData[1].anyAllergies,
+                  is_nursing: formData[1].isNursing,
+                  is_pregnant: formData[1].isPregnant,
+                  is_taking_birth_control_pills: formData[1].isTakingBirthControlPill,
+                  patient_dental_history: selectedIssues,
+                  patient_medications: formData[1].anyMedications,
+                  patient_blood_transfusion_date: formData[1].BloodTestDate,
+                  patient_medical_history: medicalHistory,
+                  patient_name: patientsName,
+                  age: userAge,
+                  email: userEmail,
+                  gender: userGender,
+                  patient_account_id: formData[0].patientsPhone,
+                  patient_phone_number: patientsPhone,
+                  reason_for_visit: arrayUnion(reasonForVisit),
+                  patient_id: patientId,
+              };
+      
+              await addDoc(patientsCollection, newPatientData);
+      
+              // Log new patient data to the console
+              //console.log("New Patient Data Added:", newPatientData);
           }
-        }
+      }
+      
 
         // Save appointment data
         await addDoc(appointmentsCollection, AppointmentData);
-      
+
   
         toast.success("Appointment Successfully Booked! Redirecting...", {
           autoClose: 3000, // 10 seconds
@@ -437,8 +486,10 @@ const handlePhoneChange = async (e) => {
         appointmentDate: "",
         slots: [],
       });
-  
-      setSelectedSlot(userType === "doctor" ? [] : null);
+      setUserAge("");
+      setUserEmail("");
+      setUserGender("");
+      /* setSelectedSlot(userType === "doctor" ? [] : null); */
     } catch (error) {
       console.error("Error booking appointment:", error);
       alert("Failed to book appointment. Please try again.");
@@ -601,7 +652,7 @@ const handlePhoneChange = async (e) => {
     </div>
   </div>
 
-  {matchingPatients.length > 0 ? (
+{/*   {matchingPatients.length > 0 ? ( */}
     <div className="col-md-3 col-sm-12">
       <div className="form-group">
         <label>Patients Name</label>
@@ -621,7 +672,7 @@ const handlePhoneChange = async (e) => {
         </select>
       </div>
     </div>
-  ) : (
+{/*   ) : (
     <div className="col-md-3 col-sm-12">
       <div className="form-group">
         <label>Patient Name</label>
@@ -635,7 +686,7 @@ const handlePhoneChange = async (e) => {
         />
       </div>
     </div>
-  )}
+  )} */}
 
   {selectedPatient === "other" && (
     <div className="col-md-3 col-sm-12">
@@ -658,9 +709,14 @@ const handlePhoneChange = async (e) => {
                               <input
                                   type="text"
                                   className="form-control"
-                                  value={currentData.age || userAge}
-                                  onChange={(e) => setCurrentData({ ...currentData, age: e.target.value })}
-                                  disabled={userType === "doctor"}
+                                  value={userAge}
+                                  onChange={(e) => {
+                                    const newAge = e.target.value;
+                                    
+                                    setUserAge(newAge);
+                                    console.log("Updated Age:", newAge);
+
+                                  }}  disabled={userType === "doctor"}
                               />
                             </div>
                         </div>
@@ -671,8 +727,10 @@ const handlePhoneChange = async (e) => {
                             <label>Gender</label>
                             <select 
                               className="form-control" 
-                              value={currentData.gender || userGender} 
-                              onChange={(e) => setCurrentData({ ...currentData, gender: e.target.value })}
+                              value={userGender}  // Should use userGender, not userEmail
+                              onChange={(e) => {
+                                setUserGender(e.target.value); // Correct state update
+                              }}
                               disabled={userType === "doctor"}
                             >
                               <option value="">Select Gender</option>
@@ -688,8 +746,14 @@ const handlePhoneChange = async (e) => {
                           <input
                                 type="Text"
                                 className="form-control"
-                                value={currentData.email || userEmail}
-                                onChange={(e) => setCurrentData({ ...currentData, email: e.target.value })}
+                                value={userEmail}
+                                onChange={(e) => {
+                                  const newEmail = e.target.value;
+                                  
+                                  setUserEmail(newEmail);
+                                  console.log("Updated Email:", newEmail);
+
+                                }}
                                 disabled={userType === "doctor"}
                           />
                         </div>

@@ -10,6 +10,8 @@ import PatientsDiary from "./component/patientsDiary";
 import PaymentDiary from "./component/PaymentDiary";
 import ViewAppointment from "./component/AppointmentManagement/ViewAppointment";
 import ViewConsultant from "./component/Consultant/ViewConsultant";
+import AddConsultant from "./component/Consultant/AddConsultant"; 
+import PaymentConsultant from "./component/Consultant/paymentHistory";
 import ViewReport from "./component/Report/ViewReport";
 import ViewInvoices from "./component/Report/ViewInvoices";
 /* import BookAppointment from "./component/AppointmentManagement/book"; */
@@ -93,6 +95,8 @@ function App() {
             <Route path="/Diary/patientsDetails" element={<PatientsDiary />} />
             <Route path="/Diary/PaymentDetails" element={<PaymentDiary />} />
             <Route path="/Consultant/View" element={<ViewConsultant />} />
+            <Route path="/Consultant/AddConsultant" element={<AddConsultant />} />
+            <Route path="/Consultant/PaymentHistory" element={<PaymentConsultant />} />
             <Route path="/Prescription/Download/:prescriptionId" element={<DownloadPrescription />} />
             <Route path="/Prescription/edit/:prescriptionId" element={<EditPrescription />} />
             <Route path="/Report/ViewReports" element={<ViewReport />} />

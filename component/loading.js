@@ -391,7 +391,7 @@ const editPrescription = (prescriptionId) => () => {
 				<div className="card-box pb-10">
 					<div className="h5 pd-20 mb-0">Recent Patient</div>
 					{loading ? <p>Loading...</p> : (
-					<table className="data-table table nowrap">
+					<table className="data-table table nowrap landingPage-Table">
 						<thead>
 							<tr>
                                     <th>Phone Number</th>
@@ -423,7 +423,7 @@ const editPrescription = (prescriptionId) => () => {
                                                 <ul className={`dropdown-menu dropdown-menu-end dropdown-menu-icon-list ${openDropdown === index ? "show" : ""}`}>
 
                                                     <li>
-                                                    <a className="dropdown-item" onClick={viewPrescription(row.prescriptionId)}>
+                                                    <a className="dropdown-item" onClick={viewPrescription(row.prescriptionId)} >
                                                         <i className="dw dw-eye"></i> View
                                                     </a>
                                                     </li>
