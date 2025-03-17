@@ -34,8 +34,8 @@ function Profile() {
     const imageRef = useRef(null);
     const profileImageRef = useRef(null);
     const [cropper, setCropper] = useState(null);
-    const [croppedImage, setCroppedImage] = useState("../../vendors/images/photo1.jpg");
-    const [passwordChange, setPasswordChange] = useState(null);
+/*     const [croppedImage, setCroppedImage] = useState("../../vendors/images/photo1.jpg");
+ */    const [passwordChange, setPasswordChange] = useState(null);
     const [profileData1, setProfileData1] = useState({
         fullName: "",
         email: "",
@@ -128,13 +128,17 @@ function Profile() {
                     }
                 }
             }else{
-            fileName =fileName1;
+                fileName =fileName1;
                 imageUrl = oldImageUrl;
             }
         
                 // Update Firestore with the new image URL and file name
+                const updatedProfileData = profileData ? { ...profileData } : {};
+
+                // Update Firestore with the new image URL and file name
                 const profileRef = doc(db, "profile", "1234");
                 await updateDoc(profileRef, {
+                    ...updatedProfileData,
                     profilePicture: imageUrl, // Store the image URL
                     profilePictureName: fileName, // Store the file name
                 });
@@ -206,7 +210,7 @@ function Profile() {
         const canvas = cropper.getCroppedCanvas();
         if (canvas) {
           const croppedImageUrl = canvas.toDataURL(); // Get cropped image as a Data URL
-          setCroppedImage(croppedImageUrl); // Update profile picture
+          /* setCroppedImage(croppedImageUrl); */ // Update profile picture
           profileImageRef.current.src = croppedImageUrl; // Set directly
         }
         // Close the modal
@@ -219,11 +223,11 @@ function Profile() {
     };
 
   
-    const handleUpdatePicture = () => {
+/*     const handleUpdatePicture = () => {
       // Here you can add cropping functionality if needed
       const newImageSrc = imageRef.current.src; // Assume the new image is set
       setCroppedImage(newImageSrc);
-    };
+    }; */
   return (
     <div className="main-container">
         <div className="pd-ltr-20 xs-pd-20-10">
@@ -242,25 +246,25 @@ function Profile() {
                                 <img ref={profileImageRef} src={oldImageUrl} alt="Profile" className="avatar-photo" style={{height:"150px",width:"150px", borderRadius:100}} />
 
                                 {/* Bootstrap Modal */}
-                                <div className="modal fade" id="modal" tabIndex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                                {/* <div className="modal fade" id="modal" tabIndex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
                                     <div className="modal-dialog modal-dialog-centered" role="document">
-                                    <div className="modal-content">
-                                        <div className="modal-body pd-5">
-                                        <div className="img-container">
-                                            <img ref={imageRef} id="image" src="vendors/images/photo2.jpg" alt="To Crop" />
-                                        </div>
-                                        </div>
-                                        <div className="modal-footer">
-                                        <button onClick={handleUpdatePicture} className="btn btn-primary" data-bs-dismiss="modal">
-                                            Update
-                                        </button>
-                                        <button type="button" className="btn btn-default" data-bs-dismiss="modal">
-                                            Close
-                                        </button>
+                                        <div className="modal-content">
+                                            <div className="modal-body pd-5">
+                                                <div className="img-container">
+                                                    <img ref={imageRef} id="image" src="vendors/images/photo2.jpg" alt="To Crop" />
+                                                </div>
+                                            </div>
+                                            <div className="modal-footer">
+                                                <button onClick={handleUpdatePicture} className="btn btn-primary" data-bs-dismiss="modal">
+                                                    Update
+                                                </button>
+                                                <button type="button" className="btn btn-default" data-bs-dismiss="modal">
+                                                    Close
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                    </div>
-                                </div>
+                                </div> */}
                                 </div>
                                 <h5 className="text-center h5 mb-0">{profileData1.fullName}</h5>
                                 {/* <p className="text-center text-muted font-14">

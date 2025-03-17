@@ -173,7 +173,7 @@ const DoctorReschedule = () => {
   .sort((a, b) => timeToMinutes(a.slot_start_time) - timeToMinutes(b.slot_start_time));
 
 const upcomingAppointments = appointments
-  .filter((appt) => appt.date > now)
+  .filter((appt) => formatDateString(appt.date) > formatDateString(now))
   .sort((a, b) => timeToMinutes(a.slot_start_time) - timeToMinutes(b.slot_start_time));
 
   return (

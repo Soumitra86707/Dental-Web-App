@@ -4,20 +4,17 @@ import "../../vendors/styles/icon-font.min.css";
 import "../../plugins/datatables/css/dataTables.bootstrap4.min.css";
 import "../../plugins/datatables/css/responsive.bootstrap4.min.css";
 import "../../vendors/styles/style.css";
-import $ from "jquery";
+
 import "bootstrap/dist/css/bootstrap.min.css";
-import { db, storage } from "../Config/FirebaseConfig";
+import { db} from "../Config/FirebaseConfig";
 /* import "./ViewReports.css"; */
-import { FaFileCsv, FaFileWord, FaFilePdf, FaFileExcel } from "react-icons/fa";
+import { FaFileWord, FaFilePdf, FaFileExcel } from "react-icons/fa";
 import React from "react";
-import { CSVLink } from "react-csv";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { Document, Packer, Paragraph, Table, TableCell, TableRow } from "docx";
 import { collection, query, orderBy, getDocs } from "firebase/firestore";
-import { ref, getDownloadURL } from "firebase/storage";
-import { FaDownload } from "react-icons/fa";
 import PatientForm from "./ConsultantPayment";
 
 
@@ -35,39 +32,20 @@ function ViewReport() {
   useEffect(() => {
     const fetchPatientsLabReports = async () => {
       try {
-        const PatientsLabReportsCollection = collection(db, "Patients Lab Reports");
-        const PatientsLabReportsQuery = query(PatientsLabReportsCollection, orderBy("uploadTime", "desc"));
+        const PatientsLabReportsCollection = collection(db, "consultantPayment");
+        const PatientsLabReportsQuery = query(PatientsLabReportsCollection, orderBy("createdTime", "desc"));
         const PatientsLabReportsSnapshot = await getDocs(PatientsLabReportsQuery);
   
         const reportsArray = PatientsLabReportsSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-          imageUrl: "", // Placeholder, will be updated later
+          
         }));
   
         setReportsData(reportsArray);
         setFilteredReports(reportsArray); // Initialize filtered data
   
-        // Fetch URLs after 3-4 seconds
-        setTimeout(async () => {
-          const updatedReports = await Promise.all(
-            reportsArray.map(async (report) => {
-              if (report.fileName) {
-                try {
-                  const fileRef = ref(storage, `Patients Lab Reports/${report.fileName}`);
-                  const imageUrl = await getDownloadURL(fileRef);
-                  return { ...report, imageUrl };
-                } catch (error) {
-                  console.warn(`Failed to get image URL for ${report.fileName}: ${error.message}`);
-                }
-              }
-              return report;
-            })
-          );
-  
-          setReportsData(updatedReports);
-          setFilteredReports(updatedReports);
-        }, 3000); // Delay of 3 seconds
+        
   
       } catch (error) {
         console.error("Error fetching reports: ", error.message);
@@ -84,11 +62,8 @@ function ViewReport() {
 
     let filtered = reportsData.filter(
       (report) =>
-        report.phoneNumber?.toString().includes(searchQuery) ||
-      report.patientName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      report.reportName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      report.reportDetails?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      report.patientId?.toLowerCase().includes(searchQuery.toLowerCase())
+        report.consultantPhoneNumber?.toString().includes(searchQuery) ||
+      report.consultantName?.toLowerCase().includes(searchQuery.toLowerCase()) 
     );
 
     
@@ -97,14 +72,13 @@ function ViewReport() {
       console.log("Filtering reports for date:", dateFilter);
   
       filtered = filtered.filter(report => {
-          console.log("Checking report:", report.examinationDate, report.reportDate);
-          console.log("Checking report1:",report.reportDate);
+
   
-          const examDate = new Date(report.examinationDate.replace(/_/g, "-")).toISOString().split("T")[0];
-          const repDate = new Date(report.reportDate).toISOString().split("T")[0];
-          const upDate = new Date(report.uploadDate).toISOString().split("T")[0];
+          
+          const repDate = new Date(report.paymentDate).toISOString().split("T")[0];
+          const upDate = new Date(report.createdDate).toISOString().split("T")[0];
   
-          return examDate === dateFilter || repDate === dateFilter || upDate === dateFilter ;
+          return  repDate === dateFilter || upDate === dateFilter ;
       });
   }
   
@@ -114,7 +88,7 @@ function ViewReport() {
     if (quickFilter !== "All") {
       const now = new Date();
       filtered = filtered.filter((report) => {
-        const uploadDate = new Date(report.uploadDate.replace(/_/g, "-"));
+        const uploadDate = new Date(report.createdDate.replace(/_/g, "-"));
         const timeDiff = now - uploadDate;
         
         switch (quickFilter) {
@@ -135,7 +109,7 @@ function ViewReport() {
         }
       });
     }
-    filtered.sort((a, b) => new Date(b.uploadDate.replace(/_/g, "-")) - new Date(a.uploadDate.replace(/_/g, "-")));
+    filtered.sort((a, b) => new Date(b.createdDate.replace(/_/g, "-")) - new Date(a.createdDate.replace(/_/g, "-")));
     setFilteredReports(filtered);
   };
 
@@ -152,18 +126,18 @@ function ViewReport() {
     // Add Serial Numbers
     const dataWithSerialNumbers = filteredReports.map((row, index) => ({
       "S.No": index + 1, // Serial number
-      "Patients Name": row.patientName,
-      "Report Name": row.reportName,
-      "Report Details": row.reportDetails,
-      "Examine Date": row.examinationDate,
-      "Examine Date": row.reportDate,
-      "Upload Date": row.uploadDate,
+      "Consultant Name": row.consultantName,
+      "Total Amount": row.totalAmount,
+      "Paid Amount": row.paidAmount,
+      "Due Amount": row.dueAmount,
+      "Issue Date": row.issueDate,
+      "Upload Date": row.createdDate,
     }));
   
     const worksheet = XLSX.utils.json_to_sheet(dataWithSerialNumbers); // Use modified data
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Filtered Payment History");
-    XLSX.writeFile(workbook, "Invoices_History.xlsx");
+    XLSX.writeFile(workbook, "Consultant_Payment_History.xlsx");
   };
   
 
@@ -171,22 +145,22 @@ function ViewReport() {
   // Export full table as PDF
   const exportToPDF = () => {
     const doc = new jsPDF();
-    doc.text("Invoices_History", 20, 10);
+    doc.text("Consultant_Payment_History", 20, 10);
   
     doc.autoTable({
-      head: [["S.No", "Patient Name", "Report Name", "Report Details", " Examine Date", "Report Date", "Upload Date"]], // Added "S.No"
+      head: [["S.No", "Consultant Name", "Total Amount", "Paid Amount", "Due Amount", "Issue Date", "Upload Date"]], // Added "S.No"
       body: filteredReports.map((row, index) => [
         index + 1, // Serial number
-        row.patientName,
-        row.reportName,
-        row.reportDetails,
-        row.examinationDate,
-        row.reportDate,
-        row.uploadDate,
+        row.consultantName,
+        row.totalAmount,
+        row.paidAmount,
+        row.dueAmount,
+        row.issueDate,
+        row.createdDate,
       ]),
     });
   
-    doc.save("Invoices_history.pdf");
+    doc.save("Consultant_Payment_History.pdf");
   };
   
   
@@ -197,12 +171,12 @@ function ViewReport() {
       sections: [
         {
           children: [
-            new Paragraph("Payment_History"),
+            new Paragraph("Consultant_Payment_History"),
             new Table({
               rows: [
                 // Table Header with Serial Number
                 new TableRow({
-                  children: ["S.No", "Patient Name", "Report Name", "Report Details", " Examine Date"," Report Date", "Upload Date"].map(
+                  children: ["S.No", "Consultant Name", "Total Amount", "Paid Amount", "Due Amount","Issue Date", "Upload Date"].map(
                     (header) => new TableCell({ children: [new Paragraph(header)] })
                   ),
                 }),
@@ -211,12 +185,12 @@ function ViewReport() {
                   new TableRow({
                     children: [
                       new TableCell({ children: [new Paragraph(String(index + 1))] }), // Serial Number
-                      new TableCell({ children: [new Paragraph(String(row.patientName))] }),
-                      new TableCell({ children: [new Paragraph(String(row.reportName))] }),
-                      new TableCell({ children: [new Paragraph(String(row.reportDetails))] }),
-                      new TableCell({ children: [new Paragraph(String(row.examinationDate))] }),
-                      new TableCell({ children: [new Paragraph(String(row.reportDate))] }),
-                      new TableCell({ children: [new Paragraph(String(row.uploadDate))] }),
+                      new TableCell({ children: [new Paragraph(String(row.consultantName))] }),
+                      new TableCell({ children: [new Paragraph(String(row.totalAmount))] }),
+                      new TableCell({ children: [new Paragraph(String(row.paidAmount))] }),
+                      new TableCell({ children: [new Paragraph(String(row.dueAmount))] }),
+                      new TableCell({ children: [new Paragraph(String(row.issueDate))] }),
+                      new TableCell({ children: [new Paragraph(String(row.createdDate))] }),
                     ],
                   })
                 ),
@@ -232,38 +206,13 @@ function ViewReport() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "Reports_history.docx";
+    a.download = "Consultant_Payment_history.docx";
     a.click();
     URL.revokeObjectURL(url);
   };
 
 
-  const handleDownload = async (PatientsLabReport) => {
-    try {
-        if (!PatientsLabReport || !PatientsLabReport.fileName) {
-            alert("Invalid file data.");
-            return;
-        }
-
-        const fileRef = ref(storage, `Patients Lab Reports/${PatientsLabReport.fileName}`);
-        const downloadUrl = await getDownloadURL(fileRef);
-
-        // Option 1: Download the file
-       /*  const link = document.createElement("a");
-        link.href = downloadUrl;
-        link.download = PatientsLabReport.fileName;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link); */
-
-        // Option 2: Open file in a new tab (Remove if not needed)
-         window.open(downloadUrl, "_blank");
-
-    } catch (error) {
-        console.error("Error downloading file:", error.message);
-        alert("Failed to download file. Error: " + error.message);
-    }
-};
+  
 
 const handleEdit = (id) => {
   setSelectedId(id); // Store the selected ID
@@ -286,8 +235,8 @@ const handleEdit = (id) => {
                   padding: "10px",
                 }}
               >
-                <div style={{ textAlign: "left", fontSize: "25px", fontWeight: "bold" }}>Reports History</div>
-                <div className=" btn text-primary weight-500 hover:text-white " style={{ textAlign: "right", fontSize: "18px", fontWeight: "bold",cursor:"pointer"  }} onClick={() => setIsVisible(!isVisible)}>{isVisible ? "Close Upload Report Form" : "Open Upload Report Form"}</div>
+                <div style={{ textAlign: "left", fontSize: "25px", fontWeight: "bold" }}>Consultant Payment History</div>
+                <div className=" btn text-primary weight-500 hover:text-white " style={{ textAlign: "right", fontSize: "18px", fontWeight: "bold",cursor:"pointer"  }} onClick={() => setIsVisible(!isVisible)}>{isVisible ? "Close Consultant Payment Form" : "Consultant Payment Form"}</div>
                         
               </div>
               <div
@@ -322,46 +271,48 @@ const handleEdit = (id) => {
               </div>
             </div>
           
-            <table className="data-table table nowrap table-striped ReportTable">
-              <thead>
-                <tr>
-                  <th className="table-plus">Name</th>
-                  <th>Report Name</th>
-                  <th>Report Details</th>
-                  <th>Report Date</th>
-                  <th>Examine Date</th>
-                  <th className="datatable-nosort">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-              {filteredReports.length === 0 ? (
+            <table className="data-table table nowrap table-striped InvoicesTable">
+                <thead>
+                  <tr>
+                    
+                    <th className="table-plus">Consultant Name</th>
+                    <th>Total Amount</th>
+                    <th>Amount Paid</th>
+                    <th>Due Amount</th>
+                    <th>Issue Date</th>
+                    
+                    <th className="datatable-nosort">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {filteredReports.length === 0 ? (
                   <tr>
                     <td colSpan="7" style={{ textAlign: "center" }}>No data found</td>
                   </tr>
                 ) : (
-                filteredReports.map((report) => (
-                  <tr key={report.id}>
-                    <td className="table-plus">{report.patientName || ""}</td>
-                    <td>{report.reportName || ""}</td>
-                    <td>{report.reportDetails || ""}</td>
-                    <td>{report.reportDate}</td>
-                    <td>{report.examinationDate}</td>
-                    <td>
-                      <div className="table-actions">
-                          <a  data-color="#265ed7" >
-                          <i className="icon-copy dw dw-edit2" onClick={() => handleEdit(report.id)}></i>
-                          </a>
-                          <a  data-color="#e95959" onClick={() => handleDownload(report)}>
-                            <i className="fa fa-download"></i>
-
-                          </a>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-              </tbody>
-            </table>
+                  filteredReports.map((report) => (
+                    <tr key={report.id}>
+                      <td className="table-plus">{report.consultantName}</td>
+                      <td>{report.totalAmount}</td>
+                      <td>{report.paidAmount}</td>
+                      <td>{report.dueAmount}</td>
+                      <td>{report.issueDate}</td>
+                      <td>
+                        <div className="table-actions" style={{display:"flex" , gap:"20px"}}>
+                            <div  data-color="#265ed7"   onClick={(e) => {
+                                e.preventDefault(); // Prevent page jump
+                                handleEdit(report.PaymentId);
+                              }}>
+                              <i className="icon-copy dw dw-edit2" ></i>
+                            </div>
+                            
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+                </tbody>
+              </table>
             <div 
                         style={{ 
                             marginTop: "15px", 

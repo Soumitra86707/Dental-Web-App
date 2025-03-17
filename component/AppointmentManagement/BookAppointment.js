@@ -6,10 +6,10 @@ import "../../plugins/datatables/css/dataTables.bootstrap4.min.css";
 import "../../plugins/datatables/css/responsive.bootstrap4.min.css";
 import "../../vendors/styles/style.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import FetchSlots from "./Slots";
+/* import FetchSlots from "./Slots"; */
 import Calendar from "react-calendar";
 import { db } from "../Config/FirebaseConfig"; // Firestore instance
-import { collection, query, where,orderBy, getDocs, addDoc ,setDoc, arrayUnion } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc ,setDoc, arrayUnion } from "firebase/firestore";
 import moment from "moment-timezone";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -20,11 +20,7 @@ function BookAppointment() {
   const [userAge ,setUserAge] = useState("");
   const [userGender ,setUserGender] = useState("");
   const [userEmail ,setUserEmail] = useState("");
-  const [reason, setReason] = useState("");
-  const [customReason, setCustomReason] = useState("");
   const [selectedIssues, setSelectedIssues] = useState([]);
-  const [bloodTransfusion, setBloodTransfusion] = useState("");
-  const [transfusionDate, setTransfusionDate] = useState("");
   const [matchingPatients, setMatchingPatients] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState("");
   const [userType, setUserType] = useState("patient");
@@ -32,7 +28,7 @@ function BookAppointment() {
   const [date, setDate] = useState(new Date());
   const [slotData, setSlotData] = useState([]);
   const [selectedSlots, setSelectedSlots] = useState([]);
-  const [selectedSlot, setSelectedSlot] = useState(userType === "doctor" ? [] : null);
+/*   const [selectedSlot, setSelectedSlot] = useState(userType === "doctor" ? [] : null); */
   const navigate = useNavigate();
   const allSlots = [
     "10:30",
@@ -167,13 +163,9 @@ function BookAppointment() {
 
 
 const handleCustomPatientName = (e) => {
-  const customName = e.target.value;
+  
   setCurrentData({ ...currentData, custompatientsName: e.target.value })
-/*   setFormData((prev) => [
-    { ...prev[0], custompatientsName: customName },
-    prev[1],
-    prev[2]
-  ]); */
+
 };
 const patientsCollection = collection(db, "Patient");
 
@@ -243,10 +235,7 @@ const handlePhoneChange = async (e) => {
     alert("Form Submitted Successfully!");
   }; */
   const handleSubmit = async () => {
-    /* if (!selectedSlot || (Array.isArray(selectedSlot) && selectedSlot.length === 0)) {
-      alert("Please select at least one slot!");
-      return;
-    } */
+
 
 
 
@@ -254,8 +243,7 @@ const handlePhoneChange = async (e) => {
     try {
       const appointment_date = moment(date).tz("Asia/Kolkata").format("YYYY_MM_DD");
   
-      // Ensure selectedSlot is always an array
-      const slotsArray = Array.isArray(selectedSlot) ? selectedSlot : [selectedSlot];
+      
       let patientsPhone = formData[0].patientsPhone;
       let patientsName = formData[0].patientsName === "other" ? formData[0].custompatientsName : formData[0].patientsName;
       const reasonForVisit = 
@@ -489,7 +477,7 @@ const handlePhoneChange = async (e) => {
       setUserAge("");
       setUserEmail("");
       setUserGender("");
-      /* setSelectedSlot(userType === "doctor" ? [] : null); */
+      
     } catch (error) {
       console.error("Error booking appointment:", error);
       alert("Failed to book appointment. Please try again.");

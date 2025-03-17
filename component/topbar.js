@@ -14,7 +14,7 @@ import {useNavigate} from 'react-router-dom';
 
 
 function Topbar({ onLogout }) {
-    const [isOpen, setIsOpen] = useState(false);
+     const [isOpen, setIsOpen] = useState(false); 
     const [isOpenProfile, setIsOpenProfile] = useState(false);
     const [openReport, setOpenReport] = useState(false);
     const [openAppointment, setOpenAppointment] = useState(false);
@@ -29,7 +29,7 @@ function Topbar({ onLogout }) {
     useEffect(() => {
         const handleClickOutside = (event) => {
           if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-            setIsOpen(false);
+            /* setIsOpen(false); */
           }
         };
     
@@ -138,7 +138,7 @@ return (
                 </div>
             </div>
             <div className="header-right" style={{ paddingRight: "40px" }}>
-                {/* <div className="user-notification" ref={dropdownRef}>
+                 <div className="user-notification" ref={dropdownRef}>
                     <div className="dropdown">
                         <a
                         className="dropdown-toggle no-arrow"
@@ -154,18 +154,18 @@ return (
                         <div className="notification-list mx-h-350 customscroll">
                             <ul>
                             <li>
-                                <h1>Soumitra</h1>
+                                <p>FollowUp Date ,PatientsName, Patients PhoneNumber</p>
                             </li>
                             </ul>
                         </div>
                         </div>
                     </div>
-                </div> */}
+                </div> 
                 <div className="user-info-dropdown" onClick={() => setIsOpenProfile(!isOpenProfile)}>
                         <div className="dropdown">
                             <a className="dropdown-toggle" role="button">
                             <span className="user-icon" >
-                                <img src={oldImageUrl} alt="myIcon" />
+                                <img src={oldImageUrl} alt="myIcon" style={{height:"50px", width:"50px"}} />
                             </span>
                             <span className="user-name"style={{ paddingLeft: "10px" ,fontSize:"20px",fontWeight:"bold" , color:"#34949C"}}  >{doctorNane}</span>
                             </a>
@@ -271,12 +271,11 @@ return (
                             className={`submenu ${openConsultant ? "show" : ""}`}
                             style={{ display: openConsultant ? "block" : "none" }}
                             >
-                                <li><Link to="/Consultant/View" className="dropdown-toggle text-decoration-none no-arrow">View </Link></li>
+{/*                                 <li><Link to="/Consultant/View" className="dropdown-toggle text-decoration-none no-arrow">View </Link></li>
                                 <li><Link to="/Consultant/AddConsultant" className="dropdown-toggle text-decoration-none no-arrow">Add</Link></li>
                                 <li><Link to="/Consultant/BookAppointment" className="dropdown-toggle text-decoration-none no-arrow">Book</Link></li>
                                 <li><Link to="/Consultant/RescheduleAppointment" className="dropdown-toggle text-decoration-none no-arrow">Reschedule</Link></li>
-                                <li><Link to="/Consultant/CancelAppointment" className="dropdown-toggle text-decoration-none no-arrow">Cancel</Link></li>
-                                <li><Link to="/Consultant/Payment" className="dropdown-toggle text-decoration-none no-arrow">Payment</Link></li>
+                                <li><Link to="/Consultant/CancelAppointment" className="dropdown-toggle text-decoration-none no-arrow">Cancel</Link></li> */}
                                 <li><Link to="/Consultant/PaymentHistory" className="dropdown-toggle text-decoration-none no-arrow">Payment History</Link></li>
                                 
                             </ul>

@@ -35,7 +35,6 @@ const DoctorCancel = () => {
 
     fetchAppointments();
   }, []);
-
   useEffect(() => {
     if (selectedDate && bookedSlotsData.length > 0) {
       const formattedDate = selectedDate.toLocaleDateString("en-CA").replace(/-/g, "_");
@@ -43,20 +42,23 @@ const DoctorCancel = () => {
       
       const selectedData = bookedSlotsData.filter((item) => {
         const appointmentDate = new Date(item.appointment_date.replace(/_/g, "-"));
-        const appointmentTime = new Date(
-          `${appointmentDate.toDateString()} ${item.slot_start_time}`
-        );
+        const appointmentTime = new Date(`${appointmentDate.toDateString()} ${item.slot_start_time}`);
         
-        return (
-          item.appointment_date === formattedDate &&
-          appointmentTime >= currentTime
-        );
+        return item.appointment_date === formattedDate && appointmentTime >= currentTime;
       });
-
+  
+      // Sort appointments by slot_start_time
+      selectedData.sort((a, b) => {
+        const timeA = new Date(`1970-01-01T${a.slot_start_time}`);
+        const timeB = new Date(`1970-01-01T${b.slot_start_time}`);
+        return timeA - timeB;
+      });
+  
       setBookedSlots(selectedData);
       setSelectedSlots([]);
     }
   }, [selectedDate, bookedSlotsData]);
+  
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
