@@ -203,7 +203,7 @@ const handlePhoneChange = async (e) => {
     );
   };
 
-  const steps = ["Basic Information", "Medical History", "Slot Booking"];
+  const steps = [ "Slot Booking", "Basic Information", "Medical History"];
 
   const nextStep = () => {
     let newData = [...formData];
@@ -629,7 +629,38 @@ const handlePhoneChange = async (e) => {
             {/* Step Forms */}
             <div className="wizard-content p-4  " >
                 <form >
-              {currentStep === 0 && (
+                {currentStep === 0 && (
+                    <section>
+                    <hr />
+                    <div className="row">
+                      <div className="col-md-6 col-sm-12">
+                        <div className="calendar-container" style={{ paddingTop: "60px" }}>
+                        <Calendar onChange={handleDateChange} value={date} minDate={new Date()} />
+                        </div>
+                      </div>
+                      <div className="col-md-6 col-sm-12">
+                        <h3>Available Slots</h3>
+                        <div className="slots">
+                          {remainingSlots.length > 0 ? (
+                            remainingSlots.map((slot, index) => (
+                              <button
+                                type="button"
+                                key={index}
+                                className={`slot ${selectedSlots.includes(slot) ? "selected" : ""}`}
+                                onClick={() => handleSlotSelection(slot)}
+                              >
+                                {slot}
+                              </button>
+                            ))
+                          ) : (
+                            <p style={{ marginLeft: "270px", width: "250px" }}>No available slots for this date.</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                </section>
+                )}
+              {currentStep === 1 && (
                 <section>
                     <hr />
                     <div className="row">
@@ -659,7 +690,6 @@ const handlePhoneChange = async (e) => {
         }}
         onChange={handlePhoneChange}
         disabled={userType === "doctor"}
-        style={{cursor:"pointer"}}
       />
     </div>
   </div>
@@ -673,7 +703,6 @@ const handlePhoneChange = async (e) => {
           value={selectedPatient}
           onChange={handlePatientSelect}
           disabled={userType === "doctor"}
-          style={{cursor:"pointer"}}
         >
           <option value="">Select a Patient</option>
           {matchingPatients.map((name, index) => (
@@ -712,7 +741,6 @@ const handlePhoneChange = async (e) => {
           value={currentData.custompatientsName}
           onChange={handleCustomPatientName}
           disabled={userType === "doctor"}
-          style={{cursor:"pointer"}}
         />
       </div>
     </div>
@@ -746,7 +774,6 @@ const handlePhoneChange = async (e) => {
                                 setUserGender(e.target.value); // Correct state update
                               }}
                               disabled={userType === "doctor"}
-                              style={{cursor:"pointer"}}
                             >
                               <option value="">Select Gender</option>
                               <option value="male">Male</option>
@@ -781,7 +808,6 @@ const handlePhoneChange = async (e) => {
                             value={currentData.reasonForVisit}
                             onChange={(e) => setCurrentData({ ...currentData, reasonForVisit: e.target.value })}
                             disabled={userType === "doctor"}
-                            style={{cursor:"pointer"}}
                           >
                             <option value="">Select Reason</option>
                             <option value="consultation">Consultation</option>
@@ -802,7 +828,6 @@ const handlePhoneChange = async (e) => {
                                 value={currentData.customReasonForVisit}
                                 onChange={(e) => setCurrentData({ ...currentData, customReasonForVisit: e.target.value })}
                                 disabled={userType === "doctor"}
-                                style={{cursor:"pointer"}}
                               />
                             </div>
                           </div>
@@ -829,9 +854,8 @@ const handlePhoneChange = async (e) => {
                                         checked={selectedIssues.includes(issue)}
                                         onChange={() => handleCheckboxChange(issue)}
                                         disabled={userType === "doctor"}
-                                        style={{cursor:"pointer"}}
                                     />
-                                    <label className="form-check-label" htmlFor={`issue-${index}`} style={{cursor:"pointer"}}>
+                                    <label className="form-check-label" htmlFor={`issue-${index}`}>
                                         {issue}
                                     </label>
                                     </div>
@@ -849,7 +873,7 @@ const handlePhoneChange = async (e) => {
                 </section>
               )}
 
-              {currentStep === 1 && (
+              {currentStep === 2 && (
                 <section>
                     <hr />
                   <div className="row">
@@ -861,7 +885,6 @@ const handlePhoneChange = async (e) => {
                               value={currentData.isBloodTest}
                               onChange={(e) => setCurrentData({ ...currentData, isBloodTest: e.target.value})}
                               disabled={userType === "doctor"}
-                              style={{cursor:"pointer"}}
                             >
                               <option value="">Select an option</option>
                               <option value="yes">Yes</option>
@@ -892,7 +915,7 @@ const handlePhoneChange = async (e) => {
                                 <select className="form-control" 
                                 value={currentData.isPregnant} 
                                 onChange={(e) => setCurrentData({ ...currentData, isPregnant: e.target.value })}
-                                disabled={userType === "doctor"} style={{cursor:"pointer"}} >
+                                disabled={userType === "doctor"} >
                                 <option value="">Select Option</option>
                                 <option value="yes">Yes</option>
                                 <option value="no">No</option>
@@ -906,7 +929,7 @@ const handlePhoneChange = async (e) => {
                                 <select className="form-control"
                                 value={currentData.isNursing} 
                                 onChange={(e) => setCurrentData({ ...currentData, isNursing: e.target.value })}
-                                disabled={userType === "doctor"} style={{cursor:"pointer"}}
+                                disabled={userType === "doctor"}
                                 >
                                 <option value="">Select Option</option>
                                 <option value="yes">Yes</option>
@@ -920,7 +943,7 @@ const handlePhoneChange = async (e) => {
                                 <select className="form-control"
                                 value={currentData.isTakingBirthControlPill} 
                                 onChange={(e) => setCurrentData({ ...currentData, isTakingBirthControlPill: e.target.value })}
-                                disabled={userType === "doctor"} style={{cursor:"pointer"}}
+                                disabled={userType === "doctor"}
                                 >
                                 <option value="">Select Option</option>
                                 <option value="yes">Yes</option>
@@ -944,9 +967,9 @@ const handlePhoneChange = async (e) => {
                                                         id={`condition-${index}`}
                                                         checked={medicalHistory.includes(condition)}
                                                         onChange={() => handleCheckboxChange1(condition)}
-                                                        disabled={userType === "doctor"} style={{cursor:"pointer"}}
+                                                        disabled={userType === "doctor"}
                                                     />
-                                                    <label className="form-check-label" htmlFor={`condition-${index}`} style={{cursor:"pointer"}}>
+                                                    <label className="form-check-label" htmlFor={`condition-${index}`}>
                                                         {condition}
                                                     </label>
                                                 </div>
@@ -1002,37 +1025,7 @@ const handlePhoneChange = async (e) => {
                 </section>
               )}
 
-              {currentStep === 2 && (
-                <section>
-                    <hr />
-                    <div className="row">
-                      <div className="col-md-6 col-sm-12">
-                        <div className="calendar-container" style={{ paddingTop: "60px" }}>
-                        <Calendar onChange={handleDateChange} value={date} minDate={new Date()} />
-                        </div>
-                      </div>
-                      <div className="col-md-6 col-sm-12">
-                        <h3>Available Slots</h3>
-                        <div className="slots">
-                          {remainingSlots.length > 0 ? (
-                            remainingSlots.map((slot, index) => (
-                              <button
-                                type="button"
-                                key={index}
-                                className={`slot ${selectedSlots.includes(slot) ? "selected" : ""}`}
-                                onClick={() => handleSlotSelection(slot)}
-                              >
-                                {slot}
-                              </button>
-                            ))
-                          ) : (
-                            <p style={{ marginLeft: "270px", width: "250px" }}>No available slots for this date.</p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                </section>
-              )}
+              
 
               
               </form>

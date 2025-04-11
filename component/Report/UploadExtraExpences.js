@@ -8,7 +8,8 @@ import "react-toastify/dist/ReactToastify.css";
 
 const PatientForm = ({ id, setIsVisible }) => {
   const [consultants, setConsultants] = useState([]);
-  const [selectedConsultant, setSelectedConsultant] = useState("");
+  const [extraExpenses, setExtraExpenses] = useState("");
+  
   const [totalAmount, setTotalAmount] = useState("");
   const [paidAmount, setPaidAmount] = useState("");
   const [dueAmount, setDueAmount] = useState("");
@@ -16,35 +17,28 @@ const PatientForm = ({ id, setIsVisible }) => {
   const [formData, setFormData] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchConsultants = async () => {
-      const querySnapshot = await getDocs(collection(db, "consultants"));
-      const consultantsList = querySnapshot.docs.map(doc => ({ id: doc.id, name: doc.data().fname + " " + doc.data().lname}));
-      setConsultants(consultantsList);
-    };
-
-    fetchConsultants();
-  }, []);
+console.log("id asche na :",id);
 
   useEffect(() => {
     if (id) {
+      console.log("id asche na 1:",id);
       const fetchFormData = async () => {
         const q = query(
-          collection(db, "consultantPayment"),
+          collection(db, "ExtraExpenses"),
           where("PaymentId", "==", id) // Look for PaymentId based on the passed `id`
         );
 
         const querySnapshot = await getDocs(q);
         if (!querySnapshot.empty) {
           const data = querySnapshot.docs[0].data(); // Get the first document
-          setSelectedConsultant(data.consultantName);
+          setExtraExpenses(data.extraExpenses);
           setTotalAmount(data.totalAmount);
           setPaidAmount(data.paidAmount);
           setDueAmount(data.dueAmount);
           setIssueDate(data.issueDate);
           setFormData(data); // Store the fetched data in formData
         } else {
-          console.log("No matching documents found.");
+          console.log("No matching documents foundby that passed id.");
         }
       };
 
@@ -86,10 +80,25 @@ const PatientForm = ({ id, setIsVisible }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    const PaymentId = id || generateAppointmentId();  // Use provided ID or generate new one
-    const formattedDate = formatDate(new Date());
+    const PaymentId = id || generateAppointmentId(); // Use provided ID or generate new one
+    const formattedDate = formatDate(new Date()); // YYYY_MM_DD
+    const currentMonth = formattedDate.split("_").slice(0, 2).join("_"); // YYYY_MM
+  
+    // Step 1: Get the count of existing expenses for the same extraExpense type
+    const expenseQuery = query(
+        collection(db, "ExtraExpenses"),
+        where("extraExpenses", "==", extraExpenses), // First filter by extraExpenses
+        where("createdDate", ">=", `${currentMonth}_01`),
+        where("createdDate", "<=", `${currentMonth}_31`)
+      );
+  
+    const expenseSnapshot = await getDocs(expenseQuery);
+    const billCount = expenseSnapshot.size; // Get the number of existing bills of this type
+    const billNumber = `Bill ${billCount + 1}`; // Generate new bill number
+  
+    // Step 2: Prepare payment data with the generated bill number
     const paymentData = {
-      consultantName: selectedConsultant,
+      extraExpenses,
       totalAmount,
       paidAmount,
       dueAmount,
@@ -98,109 +107,105 @@ const PatientForm = ({ id, setIsVisible }) => {
       createdTime: new Date().toLocaleTimeString(),
       paymentDate: issueDate,
       patientId: id || "new",
-      paymentName: selectedConsultant,
+      paymentName: "",
       PaymentId,
+      billNumber, // Store the generated bill number
     };
   
-    // If `id` is provided (which means you're updating), find the document by PaymentId
+    // Step 3: Update or add expense record in Firestore
     if (id) {
-      // Query the `consultantPayment` collection where PaymentId matches
-      const q = query(collection(db, "consultantPayment"), where("PaymentId", "==", id));
+      const q = query(collection(db, "ExtraExpenses"), where("PaymentId", "==", id));
       const querySnapshot = await getDocs(q);
   
       if (!querySnapshot.empty) {
-        const docRef = querySnapshot.docs[0].ref;  // Get the document reference from the query result
-        // Now that we have the document reference, update it
+        const docRef = querySnapshot.docs[0].ref;
         await updateDoc(docRef, paymentData);
-        console.log("Document updated successfully!");
+        console.log("Expense document updated successfully!");
       } else {
-        console.log("No document found with this PaymentId.");
+        console.log("No expense document found with this PaymentId.");
       }
     } else {
-      // If no `id`, create a new document
-      const docRef = await addDoc(collection(db, "consultantPayment"), paymentData);
-      paymentData.PaymentId = docRef.id;  // Save the generated doc ID as PaymentId
-      console.log("New document created with ID:", docRef.id);
+      const docRef = await addDoc(collection(db, "ExtraExpenses"), paymentData);
+      paymentData.PaymentId = docRef.id; // Save generated doc ID as PaymentId
+      console.log("New expense document created with ID:", docRef.id);
     }
   
-    // Handle earning data as well
+    // Step 4: Handle Earning Data
     const earningData = {
-      paymentType: "Consultant",
-      paymentTo: selectedConsultant,
+      paymentType: extraExpenses,
+      paymentTo: extraExpenses,
       paymentBy: "Dr. Nithya",
       TotalAmount: totalAmount,
       PaidAmount: paidAmount,
       dueAmount: dueAmount,
-      createdAt : formattedDate,
+      createdAt: formattedDate,
       createdTime: new Date().toLocaleTimeString(),
       paymentDate: issueDate,
       patient_id: id || "new",
-      phoneNumber: selectedConsultant,
-      invoiceId :PaymentId,
+      phoneNumber: "",
+      invoiceId: PaymentId,
     };
-    if (id) {
-      // Query the `consultantPayment` collection where PaymentId matches
-      const q = query(collection(db, "Earning"), where("invoiceId", "==", id));
-      const querySnapshot = await getDocs(q);
   
-      if (!querySnapshot.empty) {
-        const docRef = querySnapshot.docs[0].ref;  // Get the document reference from the query result
-        // Now that we have the document reference, update it
+    if (id) {
+      const earningQuery = query(collection(db, "Earning"), where("invoiceId", "==", id));
+      const earningSnapshot = await getDocs(earningQuery);
+  
+      if (!earningSnapshot.empty) {
+        const docRef = earningSnapshot.docs[0].ref;
         await updateDoc(docRef, earningData);
-        console.log("Earning Document updated successfully!");
+        console.log("Earning document updated successfully!");
       } else {
-        console.log("No document found with this PaymentId.");
+        console.log("No earning document found with this PaymentId.");
       }
     } else {
-      // If no `id`, create a new document
-      const docRef = await addDoc(collection(db, "Earning"),  earningData);
-      earningData.PaymentId = docRef.id;  // Save the generated doc ID as PaymentId
-      console.log("New document created with ID:", docRef.id);
+      const docRef = await addDoc(collection(db, "Earning"), earningData);
+      earningData.PaymentId = docRef.id;
+      console.log("New earning document created with ID:", docRef.id);
     }
-
   
-     setIsVisible(false); // Close the form
-     toast.success("Payment Successfully ! Redirecting...", {
-              autoClose: 3000, // 10 seconds
-              className: "custom-toast",
-              closeOnClick: false,
-              draggable: false,
-              progress: undefined,
-            });
-        
-            // Redirect to dashboard after 10 seconds
-            setTimeout(() => {
-              navigate(0);
-            }, 2000);
+    // Step 5: Close the form and show success message
+    setIsVisible(false);
+    toast.success("Payment Successfully! Redirecting...", {
+      autoClose: 3000,
+      className: "custom-toast",
+      closeOnClick: false,
+      draggable: false,
+      progress: undefined,
+    });
+  
+    // Refresh the page after 2 seconds
+    setTimeout(() => {
+      navigate(0);
+    }, 2000);
   };
-  
+      
 
   return (
     <div className="card-box xs-pd-20-10 pd-ltr-20" style={{ marginBottom: "10px" }}>
       <form onSubmit={handleSubmit}>
-        <h3>Consultant Payment Form</h3>
+        <h3>Extra Expenses Payment Form</h3>
         <div className="row">
-          <div className="col-md-4 col-sm-12">
+        <div className="col-md-4 col-sm-12">
             <div className="form-group">
-              <label>Consultant Payment</label>
-              <select className="form-control" value={selectedConsultant} onChange={(e) => setSelectedConsultant(e.target.value)}>
-                <option value="">Select Consultant</option>
-                {consultants.map((consultant) => (
-                  <option key={consultant.id} value={consultant.name}>{consultant.name}</option>
-                ))}
+              <label>Extra Expenses</label>
+              <select className="form-control" value={extraExpenses} onChange={(e) => setExtraExpenses(e.target.value)} required>
+                <option value="">Select Expense Type</option>
+                <option value="water_bill">Water Bill</option>
+                <option value="electric_bill">Electric Bill</option>
+                <option value="personal_bill">Personal Bill</option>
               </select>
             </div>
           </div>
           <div className="col-md-4 col-sm-12">
             <div className="form-group">
               <label>Total Amount</label>
-              <input type="text" className="form-control" value={totalAmount} onChange={handleTotalAmountChange} />
+              <input type="text" className="form-control" value={totalAmount} onChange={handleTotalAmountChange} required/>
             </div>
           </div>
           <div className="col-md-4 col-sm-12">
             <div className="form-group">
               <label>Paid Amount</label>
-              <input type="text" className="form-control" value={paidAmount} onChange={handlePaidAmountChange} />
+              <input type="text" className="form-control" value={paidAmount} onChange={handlePaidAmountChange} required/>
             </div>
           </div>
         </div>

@@ -1,12 +1,12 @@
 import React, { useState, useEffect,useRef } from 'react';
 import {  getAuth, sendPasswordResetEmail } from "firebase/auth";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc ,doc, getDoc } from "firebase/firestore";
 import  {db}  from "../Config/FirebaseConfig"; // Import your Firebase config file
 import logo from './images/d.jpg';
-
+import Calendar from "react-calendar";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { toast } from "react-toastify";
-
+import moment from "moment-timezone";
 import './landingpage.css'; // Custom CSS for animations and layout
 import slide1 from './images/5.png'; // Replace with actual images
 
@@ -70,7 +70,98 @@ const Landingpage = ({ onLogin }) => {
       const [message, setMessage] = useState("");
       const [isOtpVerified, setIsOtpVerified] = useState(false);
       const navigate = useNavigate();
-    
+        const [date, setDate] = useState(new Date());
+        const [slotData, setSlotData] = useState([]);
+        const [selectedSlots, setSelectedSlots] = useState([]);
+        const [profiles, setProfiles] = useState([]);
+        const allSlots = [
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30",
+          "17:00",
+          "17:30",
+          "18:00",
+          "18:30",
+          "19:00",
+        ];
+        useEffect(() => {
+          const fetchAppointments = async () => {
+            try {
+              const formattedDate = moment(date)
+                .tz("Asia/Kolkata")
+                .format("YYYY_MM_DD");
+              const appointmentsQuery = query(
+                collection(db, "Appointments"),
+                where("appointment_date", "==", formattedDate)
+              );
+              const appointmentsSnapshot = await getDocs(appointmentsQuery);
+      
+              const bookedSlots = appointmentsSnapshot.docs.map((doc) => ({
+                slot_start_time: doc.data().slot_start_time,
+                slot_no: doc.data().slot_no,
+                patient_name: doc.data().patient_name,
+              }));
+              setSlotData(bookedSlots);
+            } catch (error) {
+              console.error("Error fetching appointments:", error);
+            }
+          };
+
+          
+        
+          fetchAppointments();
+
+          
+        }, [date]);
+        useEffect(() => {
+          const fetchProfile = async () => {
+              try {
+                  const profileRef = doc(db, "profile", "1234"); // Your document path
+                  const snapshot = await getDoc(profileRef);
+  
+                  if (snapshot.exists()) {
+                      const profileData = {
+                          id: snapshot.id,
+                          ...snapshot.data(),
+                      };
+                      setProfiles(profileData);
+                      console.log("Fetched Profile Data:", profileData); // ✅ Log the full JSON
+                      console.log("Mobile Number:", profiles.phone); // ✅ Access property
+                  } else {
+                      console.log("No such document!");
+                  }
+              } catch (error) {
+                  console.error("Error fetching profile:", error);
+              }
+          };
+  
+          fetchProfile();
+      }, []);
+  
+   
+
+        const remainingSlots = allSlots.filter((slot) => {
+          const currentTime = moment().tz("Asia/Kolkata");
+          const selectedDate = moment(date).tz("Asia/Kolkata");
+          const slotTime = moment(slot, "HH:mm").tz("Asia/Kolkata");
+      
+          // Exclude booked slots
+          if (slotData.some((s) => s.slot_start_time === slot)) return false;
+      
+          // Exclude past slots for today
+          if (selectedDate.isSame(currentTime, "day") && slotTime.isBefore(currentTime)) {
+            return false;
+          }
+      
+          return true;
+        });
+          const handleSlotSelection = (slot) => {
+            setSelectedSlots((prev) =>
+              prev.includes(slot) ? prev.filter((s) => s !== slot) : [...prev, slot]
+            );
+          };
 
     // 🔹 Function to send reset password email
     const handleLogin = async (e) => {
@@ -417,15 +508,15 @@ const Landingpage = ({ onLogin }) => {
         <a href="#services-section" className="landingpage-login-icon">
           SERVICES
         </a>
-{/*         <a href="#services-section" className="landingpage-login-icon">
-          BOOK APPOINTMENT
-        </a> */}
-        <a href="#app-section" className="landingpage-login-icon">
-          CLADENT APP
+        <a href="#free-slot-sec" className="landingpage-login-icon">
+          CHECK FREE SLOTS
         </a>
-{/*         <a href="#health-section" className="landingpage-login-icon">
-          Oral Care Tips
+{/*         <a href="#app-section" className="landingpage-login-icon">
+          CLADENT APP
         </a> */}
+        <a href="#health-section" className="landingpage-login-icon">
+          ORAL CARE TIPS
+        </a>
         <a href="#contact-section" className="landingpage-login-icon">
           CONTACT US
         </a>
@@ -709,41 +800,32 @@ We specialize in cosmetic dentistry, preventive care, orthodontics, restorative 
     </div>
 
 
-<div className='landingpage-mob'>
-  <div className="landingpage-mobile-container" id="app-section">
-    <div className="landingpage-title" style={{color:'lightgrey',fontStyle:'bold',fontFamily:'cursive',fontSize:'45px'}}>Cladent App</div>
-
-    <div className="landingpage-flex-container">
-      <div className="landingpage-left-explanation">
-        <div className="landingpage-box" id="box1">
-          <i>The <b>Cladent App</b> ensures a hassle-free experience with its secure login and registration system. Patients can quickly create an account or log in to access personalized features tailored to their dental care needs.</i>
-        </div><br />
-        <div className="landingpage-box" id="box2">
-          <i><b>Booking</b> an appointment is simple and convenient. Patients can select their preferred date and time, ensuring their dental visits fit smoothly into their schedule.</i>
-        </div><br />
-        <div className="landingpage-box" id="box3">
-          <i>The app allows patients to book appointments not just for themselves but also for <b>friends and family</b>. This feature makes it easy to ensure loved ones receive timely dental care, all through one account.</i>
+  <div className='landingpage-mob'>
+    <div className="landingpage-mobile-container" id="free-slot-sec">
+      <div className="landingpage-title" style={{color:'lightgrey',fontStyle:'bold',fontFamily:'cursive',fontSize:'45px'}}>Available Slots </div>
+      <div className="landingpage-available-slots-main-container">
+        <div className="landingpage-available-slots-container">
+          <div className="landingpage-available-slots-container-left">
+            <Calendar onChange={setDate} value={date} minDate={new Date()} />
+          </div>
+          <div className="landingpage-available-slots-container-right">
+            <div style={{color:'lightgrey',fontStyle:'bold',fontFamily:'cursive',fontSize:'45px'}}>Slots</div>
+              <div className="landingpage-available-slots-container-right-slots-container">
+                {remainingSlots.length > 0 ? 
+                  ( remainingSlots.map((slot, index) => (
+                    <button key={index} className="landingpage-available-slots-container-right-slots-container-slot" >
+                      {slot}
+                    </button>
+                    ))
+                  ) : (
+                        <p className='landingpageslotbooking-available-text'>No available slots for this date.</p>
+                     )}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="landingpage-right-screenshot">
-        <div className="landingpage-android-frame">
-          <img src={explanations[currentStep].imgSrc} alt={`Step ${currentStep + 1}`} />
-        </div>
-      </div>
-      <div className="landingpage-ex">
-        <div className="landingpage-box" id="box4">
-          <i>The app provides patients with valuable oral health tips and educational content, promoting better <b>dental hygiene</b> and preventive care practices.</i>
-        </div><br />
-        <div className="landingpage-box" id="box5">
-          <i>Patients can explore detailed descriptions of all the services offered at <b>Dr. Nithya's Dental and Smile Design Clinic</b>, helping them make informed decisions about their treatment.</i>
-        </div><br />
-        <div className="landingpage-box" id="box6">
-          <i>Patients can keep their profiles updated, including their personal information, contact details, and preferences. This helps the clinic offer <b>personalized services</b> tailored to their needs.</i>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+  </div> 
 
 
 
@@ -804,27 +886,27 @@ Reg. No. - 49867-A
         <p>Address: <a href="https://www.google.com/maps/@12.9554941,77.6587568,18z?entry=ttu&g_ep=EgoyMDI0MTEyNC4xIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer">Dr. Nithya's Dental and Smile Design Clinic.<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;616, 3rd Cross, 1st Main, A Block,
 <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vinayak Nagar,Konena Agrahara,
 <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bengaluru-560017.</a></p>
-        <p>Contact Number: <a href="tel:+91 974-121-7007">+91 974-121-7007</a></p>
+        <p>Contact Number: <a href="tel:+91 974-121-7007">{profiles.phone}</a></p>
         <p>Email: <a href="mailto:clinic@example.com">dr.nit.sel@gmail.com</a></p>
        
-        <p ><a  href="https://cladentteamfornaacvisit.netlify.app/" target="_blank" rel="noopener noreferrer">&copy; PUDoCs. All rights reserved.</a></p>
+        <p >&copy; Soumitra Halder | FullStack Developer | All rights reserved.</p>
       
       </div>
 
       <div className="landingpage-social-media">
-  <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">
-    <i className="fab fa-facebook-f"></i>
-  </a><br/><br/>
-  <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
-    <i className="fa-brands fa-instagram-square"></i>
-  </a><br/><br/>
-  <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer">
-    <i className="fab fa-twitter"></i>
-  </a><br/><br/>
-  <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer">
-    <i className="fab fa-linkedin-in"></i>
-  </a>
-</div>
+        <a href={profiles.facebook} target="_blank" rel="noopener noreferrer" style={{cursor:"pointer"}}>
+          <i className="fab fa-facebook-f"></i>
+        </a><br/><br/>
+        <a href={profiles.instagram} target="_blank" rel="noopener noreferrer" style={{cursor:"pointer"}}>
+          <i className="fa-brands fa-instagram-square"></i>
+        </a><br/><br/>
+        <a href={profiles.twitter} target="_blank" rel="noopener noreferrer" style={{cursor:"pointer"}}>
+          <i className="fab fa-twitter"></i>
+        </a><br/><br/>
+        <a href={profiles.linkedin} target="_blank" rel="noopener noreferrer" style={{cursor:"pointer"}}>
+          <i className="fab fa-linkedin-in"></i>
+        </a>
+      </div>
 
 <div className='landingpage-footer-link'>
   <h3 >Quick Links</h3>

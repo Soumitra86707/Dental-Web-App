@@ -20,6 +20,7 @@ import {ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage"
 import { FaDownload } from "react-icons/fa";
 import "./ViewReports.css";
 import { useParams, useNavigate } from "react-router-dom";
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 
 function ViewReport() {
@@ -44,7 +45,7 @@ function ViewReport() {
       const [isOpen, setIsOpen] = useState(false);
       const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
       const [rowsPerPage, setRowsPerPage] = useState(10);
-      const [currentPage, setCurrentPage] = useState(1);
+      /* const [currentPage, setCurrentPage] = useState(1); */
       const [invoiceId, setInvoiceId] = useState(null); // Store selected invoice ID
       const [file, setFile] = useState(null);
       const [preview, setPreview] = useState(null);
@@ -101,6 +102,34 @@ function ViewReport() {
         fetchPatientsLabReports();
       }, []);
       
+
+
+
+
+
+
+
+      const [currentPage, setCurrentPage] = useState(1);
+      const itemsPerPage = 5;
+  
+      // Calculate total pages
+      const totalPages = Math.ceil(filteredReports.length / itemsPerPage);
+  
+      // Get current page data
+      const indexOfLastItem = currentPage * itemsPerPage;
+      const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+      const currentItems = filteredReports.slice(indexOfFirstItem, indexOfLastItem);
+  
+      // Change page
+      const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  
+
+
+
+
+
+
+
 
   const filterReports = () => {
     let filtered = reportsData.filter(
@@ -271,7 +300,7 @@ const handleSubmit = async (e) => {
       
       const currentDate = new Date();
       const formattedDate = `${currentDate.getFullYear()}_${(currentDate.getMonth() + 1).toString().padStart(2, '0')}_${currentDate.getDate().toString().padStart(2, '0')}`;
-
+      const laboratoryName = selectedLab === "Other" ? customLabName : selectedLab;
  // Example output: 07_03_2025
 
       const formattedTime = currentDate.toLocaleTimeString();
@@ -289,8 +318,8 @@ const handleSubmit = async (e) => {
           
               // Update Firestore Document
               await updateDoc(invoiceRef, {
-                  laboratoryName: selectedLab,
-                  customLabName: customLabName,
+                  laboratoryName: laboratoryName,
+                  customLabName: laboratoryName,
                   totalAmount: parseFloat(totalAmount),
                   amountPaid: parseFloat(paidAmount),
                   dueAmount,
@@ -340,6 +369,7 @@ const handleSubmit = async (e) => {
               earningSnapshot.forEach(async (earningDoc) => {
                   const earningRef = earningDoc.ref;
                   await updateDoc(earningRef, {
+                      paymentType: "Labratory",
                       TotalAmount: parseFloat(totalAmount), 
                       PaidAmount: parseFloat(paidAmount),
                       dueAmount: dueAmount,
@@ -360,12 +390,25 @@ const handleSubmit = async (e) => {
           const fileRef = ref(storage, `Invoices/${fileName}`);
           await uploadBytes(fileRef, file);
           const fileUrl = await getDownloadURL(fileRef);
+          const currentMonth = formattedDate.split("_").slice(0, 2).join("_"); // YYYY_MM
+          //const laboratoryName = selectedLab === "Other" ? customLabName : selectedLab;
+
+          const expenseQuery = query(
+                collection(db, "invoices"),
+                where("uploadDate", ">=", `${currentMonth}_01`),
+                where("uploadDate", "<=", `${currentMonth}_31`),
+                where("laboratoryName", "==", laboratoryName) 
+              );
+            
+              const expenseSnapshot = await getDocs(expenseQuery);
+              const billCount = expenseSnapshot.size; // Get the number of existing bills
+              const billNumber = `Invoice ${billCount + 1}`; // Generate new bill number
 
           await addDoc(collection(db, "invoices"), {
               invoiceId : InvoicesId,
               LaboratoryId,
-              laboratoryName: selectedLab,
-              customLabName:  customLabName || "",
+              laboratoryName: laboratoryName,
+              customLabName:  laboratoryName || "",
               totalAmount: parseFloat(totalAmount),
               amountPaid: parseFloat(paidAmount),
               dueAmount,
@@ -374,10 +417,12 @@ const handleSubmit = async (e) => {
               invoiceIssueDate: issueDate,
               uploadDate: formattedDate,
               uploadTime: formattedTime,
+              billNumber,
           });
 
           // Add new entry to "Earning" collection
           await addDoc(collection(db, "Earning"), {
+              paymentType: "Labratory",
               invoiceId :InvoicesId,
               patient_id: "",
               phoneNumber: "",
@@ -487,7 +532,7 @@ const generateinvoiceId = (length = 20) => {
           <div className={`row pb-10 uploadInvoices ${isOpen ? "show" : ""}`}>
             <div className="card-box xs-pd-20-10 pd-ltr-20">
               <form >
-                <h3>Invoices Upload</h3>
+                <h3> Upload Invoices</h3>
                 <div className="row">
                   {/* Lab Name Dropdown */}
                   <div className="col-md-4 col-sm-12">
@@ -659,6 +704,8 @@ const generateinvoiceId = (length = 20) => {
                   <tr>
                     
                     <th className="table-plus">Laboratory Name</th>
+                    <th className="table-plus">Invoice No.</th>
+                    
                     <th>Total Amount</th>
                     <th>Amount Paid</th>
                     <th>Due Amount</th>
@@ -676,6 +723,7 @@ const generateinvoiceId = (length = 20) => {
                   filteredReports.map((report) => (
                     <tr key={report.id}>
                       <td className="table-plus">{report.laboratoryName === "Other" ? report.customLabName : report.laboratoryName}</td>
+                      <td>{report.billNumber || "N/A"}</td>
                       <td>{report.totalAmount}</td>
                       <td>{report.amountPaid}</td>
                       <td>{report.dueAmount}</td>
@@ -696,6 +744,21 @@ const generateinvoiceId = (length = 20) => {
                 )}
                 </tbody>
               </table>
+              <div className="pagination-controls">
+                              <button 
+                                  disabled={currentPage === 1} 
+                                  onClick={() => paginate(currentPage - 1)}
+                              >
+                                  <FaChevronLeft />
+                              </button>
+                              <span>{currentPage} / {totalPages}</span>
+                              <button 
+                                  disabled={currentPage === totalPages} 
+                                  onClick={() => paginate(currentPage + 1)}
+                              >
+                                  <FaChevronRight />
+                              </button>
+                          </div>
           </div>
           <div className="row pb-10">    
               <div 

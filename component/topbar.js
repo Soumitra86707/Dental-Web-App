@@ -17,6 +17,7 @@ function Topbar({ onLogout }) {
      const [isOpen, setIsOpen] = useState(false); 
     const [isOpenProfile, setIsOpenProfile] = useState(false);
     const [openReport, setOpenReport] = useState(false);
+    const [billingManagement, setBillingManagement] = useState(false);
     const [openAppointment, setOpenAppointment] = useState(false);
     const [openConsultant, setOpenConsultant] = useState(false);
     const [openDiary, setOpenDiary] = useState(false);
@@ -140,7 +141,7 @@ return (
             <div className="header-right" style={{ paddingRight: "40px" }}>
                  <div className="user-notification" ref={dropdownRef}>
                     <div className="dropdown">
-                        <a
+                        {/* <a
                         className="dropdown-toggle no-arrow"
                         href="#"
                         role="button"
@@ -149,7 +150,7 @@ return (
                         <i className="icon-copy dw dw-notification"></i>
                         <span className="badge notification-active"></span>
                         </a>
-
+ */}
                         <div className={`dropdown-menu dropdown-menu-right ${isOpen ? "show" : ""}`}>
                         <div className="notification-list mx-h-350 customscroll">
                             <ul>
@@ -178,7 +179,7 @@ return (
                                 <i className="dw dw-user1"></i> Profile
                             </Link>
                             
-                            <a className="dropdown-item" onClick={handleLogout} >
+                            <a className="dropdown-item" onClick={handleLogout} style={{cursor:"pointer"}}>
                                 <i className="dw dw-logout"></i> Log Out
                             </a>
                             </div>
@@ -223,7 +224,7 @@ return (
                                 border: "none",
                                 cursor: "pointer",
                                 color: "white",
-                                fontSize: "inherit",
+                                fontSize: "15px",
                                 display: "flex",
                                 alignItems: "center",
                                 gap: "40px",
@@ -271,11 +272,11 @@ return (
                             className={`submenu ${openConsultant ? "show" : ""}`}
                             style={{ display: openConsultant ? "block" : "none" }}
                             >
-{/*                                 <li><Link to="/Consultant/View" className="dropdown-toggle text-decoration-none no-arrow">View </Link></li>
+                                <li><Link to="/Consultant/View" className="dropdown-toggle text-decoration-none no-arrow">View </Link></li>
                                 <li><Link to="/Consultant/AddConsultant" className="dropdown-toggle text-decoration-none no-arrow">Add</Link></li>
                                 <li><Link to="/Consultant/BookAppointment" className="dropdown-toggle text-decoration-none no-arrow">Book</Link></li>
                                 <li><Link to="/Consultant/RescheduleAppointment" className="dropdown-toggle text-decoration-none no-arrow">Reschedule</Link></li>
-                                <li><Link to="/Consultant/CancelAppointment" className="dropdown-toggle text-decoration-none no-arrow">Cancel</Link></li> */}
+                                <li><Link to="/Consultant/CancelAppointment" className="dropdown-toggle text-decoration-none no-arrow">Cancel</Link></li> 
                                 <li><Link to="/Consultant/PaymentHistory" className="dropdown-toggle text-decoration-none no-arrow">Payment History</Link></li>
                                 
                             </ul>
@@ -292,23 +293,46 @@ return (
                                 fontSize: "inherit",
                                 display: "flex",
                                 alignItems: "center",
-                                gap: "40px",  // Adds space between text and arrow
+                                gap: "40px", 
                             }}
                             >
                                 <span className="micon bi bi-file-earmark-medical" aria-hidden="true"></span>
                                 <span className="mtext">Report Management</span>
-                            {/* <span style={{ transition: "transform 0.3s", transform: openAppointment ? "rotate(180deg)" : "rotate(0deg)" }}>
-                                🔽
-                            </span> */}
+                            
                             </button>
                             <ul
                             className={`submenu ${openReport ? "show" : ""}`}
                             style={{ display: openReport ? "block" : "none" }}
                             >
                                 <li><Link to="/Report/viewReports" className="dropdown-toggle text-decoration-none no-arrow">View & Upload <br />Reports</Link></li>
-                                {/* <li><Link to="/Report/UploadReports" className="dropdown-toggle text-decoration-none no-arrow"> Upload Reports</Link></li> */}
-                                {/* <li><Link to="/Report/UploadInvoices" className="dropdown-toggle text-decoration-none no-arrow">Upload Invoices</Link></li> */}
+                                
+                            </ul>
+                        </li>
+                        <li className={`dropdown ${billingManagement ? "show" : ""} hover-primary`}>
+                        <button
+                            className="dropdown-toggle no-arrow"
+                            onClick={() => setBillingManagement(!billingManagement)}
+                            style={{
+                                background: "none",
+                                border: "none",
+                                cursor: "pointer",
+                                color: "white",
+                                fontSize: "inherit",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "40px", 
+                            }}
+                            >
+                                <span className="micon bi bi-file-earmark-medical" aria-hidden="true"></span>
+                                <span className="mtext">Billing Management</span>
+                            
+                            </button>
+                            <ul
+                            className={`submenu ${billingManagement ? "show" : ""}`}
+                            style={{ display: billingManagement ? "block" : "none" }}
+                            >
                                 <li><Link to="/Report/ViewInvoices" className="dropdown-toggle text-decoration-none no-arrow">View & Upload <br /> Invoices</Link></li>
+                                <li><Link to="/Report/ExtraExpenses" className="dropdown-toggle text-decoration-none no-arrow">Extra Expenses</Link></li>
                             </ul>
                         </li>
                         <li className={`dropdown ${openDiary ? "show" : ""} hover-primary`}>
@@ -342,9 +366,19 @@ return (
                                 
                             </ul>
                         </li>
+                        <li className="dropdown">
+                            <Link to="/MonthlyProfit" className="dropdown-toggle text-decoration-none no-arrow">
+                                <span className="micon bi bi-house"></span>
+                                <span className="mtext">Monthly Earning</span>
+                            </Link>
+
+                        </li>
                         
                     </ul>
                 </div>
+            </div>
+            <div className="copyRight">
+                <div className="copyRightText">©2025 Soumitra Halder | Pondicherry University</div>
             </div>
         </div>
         <Outlet />

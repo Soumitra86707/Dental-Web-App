@@ -1,6 +1,6 @@
 import { useState ,useEffect } from "react";
 import { db } from "../Config/FirebaseConfig"; // Ensure you have Firebase configured
-import {doc, getDocs, query, where, updateDoc, setDoc, collection, addDoc, arrayUnion ,getDoc,orderBy,limit } from "firebase/firestore";
+import {doc, getDocs, query, where, updateDoc,  collection, addDoc, arrayUnion ,getDoc,orderBy,limit } from "firebase/firestore";
 import "../../vendors/styles/core.css";
 import "../../vendors/styles/icon-font.min.css";
 import "../../plugins/datatables/css/dataTables.bootstrap4.min.css";
@@ -12,7 +12,7 @@ import { useParams ,useNavigate} from "react-router-dom";
 
 function Prescription() {
     const { appointmentId } = useParams(); // Get the appointment ID from the URL
-    const [appointment, setAppointment] = useState(null);
+    /* const [appointment, setAppointment] = useState(null); */
     const [patientsId, setPatientId] = useState(null);
     const [loading, setLoading] = useState(true);
     const [phoneNumber, setPhoneNumber] = useState("");
@@ -48,7 +48,7 @@ function Prescription() {
 
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    setAppointment(data);
+                    /* setAppointment(data); */
                     setPhoneNumber(data.patient_account_id);
                     setPatientName(data.patient_name);
                     setAppointmentDate(data.appointment_date);
@@ -113,6 +113,10 @@ const fetchLatestPrescription = async (patientId, reasonForVisit) => {
 
         fetchAppointmentDetails();
     }, [appointmentId]);
+    if(loading)
+        {
+            return (<div >Loading ......</div>)
+        }
 
     const addEntry = () => {
         setEntries([...entries, { id: Date.now(), type: "tablet", name: "", specificName: "", dosage: "", days: "", times: [], food: "before" }]);
@@ -177,7 +181,7 @@ const fetchLatestPrescription = async (patientId, reasonForVisit) => {
         if (!querySnapshot.empty) {
             // If a matching record exists, update it with prescriptionId
             querySnapshot.forEach(async (docSnap) => {
-                const docRef = doc(db, "reasonForVisit", docSnap.id);
+                const docRef = doc(db, "reason_for_visit", docSnap.id);
                 await updateDoc(docRef, {
                     createdAt: arrayUnion(formattedDate),
                     prescriptionIds: arrayUnion(prescriptionId)
@@ -195,12 +199,18 @@ const fetchLatestPrescription = async (patientId, reasonForVisit) => {
             });
         }
         let TotalAmount = 500;
-        let dueAmount = Math.max(0, TotalAmount - Number(paymentDetails));  // Convert paymentDetails to a number
+        let paidAmount = Number(paymentDetails); // Ensure paymentDetails is treated as a number
+        
+        let dueAmount = paidAmount > TotalAmount ? `+${paidAmount - TotalAmount}` : Math.max(0, TotalAmount - paidAmount);
+        
+       /*  console.log(dueAmount); */
+        
         
         await addDoc(collection(db, "Earning"), {
             patient_id:patientsId,
             invoiceId:prescriptionId,
             phoneNumber,
+            paymentType:"Patient",
             paymentBy: patientName,
             TotalAmount:TotalAmount,
             PaidAmount: paymentDetails,
@@ -236,10 +246,12 @@ const fetchLatestPrescription = async (patientId, reasonForVisit) => {
             <div className="xs-pd-20-10 pd-ltr-20" style={{ padding: "10px",backgroundColor:"#FFF7DE" , color:"#4B4B4B"}}>
             <div className="p-6 card-box mb-6" style={{ padding: "10px",backgroundColor:"#FFF7DE" , color:"#4B4B4B"}}>
                 <div className="card-box xs-pd-20-10 pd-ltr-20" style={{
-  padding: "10px",
-  background: "linear-gradient(to top left,rgb(233, 216, 164),rgb(247, 243, 232))", 
-  color: "#4B4B4B"
-}}>
+                    padding: "10px",
+                    background: "linear-gradient(to top left,rgb(233, 216, 164),rgb(247, 243, 232))", 
+                    color: "#4B4B4B"
+                    }}>
+                        <div className="row pb-10">
+                        <div className="col-md-12 mb-20">
                     <form >
                     <h3>Personal Details</h3>  
                         <div className="row">
@@ -415,7 +427,7 @@ const fetchLatestPrescription = async (patientId, reasonForVisit) => {
                         <div className="row">
                             <div className="col-md-6 col-sm-12">
                                 <div className="form-group">
-                                    <label>Radiograph Reports</label>
+                                    <label>Diagnostic Reports</label>
                                     <input type="text" className="form-control" value={diagnosticReports} onChange={(e) => setDiagnosticReports(e.target.value)}/>
                                 </div>
                             </div>
@@ -442,6 +454,9 @@ const fetchLatestPrescription = async (patientId, reasonForVisit) => {
                         </div>
                         
                     </form>
+                    </div>
+                    
+                    </div>
                 </div>
                 </div>
                 </div>

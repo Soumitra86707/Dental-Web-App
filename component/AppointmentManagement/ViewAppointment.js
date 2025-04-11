@@ -70,7 +70,11 @@ function ViewAppointment() {
 
   const filteredAppointments = filterAppointments();
   const now = new Date();
-  const todayFormatted = now.toISOString().split("T")[0].replace(/-/g, "_"); // YYYY_MM_DD
+const yyyy = now.getFullYear();
+const mm = String(now.getMonth() + 1).padStart(2, "0");
+const dd = String(now.getDate()).padStart(2, "0");
+const todayFormatted = `${yyyy}_${mm}_${dd}`;
+
   const recentTime = now.toTimeString().split(" ")[0]; // HH:MM:SS
   const handleAddPrescription = (appointmentId) => {
     console.log("Clicked appointment ID:", appointmentId); // Debugging
@@ -80,7 +84,12 @@ function ViewAppointment() {
     }
     navigate(`/addprescription/${appointmentId}`);
 };
-
+const convertTo12HourFormat = (time) => {
+  let [hours, minutes] = time.split(':').map(Number);
+  let ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12 || 12; // Convert 0 to 12 for 12 AM
+  return `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+};
   return (
     <div className="App">
       <div className="main-container">
@@ -119,7 +128,9 @@ function ViewAppointment() {
           <div className="row pb-10">
             {filteredAppointments.length > 0 ? (
               filteredAppointments.map((appointment) => (
+                
                 <div key={appointment.id} className="col-xl-3 col-lg-3 col-md-6 mb-20">
+                  <div className="View-appointment-div-heading"> {convertTo12HourFormat(appointment.slot_start_time)}</div>
                   <div className="card-box height-100-p widget-style3">
                     <div className="widget-data">
                       <div className="weight-700 font-18 text-dark">{appointment.patient_name}</div>
@@ -127,13 +138,37 @@ function ViewAppointment() {
                       <div className="font-14 text-secondary">Complaint: {appointment.reason_for_visit}</div>
                       <div className="font-14 text-secondary">Date: {appointment.appointment_date.replace(/_/g, "-")}</div>
                       <div className="font-14 text-secondary">
-                        Slot: {appointment.slot_start_time} - {appointment.slot_end_time}
+                        Slot: {convertTo12HourFormat(appointment.slot_start_time)} - {convertTo12HourFormat(appointment.slot_end_time)}
                       </div>
-
-                      {/* Show 'Add Prescription' button only if the appointment is today and the current time is within the slot */}
-                      {appointment.appointment_date === todayFormatted &&
+                      {/* <button
+                            className="btn btn-primary mt-2"
+                            onClick={() => handleAddPrescription(appointment.id)}
+                          >
+                            Add Prescription
+                          </button> */}
+                     
+                      {/* {appointment.appointment_date === todayFormatted &&
                         recentTime >= appointment.slot_start_time &&
                         recentTime <= appointment.slot_end_time && (
+                          <button
+                            className="btn btn-primary mt-2"
+                            onClick={() => handleAddPrescription(appointment.id)}
+                          >
+                            Add Prescription
+                          </button>
+                        )} */}
+{/*                         {appointment.appointment_date === todayFormatted &&
+                        recentTime >= appointment.slot_start_time &&
+                        recentTime <= appointment.slot_end_time && (
+                          <button
+                            className="btn btn-primary mt-2"
+                            onClick={() => handleAddPrescription(appointment.id)}
+                          >
+                            Add Prescription
+                          </button>
+                        )} */}
+                        {appointment.appointment_date === todayFormatted &&(
+                        
                           <button
                             className="btn btn-primary mt-2"
                             onClick={() => handleAddPrescription(appointment.id)}

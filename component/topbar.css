@@ -3,12 +3,7 @@
     color: white;
     border-radius: 8px;
   }
-.github-link{
-    color: #2A363C;
-    font-size: 1rem;
-    /* margin-right: 1rem; */
-    width: auto;
-}
+
 /* Scrollable Sidebar */
 
 
@@ -35,4 +30,21 @@
   overflow-x: hidden; /* Prevents horizontal scrolling */
   scrollbar-width: thin; /* Firefox */
   scrollbar-color: #888 #f1f1f1; /* Scrollbar color */
+}
+.copyRight{
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  
+
+}
+.copyRight{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 11px;
+  color: rgba(157, 155, 155, 0.388);
 }

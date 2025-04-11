@@ -188,30 +188,43 @@ const upcomingAppointments = appointments
                         <div className="appointments-list">
                             <h3>Today's Appointments</h3>
                             <div className="appointments-grid">
-                                {todayAppointments.map((appointment) => (
-                                    <button
-                                        key={appointment.id}
-                                        className={`appointment ${selectedAppointment?.id === appointment.id ? "selected" : ""}`}
-                                        onClick={() => handleAppointmentSelect(appointment)}
-                                    >
-                                        {`${appointment.patient_name} | ${appointment.reason_for_visit} | ${appointment.slot_start_time} - ${appointment.slot_end_time} | ${appointment.date.toDateString()}`}
-                                    </button>
-                                ))}
+                              {todayAppointments.length > 0 ? (
+                                  todayAppointments.map((appointment) => (
+                                      <button
+                                          key={appointment.id}
+                                          className={`appointment ${selectedAppointment?.id === appointment.id ? "selected" : ""}`}
+                                          onClick={() => handleAppointmentSelect(appointment)}
+                                      >
+                                          {`${appointment.patient_name} | ${appointment.reason_for_visit} | ${appointment.slot_start_time} - ${appointment.slot_end_time} | ${appointment.date.toDateString()}`}
+                                      </button>
+                                  ))
+                              ) : (
+                                  <p style={{ textAlign: "center", fontSize: "16px", color: "gray", marginTop: "10px" }}>
+                                      No appointments available
+                                  </p>
+                              )}
                             </div>
+
                         </div>
 
                         <div className="appointments-list">
                             <h3>Upcoming Appointments</h3>
                             <div className="appointments-grid">
-                                {upcomingAppointments.map((appointment) => (
-                                    <button
-                                        key={appointment.id}
-                                        className={`appointment ${selectedAppointment?.id === appointment.id ? "selected" : ""}`}
-                                        onClick={() => handleAppointmentSelect(appointment)}
-                                    >
-                                        {`${appointment.patient_name} | ${appointment.reason_for_visit} | ${appointment.slot_start_time} - ${appointment.slot_end_time} | ${appointment.date.toDateString()}`}
-                                    </button>
-                                ))}
+                              {upcomingAppointments.length > 0 ? (
+                                  upcomingAppointments.map((appointment) => (
+                                      <button
+                                          key={appointment.id}
+                                          className={`appointment ${selectedAppointment?.id === appointment.id ? "selected" : ""}`}
+                                          onClick={() => handleAppointmentSelect(appointment)}
+                                      >
+                                          {`${appointment.patient_name} | ${appointment.reason_for_visit} | ${appointment.slot_start_time} - ${appointment.slot_end_time} | ${appointment.date.toDateString()}`}
+                                      </button>
+                                  ))
+                              ) : (
+                                  <p style={{ textAlign: "center", fontSize: "16px", color: "gray", marginTop: "10px" }}>
+                                      No appointments available
+                                  </p>
+                              )}
                             </div>
                         </div>
                     </div>

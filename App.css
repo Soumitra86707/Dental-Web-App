@@ -34,7 +34,11 @@
     width: 100%;
     border-collapse: collapse;
 }
-
+.View-appointment-div-heading{
+    padding: 2px 0 2px 10px;
+    font-size: 28px;
+    font-weight: bold;
+}
 @media screen and (max-width: 1024px) {
 
 /*     .data-table th:nth-child(2),
@@ -183,3 +187,17 @@
     }
 }
  */
+ .consultant-profile-pic {
+    width: 120px; /* Adjust size */
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%; /* Circular shape */
+    border: 2px solid #ddd; /* Optional border */
+  }
+  .consultant-text-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+  }
+  

@@ -15,18 +15,22 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { Document, Packer, Paragraph, Table, TableCell, TableRow } from "docx";
 import { db } from "./Config/FirebaseConfig"; // Ensure firebase is configured properly
-import { collection, getDocs ,query, where } from "firebase/firestore";
+import { collection, getDocs ,query, where, limit } from "firebase/firestore";
 import dayjs from "dayjs";
 import Chart from "react-apexcharts";
 import EarningChart from "./EarningChart.js";
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 function PaymentDiary() {
   const [reportData, setReportData] = useState([]);
   const [filteredReports, setFilteredReports] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [dateFilter, setDateFilter] = useState("");
+  const [monthFilter, setMonthFilter] = useState("");
   const [quickFilter, setQuickFilter] = useState("1-day");
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
   const [chartData, setChartData] = useState({
     lastSixMonths: [],
     lastYear: [],
@@ -34,18 +38,37 @@ function PaymentDiary() {
   const [timeRange, setTimeRange] = useState("6months"); // Default: Last 6 months
     const [prescriptions, setPrescriptions] = useState([]);
     useEffect(() => {
-        const fetchPrescriptions = async () => {
-            const prescriptionsCollection = collection(db, "Earning");
-            const prescriptionsSnapshot = await getDocs(prescriptionsCollection);
-            const prescriptionsList = prescriptionsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            setPrescriptions(prescriptionsList);
-        };
-        fetchPrescriptions();
-    }, []);
+      const fetchPrescriptions = async () => {
+          try {
+              const prescriptionsCollection = collection(db, "Earning");
+  
+              // Fetch first 20 documents
+              const first20Query = query(prescriptionsCollection, limit(2));
+              const first20Snapshot = await getDocs(first20Query);
+              const first20List = first20Snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+              setPrescriptions(first20List); // Show first 20 quickly
+  
+              // Fetch all documents after 3 seconds
+              setTimeout(async () => {
+                const fullSnapshot = await getDocs(prescriptionsCollection);
+                const fullList = fullSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setPrescriptions(fullList);
+                setLoading(false);  // ✅ Stop loading after fetching
+            }, 3000);
+  
+          }catch (error) {
+            console.error("Error fetching prescriptions:", error);
+            setLoading(false);  // ✅ Stop loading even if there is an error
+        }
+      };
+  
+      fetchPrescriptions();
+  }, []);
+  
     
     useEffect(() => {
         filterReports();
-    }, [searchQuery, dateFilter, quickFilter, prescriptions]);
+    }, [searchQuery, dateFilter, monthFilter, prescriptions]);
     
     const filterReports = () => {
         let filtered = prescriptions.filter(report =>
@@ -62,38 +85,32 @@ function PaymentDiary() {
             );
             
         }
+        if (monthFilter) {
+          console.log("Filtering reports for month:", monthFilter);
+      
+          filtered = filtered.filter(report => {
+              console.log("Original createdAt:", report.createdAt);
+      
+              // Ensure createdAt is a valid date and extract YYYY-MM format
+              const createdMonth = (() => {
+                  if (!report.createdAt) return null;  // Handle null or undefined values
+      
+                  const parsedDate = new Date(report.createdAt.replace(/_/g, "-"));
+                  if (isNaN(parsedDate)) {
+                      console.warn("Invalid Date:", report.createdAt);
+                      return null;
+                  }
+      
+                  return parsedDate.toISOString().slice(0, 7); // Extract YYYY-MM
+              })();
+      
+              console.log("Extracted Month:", createdMonth);
+              return createdMonth === monthFilter;
+          });
+      }
+      
+      
     
-        if (quickFilter !== "All") {
-            const now = new Date();
-            filtered = filtered.filter((report) => {
-                // Convert "YYYY_MM_DD" format to "YYYY-MM-DD" and then to Date object
-                const uploadDate = new Date(report.createdAt.replace(/_/g, "-"));
-
-console.log("kjhfdbsnjfh",uploadDate); // Output: "2025-03-08"
- 
-        
-                if (isNaN(uploadDate)) return false; // Skip invalid dates
-        
-                const timeDiff = now - uploadDate;
-        
-                switch (quickFilter) {
-                  case "1-day":
-                      return timeDiff <= 24 * 60 * 60 * 1000;
-                  case "1-week":
-                      return timeDiff <= 7 * 24 * 60 * 60 * 1000;
-                  case "15-days":
-                      return timeDiff <= 15 * 24 * 60 * 60 * 1000;
-                  case "1-month":
-                      return timeDiff <= 30 * 24 * 60 * 60 * 1000;
-                  case "6-months":
-                      return timeDiff <= 180 * 24 * 60 * 60 * 1000;
-                  case "1-year":
-                      return timeDiff <= 365 * 24 * 60 * 60 * 1000;
-                  default:
-                      return true;
-              }
-            });
-        }
         
         // Fix sorting: Use `createdAt` instead of `uploadDate`
         filtered.sort((a, b) => new Date(b.createdAt.replace(/_/g, "-")) - new Date(a.createdAt.replace(/_/g, "-")));
@@ -124,8 +141,8 @@ console.log("kjhfdbsnjfh",uploadDate); // Output: "2025-03-08"
         // Process earnings data
         earnings.forEach((earning) => {
           const createdMonth = earning.createdAt 
-  ? dayjs(earning.createdAt.replace(/_/g, "-"), "YYYY-MM-DD").format("YYYY_MM") 
-  : null;
+          ? dayjs(earning.createdAt.replace(/_/g, "-"), "YYYY-MM-DD").format("YYYY_MM") 
+          : null;
 
 
 
@@ -169,6 +186,20 @@ console.log("kjhfdbsnjfh",uploadDate); // Output: "2025-03-08"
 /*   if (loading) {
     return <div>Loading...</div>;
   } */
+
+
+
+  // Calculate total pages
+  const totalPages = Math.ceil(filteredReports.length / itemsPerPage);
+
+  // Get current page data
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredReports.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
 
   // Export full table as Excel
   const exportExcel = () => {
@@ -307,86 +338,71 @@ console.log("kjhfdbsnjfh",uploadDate); // Output: "2025-03-08"
               >
                             
               <div className="filter-container">
-{/*               <div className="col-md-3 col-sm-12">
-                <div className="form-group"> */}
+
                   <input type="text" placeholder="Search" className="alloversearchbar" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} 
                     style={{ padding: "5px", border: "1px solid #ccc", borderRadius: "5px", outline: "none",}} />
-{/*                 </div>
-              </div>
-              <div className="col-md-2 col-sm-12">
-                <div className="form-group"> */}
+                    <input type="month" value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)}
+                      style={{ padding: "5px", border: "1px solid #ccc", borderRadius: "5px", outline: "none", flexGrow: 1 }} 
+                    />
+
                     <input type="date" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)}
                       style={{ padding: "5px", border: "1px solid #ccc", borderRadius: "5px", outline: "none", flexGrow: 1 }} 
                     />
-{/*                 </div>
-              </div>
-              <div className="col-md-2 col-sm-12">
-                <div className="form-group"> */}
-                  <select value={quickFilter} onChange={(e) => setQuickFilter(e.target.value)}
-                    style={{ padding: "5px 10px", border: "1px solid #ccc", borderRadius: "5px", backgroundColor: "#fff", color: "#333", cursor: "pointer", outline: "none" }}
-                  >
-                    <option value="1-day">1 Day</option>
-                    <option value="1-week">1 Week</option>
-                    <option value="15-days">15 Days</option>
-                    <option value="1-month">1 Month</option>
-                    <option value="6-months">6 Months</option>
-                    <option value="1-year">1 Year</option>
-                    <option value="All">All</option>
-                  </select>
-{/*                 </div>
-              </div> */}
+    
             </div>
             </div>
 
-            <table className="data-table table nowrap   table-striped PaymentTable">
-              <thead className="bg-gray" >
-                <tr >
-                  <th>Serial No.</th>
-                  <th className="table-plus">Payment By</th>
-                  <th>Payment Date</th>
-                  <th>Paid</th>
-                  <th>Due</th>
-                  
-                  <th>Payment To</th>
-                  
-                  {/* <th className="datatable-nosort">Actions</th> */}
-                </tr>
-              </thead>
-              <tbody>
-              {filteredReports.length === 0 ? (
-                  <tr>
-                    <td colSpan="7" style={{ textAlign: "center" }}>No data found</td>
-                  </tr>
-                ) : (
-                  filteredReports.map((row, index) => (
-                    <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray"}>
-                      <td>{index +1}</td>
-                      <td className="table-plus">
-                        <div className="name-avatar d-flex align-items-center">
-                          <div className="txt">
-                            <div className="weight-600">{row.paymentBy}</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>{row.createdAt}</td>
-                      <td>{row.PaidAmount}</td>
-                      <td>{row.dueAmount}</td>
-                      
-                      <td>{row.paymentTo}</td>
-                      
-                      {/* <td>
-                      <a href="#" data-color="#e95959" onClick={() => downloadRowPDF(row)}>
-                              <i className="fa fa-download"></i>
-
-                            </a>
-                        
-                      </td> */}
+            <table className="data-table table nowrap table-striped PaymentTable">
+                <thead className="bg-gray">
+                    <tr>
+                        <th>Serial No.</th>
+                        <th className="table-plus">Payment By</th>
+                        <th>Payment Date</th>
+                        <th>Paid</th>
+                        <th>Due</th>
+                        <th>Payment To</th>
                     </tr>
-                  ))
-                )}
-              </tbody>
+                </thead>
+                <tbody>
+                    {currentItems.length === 0 ? (
+                        <tr>
+                            <td colSpan="7" style={{ textAlign: "center" }}>No data found</td>
+                        </tr>
+                    ) : (
+                        currentItems.map((row, index) => (
+                            <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray"}>
+                                <td>{indexOfFirstItem + index + 1}</td>
+                                <td className="table-plus">
+                                    <div className="name-avatar d-flex align-items-center">
+                                        <div className="txt">
+                                            <div className="weight-600">{row.paymentBy}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{row.createdAt}</td>
+                                <td>{row.PaidAmount}</td>
+                                <td>{row.dueAmount}</td>
+                                <td>{row.paymentTo}</td>
+                            </tr>
+                        ))
+                    )}
+                </tbody>
             </table>
-
+            <div className="pagination-controls">
+                <button 
+                    disabled={currentPage === 1} 
+                    onClick={() => paginate(currentPage - 1)}
+                >
+                    <FaChevronLeft />
+                </button>
+                <span>{currentPage} / {totalPages}</span>
+                <button 
+                    disabled={currentPage === totalPages} 
+                    onClick={() => paginate(currentPage + 1)}
+                >
+                    <FaChevronRight />
+                </button>
+            </div>
             {/* Download Buttons */}
             <div 
               style={{ 

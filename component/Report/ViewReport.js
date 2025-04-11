@@ -287,7 +287,7 @@ const handleEdit = (id) => {
                 }}
               >
                 <div style={{ textAlign: "left", fontSize: "25px", fontWeight: "bold" }}>Reports History</div>
-                <div className=" btn text-primary weight-500 hover:text-white " style={{ textAlign: "right", fontSize: "18px", fontWeight: "bold",cursor:"pointer"  }} onClick={() => setIsVisible(!isVisible)}>{isVisible ? "Close Upload Report Form" : "Open Upload Report Form"}</div>
+                <div className=" btn text-primary weight-500 hover:text-white " style={{ textAlign: "right", fontSize: "18px", fontWeight: "bold",cursor:"pointer"  }} onClick={() => setIsVisible(!isVisible)}><i className="ion-plus-round text-primary"></i>  Upload Reports</div>
                         
               </div>
               <div

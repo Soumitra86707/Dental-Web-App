@@ -7,13 +7,14 @@ import "../vendors/styles/style.css";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./loading.css";
+import "./Pagination.css";
 import { db } from "./Config/FirebaseConfig"; // Ensure firebase is configured properly
-import { collection, getDocs } from "firebase/firestore";
-import { FaFileCsv, FaFileWord, FaFilePdf, FaFileExcel } from "react-icons/fa";
+import { collection, getDocs ,limit ,query } from "firebase/firestore";
+import {  FaFileWord, FaFilePdf, FaFileExcel } from "react-icons/fa";
 
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import React from "react";
 
-import { CSVLink } from "react-csv";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
@@ -23,25 +24,53 @@ function App() {
     const [prescriptions, setPrescriptions] = useState([]);
     const [openDropdown, setOpenDropdown] = useState(null);
     const [filteredReports, setFilteredReports] = useState([]);
+    const [monthFilter, setMonthFilter] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
     const [dateFilter, setDateFilter] = useState("");
     const [quickFilter, setQuickFilter] = useState("1-day");
-    
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 15;
     const navigate = useNavigate();
     
     useEffect(() => {
         const fetchPrescriptions = async () => {
-            const prescriptionsCollection = collection(db, "prescriptions");
-            const prescriptionsSnapshot = await getDocs(prescriptionsCollection);
-            const prescriptionsList = prescriptionsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            setPrescriptions(prescriptionsList);
+            try {
+                // Quick fetch of first 20 items
+                const prescriptionsCollection = collection(db, "prescriptions");
+                const first20Query = query(prescriptionsCollection, limit(20));
+                const first20Snapshot = await getDocs(first20Query);
+    
+                const first20List = first20Snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+    
+                // Set initial 20 results immediately
+                setPrescriptions(first20List);
+    
+                // Delay fetching the rest
+                setTimeout(async () => {
+                    const fullSnapshot = await getDocs(prescriptionsCollection);
+                    const fullList = fullSnapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
+    
+                    // Merge initial 20 with the rest
+                    setPrescriptions(fullList);
+                }, 3000); // 3-second delay (Adjust as needed)
+    
+            } catch (error) {
+                console.error("Error fetching prescriptions: ", error.message);
+            }
         };
         fetchPrescriptions();
     }, []);
     
+    
     useEffect(() => {
         filterReports();
-    }, [searchQuery, dateFilter, quickFilter, prescriptions]);
+    }, [searchQuery, dateFilter, monthFilter, prescriptions]);
     
     const filterReports = () => {
         let filtered = prescriptions.filter(report =>
@@ -57,33 +86,18 @@ function App() {
             );
             
         }
-    
-        if (quickFilter !== "All") {
-            const now = new Date();
-            filtered = filtered.filter((report) => {
-                // Convert "YYYY_MM_DD" format to "YYYY-MM-DD" and then to Date object
-                const uploadDate = new Date(report.createdAt.replace(/_/g, "-")); 
+        if (monthFilter) {
+            filtered = filtered.filter(report => {
+                // Ensure createdAt is a valid date and extract YYYY-MM format
+                const createdMonth = (() => {
+                    if (!report.createdAt) return null; // Handle null or undefined values
         
-                if (isNaN(uploadDate)) return false; // Skip invalid dates
+                    const parsedDate = new Date(report.createdAt.replace(/_/g, "-"));
+                    return isNaN(parsedDate) ? null : parsedDate.toISOString().slice(0, 7); // Extract YYYY-MM
+                })();
         
-                const timeDiff = now - uploadDate;
-        
-                switch (quickFilter) {
-                    case "1-day":
-                        return timeDiff <= 24 * 60 * 60 * 1000;
-                    case "1-week":
-                        return timeDiff <= 7 * 24 * 60 * 60 * 1000;
-                    case "15-days":
-                        return timeDiff <= 15 * 24 * 60 * 60 * 1000;
-                    case "1-month":
-                        return timeDiff <= 30 * 24 * 60 * 60 * 1000;
-                    case "6-months":
-                        return timeDiff <= 180 * 24 * 60 * 60 * 1000;
-                    case "1-year":
-                        return timeDiff <= 365 * 24 * 60 * 60 * 1000;
-                    default:
-                        return true;
-                }
+                // Compare extracted YYYY-MM with monthFilter
+                return createdMonth === monthFilter;
             });
         }
         
@@ -125,6 +139,15 @@ function App() {
     };
     
 
+    const totalPages = Math.ceil(filteredReports.length / itemsPerPage);
+
+    // Get current page data
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredReports.slice(indexOfFirstItem, indexOfLastItem);
+
+    // Change page
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
     
     const exportToWord = () => {
         let content = `\uFEFF
@@ -165,108 +188,119 @@ function App() {
             <div className="main-container">
                 <div className="xs-pd-20-10 pd-ltr-20">
                     <div className="card-box pb-10">
-                    <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  width: "100%",
-                  padding: "10px",
-                }}
-              >
-                <div style={{ textAlign: "left", fontSize: "25px", fontWeight: "bold" }}>Patients History</div>
+                        <div
+                            style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            width: "100%",
+                            padding: "10px",
+                            }}
+                        >
+                            <div style={{ textAlign: "left", fontSize: "25px", fontWeight: "bold" }}>Patients History</div>
                                         
-                            </div>
-                                    <div
+                        </div>
+                        <div
                                 style={{
                                 display: "flex",
                                 justifyContent: "flex-end", // Aligns content to the right
                                 width: "100%",
                                 padding: "10px",
                                 }}
-                            >
-                            
-                                <div className="filter-container">
+                        >
+                            <div className="filter-container">
                                     <input type="text" placeholder="Search" className="alloversearchbar" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} 
                                     style={{ padding: "5px", border: "1px solid #ccc", borderRadius: "5px", outline: "none",}} />
 
-                                    <input type="date" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)}
+                                    <input type="month" value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)}
                                     style={{ padding: "5px", border: "1px solid #ccc", borderRadius: "5px", outline: "none", flexGrow: 1 }} />
 
-                                    <select value={quickFilter} onChange={(e) => setQuickFilter(e.target.value)}
-                                        style={{ padding: "5px 10px", border: "1px solid #ccc", borderRadius: "5px", backgroundColor: "#fff", color: "#333", cursor: "pointer", outline: "none" }}
-                                        >
-                                        
-                                        <option value="1-day">1 Day</option>
-                                        <option value="1-week">1 Week</option>
-                                        <option value="15-days">15 Days</option>
-                                        <option value="1-month">1 Month</option>
-                                        <option value="6-months">6 Months</option>
-                                        <option value="1-year">1 Year</option>
-                                        <option value="All">All</option>
-                                        
-                                    </select>
-                                </div>
+                                    <input type="date" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)}
+                                    style={{ padding: "5px", border: "1px solid #ccc", borderRadius: "5px", outline: "none", flexGrow: 1 }} />
+                            </div>
                         </div>
-                        <table className="data-table table nowrap  table-striped landingPage-Table">
-                            <thead>
-                                <tr>
-                                    <th>Phone Number</th>
-                                    <th>Name</th>
-                                    <th>Reason</th>
-                                    <th>Assigned Consultant</th>
-                                    <th>Appointment Date</th>
-                                    <th>Follow Date</th>
-                                    
-                                    <th>Action</th>
-                                    
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {filteredReports.length === 0 ? (
-                                <tr>
-                                    <td colSpan="7" style={{ textAlign: "center" }}>No data found</td>
-                                </tr>
-                                ) : (
-                            filteredReports.map((row, index) => (
-                                    <tr key={index}>
-                                        <td>{row.phoneNumber}</td>
-                                        <td>{row.patientName}</td>
-                                        <td>{row.reason_for_visit}</td>
-                                        <td>{row.reason_for_visit1 || " ---"}</td>
-                                        <td>{row.appointment_date || " --- "}</td>
-                                        <td>{row.followUpDate ||"---"}</td>
-                                        <td>    
-                                            <div className="dropdown" style={{marginRight:"20px"}}>
-                                            <button  className="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle text-decoration-none"
-                                                type="button" onClick={() => setOpenDropdown(openDropdown === index ? null : index)} >
-                                                    <i className="dw dw-more"></i>
-                                                </button>
-                                                <ul className={`dropdown-menu dropdown-menu-end dropdown-menu-icon-list ${openDropdown === index ? "show" : ""}`} style={{marginRight:"1000px"}}>
+                        <table className="data-table table nowrap table-striped landingPage-Table">
+                <thead>
+                    <tr>
+                        <th>Phone Number</th>
+                        <th>Name</th>
+                        <th>Reason</th>
+                        <th>Assigned Consultant</th>
+                        <th>Appointment Date</th>
+                        <th>Follow Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {currentItems.length === 0 ? (
+                        <tr>
+                            <td colSpan="7" style={{ textAlign: "center" }}>No data found</td>
+                        </tr>
+                    ) : (
+                        currentItems.map((row, index) => (
+                            <tr key={index}>
+                                <td>{row.phoneNumber}</td>
+                                <td>{row.patientName}</td>
+                                <td>{row.reason_for_visit}</td>
+                                <td> {Array.isArray(row.consultants) ? [...new Set(row.consultants.map(c => c.name))].join(" , ") : " ---"}</td>
 
-                                                    <li>
-                                                    <a className="dropdown-item" onClick={viewPrescription(row.prescriptionId)} >
+                                <td>{row.appointment_date || " --- "}</td>
+                                <td>{row.followUpDate || "---"}</td>
+                                <td>
+                                    <div className="dropdown" style={{ marginRight: "20px" }}>
+                                        <button
+                                            className="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle text-decoration-none"
+                                            type="button"
+                                            onClick={() => setOpenDropdown(openDropdown === index ? null : index)}
+                                        >
+                                            <i className="dw dw-more"></i>
+                                        </button>
+                                        <ul
+                                            className={`dropdown-menu dropdown-menu-end dropdown-menu-icon-list ${openDropdown === index ? "show" : ""}`}
+                                            style={{ marginRight: "1000px" }}
+                                        >
+                                            <li>
+                                                <a
+                                                    className="dropdown-item"
+                                                    onClick={() => viewPrescription(row.prescriptionId)}
+                                                >
+                                                    <i className="dw dw-eye"></i> View
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a
+                                                    className="dropdown-item"
+                                                    onClick={() => editPrescription(row.prescriptionId)}
+                                                >
+                                                    <i className="dw dw-edit2"></i> Edit
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))
+                    )}
+                </tbody>
+            </table>
 
-                                                        <i className="dw dw-eye" ></i>view
-                                                        
-                                                    </a>
-                                                    </li>
-                                                    <li>
-                                                    <a className="dropdown-item" onClick={editPrescription(row.prescriptionId)} >
-                                                        <i className="dw dw-edit2"></i> Edit
-                                                    </a>
-                                                    </li>
-                                                    
-                                                </ul>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                            </tbody>
-                        </table>
-                        
-                        <div style={{ marginTop: "10px",bottom:"0",zIndex:"1001",position:"fixed", display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
+            {/* Pagination Controls */}
+            <div className="pagination-controls">
+                <button 
+                    disabled={currentPage === 1} 
+                    onClick={() => paginate(currentPage - 1)}
+                >
+                    <FaChevronLeft />
+                </button>
+                <span>{currentPage} / {totalPages}</span>
+                <button 
+                    disabled={currentPage === totalPages} 
+                    onClick={() => paginate(currentPage + 1)}
+                >
+                    <FaChevronRight />
+                </button>
+            </div>
+                        <div style={{ marginTop: "10px", display: "flex",gap:"15px", flexWrap: "wrap", justifyContent: "center" }}>
                             <button className="btn btn-success btn btn-success" onClick={exportToExcel} style={{ margin: "5px" }}>
                                 <FaFileExcel /> Download Excel
                             </button>

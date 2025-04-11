@@ -128,10 +128,14 @@ useEffect(() => {
     
 
         try {
-            let paid = Number(paymentDetails) || 0;
+            /* let paid = Number(paymentDetails) || 0; */
             let TotalAmount = 500;
-            /* let dueAmount = TotalAmount - paid; */
-            let dueAmount = Math.max(0, TotalAmount - Number(paid)); 
+            let paidAmount = Number(paymentDetails); // Ensure paymentDetails is treated as a number
+            
+            let dueAmount = paidAmount > TotalAmount ? `+${paidAmount - TotalAmount}` : Math.max(0, TotalAmount - paidAmount);
+            
+            console.log(dueAmount);
+            
     
             const earningsRef = collection(db, "Earning"); // Reference to the "Earning" collection
 
@@ -145,7 +149,8 @@ useEffect(() => {
                     await updateDoc(docRef, {
                         phoneNumber,
                         TotalAmount,
-                        PaidAmount: paid,
+                        
+                        PaidAmount: paidAmount,
                         dueAmount,
                     });
                 });
@@ -363,7 +368,7 @@ useEffect(() => {
                             <div className="row">
                                 <div className="col-md-6 col-sm-12">
                                     <div className="form-group">
-                                        <label>Radiograph Reports</label>
+                                        <label>Diagnostic Reports</label>
                                         <input type="text" className="form-control" value={diagnosticReports} onChange={(e) => setDiagnosticReports(e.target.value)}/>
                                     </div>
                                 </div>
