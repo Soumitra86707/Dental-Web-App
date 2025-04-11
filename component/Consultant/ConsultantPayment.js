@@ -120,7 +120,7 @@ const PatientForm = ({ id, setIsVisible }) => {
       // If no `id`, create a new document
       const docRef = await addDoc(collection(db, "consultantPayment"), paymentData);
       paymentData.PaymentId = docRef.id;  // Save the generated doc ID as PaymentId
-      console.log("New document created with ID:", docRef.id);
+   
     }
   
     // Handle earning data as well
@@ -155,7 +155,7 @@ const PatientForm = ({ id, setIsVisible }) => {
       // If no `id`, create a new document
       const docRef = await addDoc(collection(db, "Earning"),  earningData);
       earningData.PaymentId = docRef.id;  // Save the generated doc ID as PaymentId
-      console.log("New document created with ID:", docRef.id);
+      
     }
 
   

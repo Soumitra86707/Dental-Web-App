@@ -19,7 +19,7 @@ const [examinationDate, setExaminationDate] = useState("");
     const [reportDate, setReportDate] = useState("");
     const [isEditing, setIsEditing] = useState(false);
     const navigate = useNavigate(); 
-  console.log("jh df jdhg:",id);
+ 
   
   useEffect(() => {
     if (id) {
@@ -35,8 +35,7 @@ const [examinationDate, setExaminationDate] = useState("");
             setPatientId(data.patientId);
             setPhoneNumber(data.phoneNumber || '125'); 
             setSelectedExamReport(ExamineReports);
-            console.log("selhfbnjbhv:",ExamineReports);
-            console.log("bf dnfbvf dnfbvfnd:",data.patientName);
+            
             setSelectedPatient(data.patientName || 'soumitra');
             /* setPatientOptions(data.patientName); */
             setReportName(data.reportName);
@@ -221,7 +220,7 @@ const [examinationDate, setExaminationDate] = useState("");
                 type="text"
                 className="form-control"
                 value={phoneNumber}
-                console={console.log(phoneNumber)} 
+                
                 onKeyPress={(e) => {
                   if (!/[0-9]/.test(e.key)) e.preventDefault();
                 }}
@@ -247,7 +246,7 @@ const [examinationDate, setExaminationDate] = useState("");
               <select
                 className="form-control"
                 value={selectedPatient} // Ensure the selected value is controlled
-                console={console.log("i love you :",selectedPatient)} 
+                 
                 onChange={(e) => {
                   const selected = e.target.value;
                   setSelectedPatient(selected);
@@ -274,7 +273,7 @@ const [examinationDate, setExaminationDate] = useState("");
               <select
                 className="form-control"
                 value={selectedExamReport}
-                console={console.log("i love you :",selectedExamReport)} 
+                
                 onChange={(e) => setSelectedExamReport(e.target.value)}
               >
                 <option value="">Select Report</option>

@@ -4,7 +4,7 @@ import { db } from "../Config/FirebaseConfig"; // Adjust import as per your proj
 
 export const fetchEarningsData = async (doctorId, earningsViewMode) => {
   try {
-    console.log("earningsViewMode:", earningsViewMode);  // Log earningsViewMode value
+   
 
     const now = moment();
     let startDate, monthsCount,timeUnits, categories = [];
@@ -66,7 +66,7 @@ export const fetchEarningsData = async (doctorId, earningsViewMode) => {
       earnings[i] = totalCredits - totalDebits;
 
       if (earningsViewMode  === "sixMonths") {
-        console.log("earning Counts: ", earnings);
+      
     }
     }
 

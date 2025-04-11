@@ -69,8 +69,7 @@ function ViewReport() {
     
           
     if (dateFilter) {
-      console.log("Filtering reports for date:", dateFilter);
-  
+      
       filtered = filtered.filter(report => {
 
   

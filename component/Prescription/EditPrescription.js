@@ -48,7 +48,7 @@ useEffect(() => {
         return;
     }
 
-    console.log("Fetching for:", prescriptionId);
+   
 
     try {
         const prescriptionsRef = collection(db, "prescriptions");
@@ -60,7 +60,7 @@ useEffect(() => {
         const querySnapshot = await getDocs(q);
         if (!querySnapshot.empty) {
             const latestPrescription = querySnapshot.docs[0].data();
-            console.log("Latest Prescription:", latestPrescription);
+            
 
             if (latestPrescription.medicine) {
                 setEntries(latestPrescription.medicine);
@@ -73,7 +73,7 @@ useEffect(() => {
                 setProposedTreatmentPlan(latestPrescription.proposedTreatmentPlan);
                 setPaymentDetails(latestPrescription.paymentDetails || "");
                 setFollowUpDate(latestPrescription.followUpDate);
-                console.log("Latest Prescription:", latestPrescription.medicine);
+                
             }
         } else {
             console.log("No prescription found.");
@@ -134,7 +134,7 @@ useEffect(() => {
             
             let dueAmount = paidAmount > TotalAmount ? `+${paidAmount - TotalAmount}` : Math.max(0, TotalAmount - paidAmount);
             
-            console.log(dueAmount);
+            
             
     
             const earningsRef = collection(db, "Earning"); // Reference to the "Earning" collection
@@ -155,7 +155,7 @@ useEffect(() => {
                     });
                 });
             } else {
-                console.log("No document found with invoiceId:", prescriptionId);
+                
             }
     
         } catch (error) {

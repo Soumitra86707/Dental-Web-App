@@ -137,7 +137,7 @@ function ViewReport() {
         report.laboratoryName?.toLowerCase().includes(searchQuery.toLowerCase()) 
     );
     if (dateFilter) {
-      console.log("vdbfvbdhf :", dateFilter);
+      
       filtered = filtered.filter(report => 
         new Date(report.uploadDate.replace(/_/g, "-")).toISOString().split("T")[0] === dateFilter
     );
@@ -286,7 +286,7 @@ function ViewReport() {
 const handleSubmit = async (e) => {
   e.preventDefault();
   const finalLaboratoryName = selectedLab === "Other" ? customLabName : selectedLab;
-  console.log(finalLaboratoryName, totalAmount, paidAmount, file, issueDate, isEditing);
+  
   
   if (!finalLaboratoryName || !totalAmount || !paidAmount || (!file && !isEditing) || !issueDate) {
       alert("Please fill in all fields, including the invoice issue date and upload a file.");
@@ -294,8 +294,7 @@ const handleSubmit = async (e) => {
   }
 
   const dueAmount = (parseFloat(totalAmount) - parseFloat(paidAmount)).toFixed(2);
-  // const invoiceId = isEditing ? invoiceId : Date.now().toString(); // Ensure invoiceId is valid
-  console.log(invoiceId);
+
   try {
       
       const currentDate = new Date();
@@ -305,7 +304,7 @@ const handleSubmit = async (e) => {
 
       const formattedTime = currentDate.toLocaleTimeString();
 
-      console.log(invoiceId);
+      
 
       if (isEditing) {
           // Update existing invoice
@@ -328,7 +327,7 @@ const handleSubmit = async (e) => {
                   invoiceIssueDate: issueDate,
               });
           
-              console.log("Invoice updated successfully!");
+              
           
               // Handle File Upload
               if (docSnap.exists() && file) {
@@ -353,7 +352,7 @@ const handleSubmit = async (e) => {
                   // Update Firestore with file info
                   await updateDoc(invoiceRef, { fileName, fileUrl });
           
-                  console.log("File updated successfully!");
+                
               }
           } else {
               console.error("No matching invoice found for updating.");
@@ -483,9 +482,9 @@ const generateinvoiceId = (length = 20) => {
         if (docSnap.exists()) {
           
           const data = docSnap.data();
-          console.log(data);
+          
           setInvoiceId(data.invoiceId);
-          console.log(invoiceId);
+          
           setSelectedLab(data.laboratoryName || "");
           setCustomLabName(data.customLabName || "");
           setTotalAmount(data.totalAmount || "");

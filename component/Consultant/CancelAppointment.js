@@ -181,13 +181,13 @@ const CancelConsultantAppointment = () => {
   
       const cancelPromises = selectedPatients.map(async (patient) => {
         const { id: patientId,PrescriptionId:PrescriptionId, appointmentId } = patient;
-        console.log("hjddhj",appointmentId);
+        
         // 🔥 1. Update the prescriptions > consultants array by removing the matching checkId
         const prescriptionRef = doc(db, "prescriptions", PrescriptionId);
         const prescriptionSnap = await getDoc(prescriptionRef);
   
         if (prescriptionSnap.exists()) {
-            console.log("hjddsfdsfhj",appointmentId);
+            
           const data = prescriptionSnap.data();
           const consultants = data.consultants || [];
 

@@ -55,8 +55,7 @@ function Prescription() {
                     setAge(data.age);
                     setChiefComplaint(data.reason_for_visit);
                     setPatientId(data.patient_id);
-                    console.log(data);
-                    /* console.log(phoneNumber); */
+                    
                     // Fetch the most recent prescription based on patient_id & reasonForVisit
                      fetchLatestPrescription(data.patient_id, data.reason_for_visit); 
                 } else {
@@ -77,7 +76,7 @@ const fetchLatestPrescription = async (patientId, reasonForVisit) => {
         return;
     }
 
-    console.log("Fetching for:", patientId, reasonForVisit);
+   
 
     try {
         const prescriptionsRef = collection(db, "prescriptions");
@@ -92,7 +91,7 @@ const fetchLatestPrescription = async (patientId, reasonForVisit) => {
         const querySnapshot = await getDocs(q);
         if (!querySnapshot.empty) {
             const latestPrescription = querySnapshot.docs[0].data();
-            console.log("Latest Prescription:", latestPrescription);
+            
 
             if (latestPrescription.medicine) {
                 setEntries(latestPrescription.medicine);
@@ -100,7 +99,7 @@ const fetchLatestPrescription = async (patientId, reasonForVisit) => {
                 setOnExamination(latestPrescription.onExamination);
                 setRadiographReports(latestPrescription.radiographReports);
                 setProposedTreatmentPlan(latestPrescription.proposedTreatmentPlan);
-                console.log("Latest Prescription:", latestPrescription.medicine);
+                
             }
         } else {
             console.log("No prescription found.");
@@ -203,7 +202,7 @@ const fetchLatestPrescription = async (patientId, reasonForVisit) => {
         
         let dueAmount = paidAmount > TotalAmount ? `+${paidAmount - TotalAmount}` : Math.max(0, TotalAmount - paidAmount);
         
-       /*  console.log(dueAmount); */
+     
         
         
         await addDoc(collection(db, "Earning"), {

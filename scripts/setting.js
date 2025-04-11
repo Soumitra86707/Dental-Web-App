@@ -216,7 +216,7 @@ jQuery(document).ready(function () {
 	$(".time-picker-default").timeDropper();
 
 	// var color = $('.btn').data('color');
-	// console.log(color);
+	
 	// $('.btn').style('color'+color);
 	$("[data-color]").each(function () {
 		$(this).css("color", $(this).attr("data-color"));

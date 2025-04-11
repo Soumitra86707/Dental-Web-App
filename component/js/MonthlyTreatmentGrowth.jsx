@@ -28,14 +28,13 @@ const UseFetchPatientGrowth = () => {
                     }
                 });
 
-                console.log("prevMonthCount:", prevMonthCount);
-                console.log("currentMonthCount:", currentMonthCount);
+            
 
                 // Calculate growth rate correctly
                 let growthRate = prevMonthCount > 0 
                     ? ((currentMonthCount - prevMonthCount) / prevMonthCount) * 100 
                     : currentMonthCount > 0 ? 100 : 0;
-                console.log("growthRate:", growthRate);
+               
                 setPatientGrowth({ prevMonth: prevMonthCount, currentMonth: currentMonthCount, growthRate });
             } catch (error) {
                 console.error("Error fetching previous month's patient records:", error);

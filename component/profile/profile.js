@@ -80,7 +80,7 @@ function Profile() {
               setProfileData(docSnap.data());
               setFileName1(docSnap.data().profilePictureName || "");
               setOldImageUrl(docSnap.data().profilePicture || "");
-              console.log("Profile pic:",docSnap.data().profilePictureName);
+              
             } else {
               console.log("No profile found!");
             }
@@ -143,7 +143,7 @@ function Profile() {
                     profilePictureName: fileName, // Store the file name
                 });
         
-                console.log("Profile data updated successfully!"); 
+               
                 window.location.reload(); 
         } catch (error) {  
             console.error("Error updating profile data:", error);  
@@ -156,10 +156,7 @@ function Profile() {
             const profileRef = doc(db, "profile", "1234");  
     
             await updateDoc(profileRef,{ password: hashedPassword });
-            console.log("password",passwordChange);
-            console.log("password",hashedPassword);    
-    
-            console.log("Password  updated successfully!");  
+
         } catch (error) {  
             console.error("Error updating password change status:", error);  
         }  

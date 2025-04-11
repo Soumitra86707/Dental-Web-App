@@ -77,7 +77,7 @@ const todayFormatted = `${yyyy}_${mm}_${dd}`;
 
   const recentTime = now.toTimeString().split(" ")[0]; // HH:MM:SS
   const handleAddPrescription = (appointmentId) => {
-    console.log("Clicked appointment ID:", appointmentId); // Debugging
+    
     if (!appointmentId) {
         console.error("Appointment ID is missing!");
         return;

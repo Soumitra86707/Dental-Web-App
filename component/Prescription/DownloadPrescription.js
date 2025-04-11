@@ -68,7 +68,7 @@ const DownloadPrescription = () => {
         fetchDoctorProfile();
     }, [prescriptionId]);
 
-    console.log(formData);
+   
     const formatDate1 = (dateString) => {
         if (!dateString) return "N/A"; // Handle missing values
         const [year, month, day] = dateString.split("-");

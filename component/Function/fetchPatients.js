@@ -54,7 +54,7 @@ export const fetchPatientsData = async (viewMode) => {
       moment(a, labelFormat).diff(moment(b, labelFormat))
     );
     const data = categories.map((label) => patientsData[label]);
-    console.log("data:", data);
+    
     return { data, categories };
   } catch (error) {
     console.error("Error fetching patient data:", error);

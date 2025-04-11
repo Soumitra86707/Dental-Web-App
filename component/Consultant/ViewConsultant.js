@@ -67,7 +67,7 @@ function ViewConsultant() {
           try {
             const photoRef = ref(storage, photoURL);
             await deleteObject(photoRef);
-            console.log("Image deleted successfully");
+            
           } catch (error) {
             console.error("Error deleting image:", error);
           }

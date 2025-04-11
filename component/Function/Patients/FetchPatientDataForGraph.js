@@ -3,7 +3,7 @@ import moment from "moment";
 import { db } from "../../Config/FirebaseConfig"; // Adjust based on your structure
 
 export const fetchPatientsData = async (viewMode) => {
-    console.log("fetchPatientsData:", viewMode);
+    
   try {
     const now = moment();
     let startDate, timeUnits, categories = [];
@@ -63,13 +63,7 @@ export const fetchPatientsData = async (viewMode) => {
       patientCounts[i] = patientCount;
     }
 
-    if (viewMode === "daily") {
-      console.log("Daily Patient Counts: ", patientCounts); // Log the patient counts array
-    }else if (viewMode === "monthly") {
-        console.log("Monthly Patient Counts: ", patientCounts);
-    }else if (viewMode === "sixMonths") {
-        console.log("Weekly Patient Counts: ", patientCounts);
-    }
+
 
     return { data: patientCounts, categories };
   } catch (error) {

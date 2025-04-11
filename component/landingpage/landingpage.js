@@ -127,8 +127,7 @@ const Landingpage = ({ onLogin }) => {
                           ...snapshot.data(),
                       };
                       setProfiles(profileData);
-                      console.log("Fetched Profile Data:", profileData); // ✅ Log the full JSON
-                      console.log("Mobile Number:", profiles.phone); // ✅ Access property
+                      
                   } else {
                       console.log("No such document!");
                   }
@@ -212,7 +211,7 @@ const Landingpage = ({ onLogin }) => {
         const querySnapshot = await getDocs(q);
   
         if (!querySnapshot.empty) {
-          const response = await axios.post("https://cladentapp.up.railway.app/api/auth/send-otp", { email });
+          const response = await axios.post("https://cladentappendpoint.up.railway.app/api/auth/send-otp", { email });
             toast.success("OTP Sent SuccessFfull! Redirecting...", {
               autoClose: 3000, // 10 seconds
               className: "custom-toast",
@@ -240,7 +239,7 @@ const Landingpage = ({ onLogin }) => {
     const handleResetPassword = async (e) => {
       e.preventDefault();
       try {
-        const response = await axios.post("https://cladentapp.up.railway.app/api/auth/verify-otp", {
+        const response = await axios.post("https://cladentappendpoint.up.railway.app/api/auth/verify-otp", {
           email,
           otp,
         });
@@ -249,7 +248,7 @@ const Landingpage = ({ onLogin }) => {
           setOtp("");
           setPage("resetPassword"); // OTP is verified, show the new password section
    
-          setMessage("OTP Verified! Please Create your new password.");
+          
           toast.success("OTP Verified! Please Create your new password.", {
             autoClose: 3000, // 10 seconds
             className: "custom-toast",
@@ -276,12 +275,10 @@ const Landingpage = ({ onLogin }) => {
     const handlePasswordChange = async () => {
       try {
         const hashedPassword = await bcrypt.hash(password, 10);
-        console.log(email);
-        console.log(password);
-        console.log(hashedPassword);
+        
         const q = query(collection(db, "profile"), where("email", "==", email));
         const querySnapshot = await getDocs(q);
-        console.log(querySnapshot);
+       
         if (!querySnapshot.empty) {
           const userDoc = querySnapshot.docs[0].ref;
           await updateDoc(userDoc, {
@@ -464,7 +461,7 @@ const Landingpage = ({ onLogin }) => {
 
     emailjs.send('service_qe5wqvp', 'template_iznpaft', formData, 'IslWuBapTdn4z-Q7x')
       .then((response) => {
-        console.log('Email sent successfully:', response);
+        
         alert('Message sent successfully!');
       }, (err) => {
         console.log('Failed to send email:', err);

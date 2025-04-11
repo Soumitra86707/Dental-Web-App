@@ -143,11 +143,7 @@ function BookAppointment() {
           setSelectedIssues(latestRecord.patient_dental_history || []);
           setMedicalHistory(latestRecord.patient_medical_history || []);
   
-          // ✅ Logging after state updates (useEffect is better for confirming state)
-          console.log("Latest FormData:", newFormData);
-          console.log("Gender:", latestRecord.gender);
-          console.log("Age:", latestRecord.age);
-          console.log("Gender2:", userGender);
+
         } else {
           console.log("No patient records found.");
         }
@@ -156,9 +152,7 @@ function BookAppointment() {
       }
     }
   };
-  useEffect(() => {
-    console.log("Updated Gender:", userGender);
-  }, [userGender]); // This will log whenever userGender changes
+
   
 
 
@@ -424,7 +418,7 @@ const handlePhoneChange = async (e) => {
               await setDoc(patientDocRef, updatedData, { merge: true });
       
               // Log updated data to the console
-              console.log("Updated Patient Data:", updatedData);
+              
           } else {
               // Add new patient
               const newPatientData = {
@@ -454,8 +448,7 @@ const handlePhoneChange = async (e) => {
       
               await addDoc(patientsCollection, newPatientData);
       
-              // Log new patient data to the console
-              //console.log("New Patient Data Added:", newPatientData);
+      
           }
       }
       
@@ -570,9 +563,7 @@ const handlePhoneChange = async (e) => {
     });
   };
 
-  useEffect(() => {
-    console.log("Updated formData:", formData);
-  }, [formData]);
+
   return (
     <div className="App">
       <div className="main-container">
@@ -728,7 +719,7 @@ const handlePhoneChange = async (e) => {
                                     const newAge = e.target.value;
                                     
                                     setUserAge(newAge);
-                                    console.log("Updated Age:", newAge);
+                                    
 
                                   }}  disabled={userType === "doctor"}
                               />
@@ -766,7 +757,7 @@ const handlePhoneChange = async (e) => {
                                   const newEmail = e.target.value;
                                   
                                   setUserEmail(newEmail);
-                                  console.log("Updated Email:", newEmail);
+                                  
 
                                 }}
                                 disabled={userType === "doctor"}

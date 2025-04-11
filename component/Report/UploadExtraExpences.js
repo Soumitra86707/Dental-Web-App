@@ -17,11 +17,11 @@ const PatientForm = ({ id, setIsVisible }) => {
   const [formData, setFormData] = useState(null);
   const navigate = useNavigate();
 
-console.log("id asche na :",id);
+
 
   useEffect(() => {
     if (id) {
-      console.log("id asche na 1:",id);
+   
       const fetchFormData = async () => {
         const q = query(
           collection(db, "ExtraExpenses"),
@@ -120,14 +120,14 @@ console.log("id asche na :",id);
       if (!querySnapshot.empty) {
         const docRef = querySnapshot.docs[0].ref;
         await updateDoc(docRef, paymentData);
-        console.log("Expense document updated successfully!");
+        
       } else {
         console.log("No expense document found with this PaymentId.");
       }
     } else {
       const docRef = await addDoc(collection(db, "ExtraExpenses"), paymentData);
       paymentData.PaymentId = docRef.id; // Save generated doc ID as PaymentId
-      console.log("New expense document created with ID:", docRef.id);
+      
     }
   
     // Step 4: Handle Earning Data
@@ -160,7 +160,7 @@ console.log("id asche na :",id);
     } else {
       const docRef = await addDoc(collection(db, "Earning"), earningData);
       earningData.PaymentId = docRef.id;
-      console.log("New earning document created with ID:", docRef.id);
+      
     }
   
     // Step 5: Close the form and show success message

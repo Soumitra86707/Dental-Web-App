@@ -94,11 +94,10 @@ function ViewReport() {
     
           
     if (dateFilter) {
-      console.log("Filtering reports for date:", dateFilter);
+      
   
       filtered = filtered.filter(report => {
-          console.log("Checking report:", report.examinationDate, report.reportDate);
-          console.log("Checking report1:",report.reportDate);
+
   
           const examDate = new Date(report.examinationDate.replace(/_/g, "-")).toISOString().split("T")[0];
           const repDate = new Date(report.reportDate).toISOString().split("T")[0];

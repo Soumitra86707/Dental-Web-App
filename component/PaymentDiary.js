@@ -86,10 +86,10 @@ function PaymentDiary() {
             
         }
         if (monthFilter) {
-          console.log("Filtering reports for month:", monthFilter);
+          
       
           filtered = filtered.filter(report => {
-              console.log("Original createdAt:", report.createdAt);
+              
       
               // Ensure createdAt is a valid date and extract YYYY-MM format
               const createdMonth = (() => {
@@ -104,7 +104,7 @@ function PaymentDiary() {
                   return parsedDate.toISOString().slice(0, 7); // Extract YYYY-MM
               })();
       
-              console.log("Extracted Month:", createdMonth);
+              
               return createdMonth === monthFilter;
           });
       }

@@ -53,7 +53,7 @@ function Loading() {
 			[patientsViewMode]: fetchedData,
 		  }));
 		};
-		console.log("Patients:", patientsViewMode);
+		
 		loadPatientsData();
 	  }, [patientsViewMode]);
   

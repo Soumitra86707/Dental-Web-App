@@ -67,7 +67,7 @@ const AddConsultant = () => {
 
   useEffect(() => {
     if (id) {
-      console.log("Fetching consultant data for ID:", id);
+      
       const fetchConsultant = async () => {
         const docRef = doc(db, 'consultants', id);
         const docSnap = await getDoc(docRef);
@@ -99,7 +99,7 @@ const AddConsultant = () => {
     const file = e.target.files[0];
     if (file) {
       setPhoto(file);
-      console.log("New photo selected:", file);
+      
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewPhoto(reader.result);
@@ -129,7 +129,7 @@ const AddConsultant = () => {
           const oldPhotoRef = ref(storage, oldPhotoURL);
           try {
             await deleteObject(oldPhotoRef);
-            console.log("Old photo deleted successfully.");
+            
           } catch (error) {
             console.warn("Error deleting old photo:", error);
           }

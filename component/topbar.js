@@ -14,7 +14,7 @@ import {useNavigate} from 'react-router-dom';
 
 
 function Topbar({ onLogout }) {
-     const [isOpen, setIsOpen] = useState(false); 
+     /* const [isOpen, setIsOpen] = useState(false);  */
     const [isOpenProfile, setIsOpenProfile] = useState(false);
     const [openReport, setOpenReport] = useState(false);
     const [billingManagement, setBillingManagement] = useState(false);
@@ -93,7 +93,7 @@ function Topbar({ onLogout }) {
 
               setDoctorName(docSnap.data().fullName || "");
               setOldImageUrl(docSnap.data().profilePicture || "");
-              console.log("Profile pic:",docSnap.data().profilePictureName);
+              
             } else {
               console.log("No profile found!");
             }
@@ -151,15 +151,15 @@ return (
                         <span className="badge notification-active"></span>
                         </a>
  */}
-                        <div className={`dropdown-menu dropdown-menu-right ${isOpen ? "show" : ""}`}>
-                        <div className="notification-list mx-h-350 customscroll">
-                            <ul>
-                            <li>
-                                <p>FollowUp Date ,PatientsName, Patients PhoneNumber</p>
-                            </li>
-                            </ul>
-                        </div>
-                        </div>
+                        {/* <div className={`dropdown-menu dropdown-menu-right ${isOpen ? "show" : ""}`}>
+                            <div className="notification-list mx-h-350 customscroll">
+                                <ul>
+                                    <li>
+                                        <p>FollowUp Date ,PatientsName, Patients PhoneNumber</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div> */}
                     </div>
                 </div> 
                 <div className="user-info-dropdown" onClick={() => setIsOpenProfile(!isOpenProfile)}>
