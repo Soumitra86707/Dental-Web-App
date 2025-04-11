@@ -887,9 +887,9 @@ Reg. No. - 49867-A
 <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vinayak Nagar,Konena Agrahara,
 <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bengaluru-560017.</a></p>
         <p>Contact Number: <a href="tel:+91 974-121-7007">{profiles.phone}</a></p>
-        <p>Email: <a href="mailto:clinic@example.com">dr.nit.sel@gmail.com</a></p>
+        <p>Email: <a href="mailto:clinic@example.com">{profiles.email}</a></p>
        
-        <p >&copy; Soumitra Halder | FullStack Developer | All rights reserved.</p>
+        <p >&copy; Soumitra Halder | Full Stack Developer | All rights reserved.</p>
       
       </div>
 
