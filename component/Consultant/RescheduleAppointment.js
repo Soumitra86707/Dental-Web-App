@@ -16,8 +16,20 @@ const CancelConsultantAppointment = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [rescheduleDate, setRescheduleDate] = useState(null);
+const [columnsPerRow, setColumnsPerRow] = useState(3);
+  const patientsPerPage = 25;
 
-  const patientsPerPage = 6;
+  useEffect(() => {
+    const updateColumns = () => {
+      const width = window.innerWidth;
+      if (width >= 1200) setColumnsPerRow(4);
+      else if (width >= 768) setColumnsPerRow(3);
+      else setColumnsPerRow(2);
+    };
+    updateColumns();
+    window.addEventListener("resize", updateColumns);
+    return () => window.removeEventListener("resize", updateColumns);
+  }, []);
 
   const weekDayToNumber = {
     sunday: 0,
@@ -119,53 +131,57 @@ const CancelConsultantAppointment = () => {
 
   const totalPages = Math.ceil(filteredPatients.length / patientsPerPage);
 
-  const renderRows = () => {
-    if (currentPatients.length === 0) {
-      return (
-        <tr>
-          <td colSpan={6} className="text-center text-muted">
-            No data available for the selected consultant and date.
-          </td>
-        </tr>
-      );
-    }
-  
-    const rows = [];
-    for (let i = 0; i < currentPatients.length; i += 3) {
-      const row = (
-        <tr key={i}>
-          {[0, 1, 2].map(j => {
-            const patient = currentPatients[i + j];
-            return patient ? (
-              <React.Fragment key={j}>
-                <td>{patient.patientName} - {patient.reason}</td>
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={selectedPatients.some(p => p.id === patient.id)}
-                    onChange={() => handleCheckboxChange({
-                        id: patient.id,
-                        PrescriptionId: patient.prescriptionId,
-                        name: patient.patientName,
-                        reason: patient.reason,
-                        appointmentId: patient.appointmentId, // Make sure this is available in the patient object
-                      })}
-                  />
-                </td>
-              </React.Fragment>
-            ) : (
-              <>
-                <td>--</td>
-                <td>--</td>
-              </>
-            );
-          })}
-        </tr>
-      );
-      rows.push(row);
-    }
-    return rows;
-  };
+ 
+   const renderRows = () => {
+     if (currentPatients.length === 0) {
+       return (
+         <tr>
+           <td colSpan={columnsPerRow * 2} className="text-center text-muted">
+             No data available for the selected consultant and date.
+           </td>
+         </tr>
+       );
+     }
+ 
+     const rows = [];
+     for (let i = 0; i < currentPatients.length; i += columnsPerRow) {
+       const row = (
+         <tr key={i}>
+           {Array.from({ length: columnsPerRow }).map((_, j) => {
+             const patient = currentPatients[i + j];
+             return patient ? (
+               <React.Fragment key={j}>
+                 <td>{patient.patientName} - {patient.reason}</td>
+                 <td>
+                   <input
+                     type="checkbox"
+                     checked={selectedPatients.some((p) => p.id === patient.id)}
+                     onChange={() =>
+                       handleCheckboxChange({
+                         id: patient.id,
+                         PrescriptionId: patient.prescriptionId,
+                         name: patient.patientName,
+                         reason: patient.reason,
+                         appointmentId: patient.appointmentId,
+                       })
+                     }
+                   />
+                 </td>
+               </React.Fragment>
+             ) : (
+               <>
+                 <td>--</td>
+                 <td>--</td>
+               </>
+             );
+           })}
+         </tr>
+       );
+       rows.push(row);
+     }
+     return rows;
+   };
+ 
   
   const handleReschedule = async (e) => {
     e.preventDefault();
@@ -311,19 +327,19 @@ const CancelConsultantAppointment = () => {
                     />
                   </div>
                 </div>
-                <table className="table table-bordered text-center">
-                  <thead className="thead-light">
-                    <tr>
-                      <th>Patient - Reason</th>
-                      <th>Select</th>
-                      <th>Patient - Reason</th>
-                      <th>Select</th>
-                      <th>Patient - Reason</th>
-                      <th>Select</th>
-                    </tr>
-                  </thead>
-                  <tbody>{renderRows()}</tbody>
-                </table>
+                <table className="table table-bordered text-center mt-3">
+                                  <thead className="thead-light">
+                                    <tr>
+                                      {Array.from({ length: columnsPerRow }).map((_, i) => (
+                                        <React.Fragment key={i}>
+                                          <th>Patient - Reason</th>
+                                          <th>Select</th>
+                                        </React.Fragment>
+                                      ))}
+                                    </tr>
+                                  </thead>
+                                  <tbody>{renderRows()}</tbody>
+                                </table>
                 <div className="pagination-controls">
                   <button
                     type="button"
@@ -361,13 +377,3 @@ const CancelConsultantAppointment = () => {
 
 export default CancelConsultantAppointment;
 
-const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
-    <input
-      className="form-control w-100 border-0 px-2 py-1"
-      style={{ cursor: "pointer" }}
-      onClick={onClick}
-      ref={ref}
-      value={value}
-      readOnly
-    />
-  ));
