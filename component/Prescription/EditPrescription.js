@@ -13,9 +13,9 @@ import { useParams ,useNavigate} from "react-router-dom";
 function Prescription() {
     const { prescriptionId } = useParams(); 
     const navigate = useNavigate();
-    const [appointment, setAppointment] = useState(null);
+/*     const [appointment, setAppointment] = useState(null);
     const [patientsId, setPatientId] = useState("");
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true); */
     const [phoneNumber, setPhoneNumber] = useState("");
     const [age, setAge] = useState("");
     const [patientName, setPatientName] = useState("");
@@ -243,7 +243,7 @@ useEffect(() => {
                                 <div className="col-md-6 col-sm-12">
                                     <div className="form-group">
                                         <label>On Examination</label>
-                                        <input type="text" className="form-control" value={onExamination} onChange={(e) => setOnExamination(e.target.value)}/>
+                                        <input type="text" className="form-control" value={onExamination} onChange={(e) => setOnExamination(e.target.value)} required/>
                                     </div>
                                 </div>
                             </div>
@@ -252,13 +252,13 @@ useEffect(() => {
                                 <div className="col-md-6 col-sm-12">
                                     <div className="form-group">
                                         <label>Radiograph Reports</label>
-                                        <input type="text" className="form-control" value={radiographReports} onChange={(e) => setRadiographReports(e.target.value)}/>
+                                        <input type="text" className="form-control" value={radiographReports} onChange={(e) => setRadiographReports(e.target.value)} required/>
                                     </div>
                                 </div>
                                 <div className="col-md-6 col-sm-12">
                                     <div className="form-group">
                                         <label>Proposed Treatment Plan</label>
-                                        <input type="text" className="form-control" value={proposedTreatmentPlan} onChange={(e) => setProposedTreatmentPlan(e.target.value)}/>
+                                        <input type="text" className="form-control" value={proposedTreatmentPlan} onChange={(e) => setProposedTreatmentPlan(e.target.value)} required/>
                                     </div>
                                 </div>
                             </div>
@@ -303,17 +303,17 @@ useEffect(() => {
 
                                     <div className={entry.specificName === "other" ? "col-md-1 col-sm-12" : "col-md-2 col-sm-12"}>
                                         <label>Dosage</label>
-                                        <input type="text" className="form-control" value={entry.dosage || "500"} onChange={(e) => updateEntry(entry.id, "dosage", e.target.value)} placeholder={entry.type === "tablet" ? "500mg" : "500ml"}  onKeyPress={(e) => {
+                                        <input type="text" className="form-control" value={entry.dosage } onChange={(e) => updateEntry(entry.id, "dosage", e.target.value)} placeholder={entry.type === "tablet" ? "500mg" : "500ml"}  onKeyPress={(e) => {
                                             if (!/[0-9]/.test(e.key)) {
                                             e.preventDefault(); // Blocks non-numeric keys
                                             }
-                                        }}/>
+                                        }} required/>
                                     </div>
                                     <div className={entry.specificName === "other" ? "col-md-1 col-sm-12" : "col-md-1 col-sm-12"}>
                                         <label>Days</label>
-                                        <input type="text" className="form-control" value={entry.days || 1}  onChange={(e) => updateEntry(entry.id, "days", e.target.value)}  onInput={(e) => {
+                                        <input type="text" className="form-control" value={entry.days }  onChange={(e) => updateEntry(entry.id, "days", e.target.value)}  onInput={(e) => {
                                             e.target.value = e.target.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
-                                        }}/>
+                                        }} placeholder="0" required/>
                                     </div>
                                     <div className="col-md-4 col-sm-12"/* {entry.specificName === "other" ? "col-md-2 col-sm-12" : "col-md-3 col-sm-12"} */>
                                         <div className="form-group">
@@ -350,7 +350,7 @@ useEffect(() => {
 
                                     <div className={entry.specificName === "other" ? "col-md-1 col-sm-12" : "col-md-2 col-sm-12"}>
                                         <label>Food</label>
-                                        <select className="form-control" value={entry.food} onChange={(e) => updateEntry(entry.id, "food", e.target.value)}>
+                                        <select className="form-control" value={entry.food} onChange={(e) => updateEntry(entry.id, "food", e.target.value)} required>
                                             <option value="before">Before Food</option>
                                             <option value="after">After Food</option>
                                         </select>

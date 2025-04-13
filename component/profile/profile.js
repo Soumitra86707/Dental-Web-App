@@ -7,14 +7,13 @@ import "../../vendors/styles/style.css";
 import $ from "jquery";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { db, storage } from "../Config/FirebaseConfig";
-import { FaFileCsv, FaFileWord, FaFilePdf, FaFileExcel } from "react-icons/fa";
 import React from "react";
 import { CSVLink } from "react-csv";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { Document, Packer, Paragraph, Table, TableCell, TableRow } from "docx";
-import { collection, query, orderBy, getDocs,doc,setDoc,updateDoc ,getDoc} from "firebase/firestore";
+import { doc,onSnapshot,updateDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { FaDownload } from "react-icons/fa";
 import Cropper from "cropperjs";
@@ -69,28 +68,29 @@ function Profile() {
         password:""
     });
     useEffect(() => {
-        const fetchProfileData = async () => {
-          try {
-            const userId = "1234"; // Replace with the actual logged-in user ID
-            const docRef = doc(db, "profile", userId); // Fetch from 'profiles' collection
-            const docSnap = await getDoc(docRef);
-    
+        const fetchProfileData = () => {
+          const userId = "1234"; // Replace with the actual logged-in user ID
+          const docRef = doc(db, "profile", userId); // Reference to the 'profile' collection
+      
+          // Set up onSnapshot listener for real-time updates
+          const unsubscribe = onSnapshot(docRef, (docSnap) => {
             if (docSnap.exists()) {
               setProfileData1(docSnap.data());
               setProfileData(docSnap.data());
               setFileName1(docSnap.data().profilePictureName || "");
               setOldImageUrl(docSnap.data().profilePicture || "");
-              
             } else {
               console.log("No profile found!");
             }
-          } catch (error) {
-            console.error("Error fetching profile data:", error);
-          }
+          });
+      
+          // Cleanup listener on unmount
+          return () => unsubscribe();
         };
-    
+      
         fetchProfileData();
       }, []);
+      
     const handleChange = (e) => {
         const { name, value } = e.target;
         setProfileData((prev) => ({

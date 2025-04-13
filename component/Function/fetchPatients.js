@@ -1,8 +1,8 @@
 import { db } from "../Config/FirebaseConfig"; // Firestore instance
-import { collection, getDocs } from "firebase/firestore";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
 import moment from "moment"; // For handling date filtering
 
-export const fetchPatientsData = async (viewMode) => {
+export const fetchPatientsData = (viewMode, setPatientsData) => {
   try {
     const today = moment().endOf("day"); // End of the current day for proper range comparison
     let startDate;
@@ -30,34 +30,41 @@ export const fetchPatientsData = async (viewMode) => {
       return { data: [], categories: [] }; // Invalid mode
     }
 
-    // Query Firestore
+    // Query Firestore with a real-time listener
     const patientsData = {};
     const prescriptionQuery = collection(db, "Prescription");
-    const snapshot = await getDocs(prescriptionQuery);
+    
+    // Using onSnapshot to listen for changes in real-time
+    const unsubscribe = onSnapshot(prescriptionQuery, (snapshot) => {
+      snapshot.forEach((doc) => {
+        const { createdAt } = doc.data();
+        const date = moment(createdAt, "YYYY-MM-DD"); // Ensure correct date parsing
 
-    // Process Firestore data
-    snapshot.forEach((doc) => {
-      const { createdAt } = doc.data();
-      const date = moment(createdAt, "YYYY-MM-DD"); // Ensure correct date parsing
+        // Check if the date is within the desired range
+        if (date.isBetween(startDate, today, undefined, "[]")) {
+          const key = date.format(dateFormat); // Store actual date
+          const label = date.format(labelFormat); // Display formatted label
 
-      // Check if the date is within the desired range
-      if (date.isBetween(startDate, today, undefined, "[]")) {
-        const key = date.format(dateFormat); // Store actual date
-        const label = date.format(labelFormat); // Display formatted label
+          patientsData[label] = (patientsData[label] || 0) + 1;
+        }
+      });
 
-        patientsData[label] = (patientsData[label] || 0) + 1;
-      }
+      // Sort and structure data
+      const categories = Object.keys(patientsData).sort((a, b) => 
+        moment(a, labelFormat).diff(moment(b, labelFormat))
+      );
+      const data = categories.map((label) => patientsData[label]);
+
+      // Use the callback to update the state with new data
+      setPatientsData({ data, categories });
     });
 
-    // Sort and structure data
-    const categories = Object.keys(patientsData).sort((a, b) => 
-      moment(a, labelFormat).diff(moment(b, labelFormat))
-    );
-    const data = categories.map((label) => patientsData[label]);
-    
-    return { data, categories };
+    // Return the unsubscribe function so you can stop listening later
+    return unsubscribe;
+
   } catch (error) {
     console.error("Error fetching patient data:", error);
-    return { data: [], categories: [] };
+    setPatientsData({ data: [], categories: [] });
+    return () => {}; // Return a no-op function in case of error
   }
 };

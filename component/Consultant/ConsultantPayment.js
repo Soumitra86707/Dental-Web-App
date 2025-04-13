@@ -168,10 +168,7 @@ const PatientForm = ({ id, setIsVisible }) => {
               progress: undefined,
             });
         
-            // Redirect to dashboard after 10 seconds
-            setTimeout(() => {
-              navigate(0);
-            }, 2000);
+
   };
   
 

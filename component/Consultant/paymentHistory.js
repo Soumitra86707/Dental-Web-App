@@ -14,9 +14,10 @@ import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { Document, Packer, Paragraph, Table, TableCell, TableRow } from "docx";
-import { collection, query, orderBy, getDocs } from "firebase/firestore";
+import { collection, query, orderBy,  onSnapshot } from "firebase/firestore";
 import PatientForm from "./ConsultantPayment";
 
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 function ViewReport() {
   const [filteredReports, setFilteredReports] = useState([]);
@@ -27,34 +28,26 @@ function ViewReport() {
   const [loading, setLoading] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
-  
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
 
   useEffect(() => {
-    const fetchPatientsLabReports = async () => {
-      try {
-        const PatientsLabReportsCollection = collection(db, "consultantPayment");
-        const PatientsLabReportsQuery = query(PatientsLabReportsCollection, orderBy("createdTime", "desc"));
-        const PatientsLabReportsSnapshot = await getDocs(PatientsLabReportsQuery);
+    const PatientsLabReportsCollection = collection(db, "consultantPayment");
+    const PatientsLabReportsQuery = query(PatientsLabReportsCollection, orderBy("createdTime", "desc"));
   
-        const reportsArray = PatientsLabReportsSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-          
-        }));
+    const unsubscribe = onSnapshot(PatientsLabReportsQuery, (snapshot) => {
+      const reportsArray = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
   
-        setReportsData(reportsArray);
-        setFilteredReports(reportsArray); // Initialize filtered data
+      setReportsData(reportsArray);
+      setFilteredReports(reportsArray); // update filtered data
+      setLoading(false);
+    });
   
-        
-  
-      } catch (error) {
-        console.error("Error fetching reports: ", error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-  
-    fetchPatientsLabReports();
+    // ✅ This is the proper way to clean up onSnapshot listener
+    return () => unsubscribe();
   }, []);
   
 
@@ -120,7 +113,16 @@ function ViewReport() {
   if (loading) {
     return <div>Loading...</div>;
   }
+  const totalPages = Math.ceil(filteredReports.length / itemsPerPage);
 
+  // Get current page data
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredReports.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  
   const exportToExcel = () => {
     // Add Serial Numbers
     const dataWithSerialNumbers = filteredReports.map((row, index) => ({
@@ -284,12 +286,12 @@ const handleEdit = (id) => {
                   </tr>
                 </thead>
                 <tbody>
-                {filteredReports.length === 0 ? (
+                {currentItems.length === 0 ? (
                   <tr>
                     <td colSpan="7" style={{ textAlign: "center" }}>No data found</td>
                   </tr>
                 ) : (
-                  filteredReports.map((report) => (
+                  currentItems.map((report) => (
                     <tr key={report.id}>
                       <td className="table-plus">{report.consultantName}</td>
                       <td>{report.totalAmount}</td>
@@ -312,18 +314,31 @@ const handleEdit = (id) => {
                 )}
                 </tbody>
               </table>
+              <div className="pagination-controls">
+                              <button 
+                                  disabled={currentPage === 1} 
+                                  onClick={() => paginate(currentPage - 1)}
+                              >
+                                  <FaChevronLeft />
+                              </button>
+                              <span>{currentPage} / {totalPages}</span>
+                              <button 
+                                  disabled={currentPage === totalPages} 
+                                  onClick={() => paginate(currentPage + 1)}
+                              >
+                                  <FaChevronRight />
+                              </button>
+                          </div>
             <div 
                         style={{ 
                             marginTop: "15px", 
                             display: "flex", 
                             gap: "10px",
                             flexWrap: "wrap", 
-                            justifyContent: "center" // Align buttons properly in mobile view
+                            justifyContent: "center" 
                         }}
                         >
-                        {/* <CSVLink data={filteredReports} filename="Reports.csv" className="btn btn-primary">
-                            <FaFileCsv /> Download CSV
-                        </CSVLink> */}
+
                         <button className="btn btn-success" onClick={exportToExcel}>
                             <FaFileExcel /> Download Excel
                         </button>

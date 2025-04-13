@@ -174,9 +174,7 @@ const PatientForm = ({ id, setIsVisible }) => {
     });
   
     // Refresh the page after 2 seconds
-    setTimeout(() => {
-      navigate(0);
-    }, 2000);
+
   };
       
 

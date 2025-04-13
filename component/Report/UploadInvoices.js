@@ -3,10 +3,7 @@ import { db } from "../Config/FirebaseConfig"; // Import Firebase config
 import { collection, query, where, getDocs } from "firebase/firestore";
 
 const PatientForm = () => {
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [patientOptions, setPatientOptions] = useState([]);
-  const [selectedPatient, setSelectedPatient] = useState("");
-  const [customPatientName, setCustomPatientName] = useState("");
+
   const [selectedLab, setSelectedLab] = useState("");
   const [customLabName, setCustomLabName] = useState("");
   const [totalAmount, setTotalAmount] = useState("");

@@ -7,7 +7,7 @@ import "../vendors/styles/style.css";
 import $ from "jquery";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./loading.css";
-import { FaFileCsv, FaFileWord, FaFilePdf, FaFileExcel } from "react-icons/fa";
+import {   FaFileWord, FaFilePdf, FaFileExcel } from "react-icons/fa";
 import React from "react";
 import { CSVLink } from "react-csv";
 import * as XLSX from "xlsx";
@@ -30,7 +30,7 @@ function PaymentDiary() {
   const [quickFilter, setQuickFilter] = useState("1-day");
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 20;
   const [chartData, setChartData] = useState({
     lastSixMonths: [],
     lastYear: [],

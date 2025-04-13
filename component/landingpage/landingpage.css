@@ -642,38 +642,80 @@
   text-align: center;
   padding-bottom: 20px;
 }
-.landingpage-available-slots-container{
+.landingpage-available-slots-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-  
   justify-items: center;
-  /* align-items: center; */
-  padding:  20px 120px;
+  padding: 20px 200px;
 }
-/* .landingpage-available-slots-main-container{
-  display: flex;
-} */
-.landingpageslotbooking-available-text{
+
+.landingpageslotbooking-available-text {
   font-size: 25px;
   font-weight: 600;
   color: rgb(186, 179, 179);
 }
-.landingpage-available-slots-container-right-slots-container{
+
+.landingpage-available-slots-container-right-slots-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
   gap: 10px;
   max-width: 400px;
-
 }
-.landingpage-available-slots-container-right-slots-container-slot{
+
+.landingpage-available-slots-container-right-slots-container-slot {
   padding: 10px 30px;
   border-radius: 15px;
-  color:rgb(231, 219, 219);
-  background-color:rgba(210, 196, 196, 0.352);
+  color: rgb(231, 219, 219);
+  background-color: rgba(210, 196, 196, 0.352);
   font-size: 24px;
 }
+
+/* MOBILE STYLES */
+@media (max-width: 768px) {
+  .landingpageslotbooking-available-text {
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .landingpage-available-slots-container {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+  }
+
+  .landingpage-available-slots-container-right-slots-container {
+    justify-content: center;
+    max-width: 100%;
+  }
+
+  .landingpage-available-slots-container-right-slots-container-slot {
+    font-size: 18px;
+    padding: 8px 20px;
+  }
+}
+
+/* TABLET STYLES (same as desktop layout) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .landingpage-available-slots-container {
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 20px 40px;
+  }
+
+  .landingpage-available-slots-container-right-slots-container {
+    justify-content: space-around;
+    max-width: 400px;
+  }
+
+  .landingpage-available-slots-container-right-slots-container-slot {
+    font-size: 22px;
+    padding: 10px 25px;
+  }
+}
+
 /* 
 .landingpage-mobile-container {
   padding: 30px;

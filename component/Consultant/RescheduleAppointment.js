@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { db } from "../Config/FirebaseConfig";
-import { collection, getDocs, doc, getDoc, addDoc, updateDoc, arrayUnion ,query,where,deleteDoc}  from "firebase/firestore";
+import { collection, getDocs, doc, getDoc,onSnapshot, addDoc, updateDoc, arrayUnion ,query,where,deleteDoc}  from "firebase/firestore";
 import { toast } from "react-toastify";
 import Prescription from "../Prescription/EditPrescription";
 
@@ -24,7 +24,8 @@ const [columnsPerRow, setColumnsPerRow] = useState(3);
       const width = window.innerWidth;
       if (width >= 1200) setColumnsPerRow(4);
       else if (width >= 768) setColumnsPerRow(3);
-      else setColumnsPerRow(2);
+      
+      else setColumnsPerRow(1);
     };
     updateColumns();
     window.addEventListener("resize", updateColumns);
@@ -42,17 +43,26 @@ const [columnsPerRow, setColumnsPerRow] = useState(3);
   };
 
   useEffect(() => {
-    const fetchConsultants = async () => {
-      const querySnapshot = await getDocs(collection(db, "consultants"));
-      const consultantsList = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        name: doc.data().fname + " " + doc.data().lname,
-      }));
-      setConsultants(consultantsList);
+    const fetchConsultants = () => {
+      const consultantsCollection = collection(db, "consultants");
+  
+      // Set up onSnapshot listener for real-time updates
+      const unsubscribe = onSnapshot(consultantsCollection, (querySnapshot) => {
+        const consultantsList = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          name: doc.data().fname + " " + doc.data().lname,
+        }));
+  
+        setConsultants(consultantsList);
+      });
+  
+      // Cleanup listener on unmount
+      return () => unsubscribe();
     };
-
+  
     fetchConsultants();
   }, []);
+  
 
   const handleCheckboxChange = (patient) => {
     setSelectedPatients((prevSelected) => {
@@ -88,7 +98,7 @@ const [columnsPerRow, setColumnsPerRow] = useState(3);
     return !availableDays.includes(day);
   };
   useEffect(() => {
-    const fetchAppointments = async () => {
+    const fetchAppointments = () => {
       if (!selectedConsultant) return;
   
       const today = new Date().toLocaleDateString("en-CA");
@@ -99,17 +109,23 @@ const [columnsPerRow, setColumnsPerRow] = useState(3);
         where("date", ">=", today) // future dates only
       );
   
-      const querySnapshot = await getDocs(appointmentsQuery);
-      const appointments = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
+      // Set up onSnapshot listener for real-time updates
+      const unsubscribe = onSnapshot(appointmentsQuery, (querySnapshot) => {
+        const appointments = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        
+        setPatients(appointments);
+      });
   
-      setPatients(appointments);
+      // Cleanup listener on unmount or consultant change
+      return () => unsubscribe();
     };
   
     fetchAppointments();
   }, [selectedConsultant]);
+  
   
   
 
@@ -151,7 +167,7 @@ const [columnsPerRow, setColumnsPerRow] = useState(3);
              const patient = currentPatients[i + j];
              return patient ? (
                <React.Fragment key={j}>
-                 <td>{patient.patientName} - {patient.reason}</td>
+                 <td>{patient.patientName} - {patient.reason} - {patient.prescriptionDate || "None"}</td>
                  <td>
                    <input
                      type="checkbox"
@@ -237,9 +253,7 @@ const [columnsPerRow, setColumnsPerRow] = useState(3);
             });
         
             // Redirect to dashboard after 10 seconds
-            setTimeout(() => {
-              window.location.reload();
-            }, 2000);
+
       setSelectedPatients([]);
       setIssueDate(null);
       setRescheduleDate(null);
@@ -258,7 +272,7 @@ const [columnsPerRow, setColumnsPerRow] = useState(3);
           <div className="card-box xs-pd-20-10 pd-ltr-20">
             <form onSubmit={handleReschedule}>
               <h3>Consultant Reschedule Appoinment Form</h3>
-              <div className="row">
+              <div className="row" style={{marginTop:"40px"}}>
                 <div className="col-md-4 col-sm-12">
                   <div className="form-group">
                     <label>Choose Consultant</label>
@@ -332,7 +346,7 @@ const [columnsPerRow, setColumnsPerRow] = useState(3);
                                     <tr>
                                       {Array.from({ length: columnsPerRow }).map((_, i) => (
                                         <React.Fragment key={i}>
-                                          <th>Patient - Reason</th>
+                                          <th>Patient - Reason - Prescription Date</th>
                                           <th>Select</th>
                                         </React.Fragment>
                                       ))}

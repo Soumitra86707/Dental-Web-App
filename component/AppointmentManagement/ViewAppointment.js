@@ -6,7 +6,7 @@ import "../../plugins/datatables/css/responsive.bootstrap4.min.css";
 import "../../vendors/styles/style.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { db } from "../Config/FirebaseConfig";
-import { collection, getDocs ,query, where} from "firebase/firestore";
+import { collection, getDocs ,onSnapshot,query, where} from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 
 function ViewAppointment() {
@@ -19,27 +19,28 @@ function ViewAppointment() {
   const [userType, setUserType] = useState("patient"); // Placeholder for dynamic user type
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchAppointments();
-  }, []);
 
-  async function fetchAppointments() {
-    if (userType === "doctor") return; // Prevent fetching if user is a doctor
+
+  useEffect(() => {
+    if (userType === "doctor") return; // Skip fetching for doctors
   
-    try {
-      const appointmentsRef = collection(db, "Appointments");
+    const appointmentsRef = collection(db, "Appointments");
+    const q = query(appointmentsRef, where("userType", "==", "patient"));
   
-      // Query to fetch only those appointments where userType is "patient"
-      const q = query(appointmentsRef, where("userType", "==", "patient"));
-  
-      const snapshot = await getDocs(q);
-      const fetchedAppointments = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const fetchedAppointments = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
   
       setAppointments(fetchedAppointments);
-    } catch (error) {
+    }, (error) => {
       console.error("Error fetching appointments:", error);
-    }
-  }
+    });
+  
+    return () => unsubscribe(); // Clean up listener when component unmounts
+  }, [userType]);
+  
 
   function filterAppointments() {
     let filtered = [...appointments];

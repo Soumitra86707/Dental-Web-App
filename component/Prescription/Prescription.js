@@ -33,7 +33,7 @@ function Prescription() {
           specificName: "pan",
           name: "",
           dosage: "",
-          days: 1,
+          days: "",
           times: [],
           food: "before",
         },
@@ -99,6 +99,7 @@ const fetchLatestPrescription = async (patientId, reasonForVisit) => {
                 setOnExamination(latestPrescription.onExamination);
                 setRadiographReports(latestPrescription.radiographReports);
                 setProposedTreatmentPlan(latestPrescription.proposedTreatmentPlan);
+                setDiagnosticReports(latestPrescription.diagnosticReports);
                 
             }
         } else {
@@ -326,7 +327,7 @@ const fetchLatestPrescription = async (patientId, reasonForVisit) => {
                             <div className="row" key={entry.id}>
                                 <div className="col-md-1 col-sm-12">
                                     <label>Type</label>
-                                    <select className="form-control" value={entry.type} onChange={(e) => updateEntry(entry.id, "type", e.target.value)}>
+                                    <select className="form-control" value={entry.type} onChange={(e) => updateEntry(entry.id, "type", e.target.value)} required>
                                         <option value="tablet">Tablet</option>
                                         <option value="syrup">Syrup</option>
                                     </select>
@@ -334,14 +335,14 @@ const fetchLatestPrescription = async (patientId, reasonForVisit) => {
                                 <div className="col-md-1 col-sm-12">
                                     <label>Name</label>
                                     {entry.type === "tablet" ? (
-                                        <select className="form-control" value={entry.specificName} onChange={(e) => updateEntry(entry.id, "specificName", e.target.value)}>
+                                        <select className="form-control" value={entry.specificName} onChange={(e) => updateEntry(entry.id, "specificName", e.target.value)} required>
                                             <option value="">select</option>
                                             <option value="pan">Pan</option>
                                             <option value="lan">Lan</option>
                                             <option value="other">Other</option>
                                         </select>
                                     ) : entry.type === "syrup" ? (
-                                        <select className="form-control" value={entry.specificName} onChange={(e) => updateEntry(entry.id, "specificName", e.target.value)}>
+                                        <select className="form-control" value={entry.specificName} onChange={(e) => updateEntry(entry.id, "specificName", e.target.value)} required>
                                             <option value="">select</option>
                                             <option value="syrup1">Syrup1</option>
                                             <option value="syrup2">Syrup2</option>
@@ -365,13 +366,13 @@ const fetchLatestPrescription = async (patientId, reasonForVisit) => {
                                         if (!/[0-9]/.test(e.key)) {
                                         e.preventDefault(); // Blocks non-numeric keys
                                         }
-                                    }}/>
+                                    }} required/>
                                 </div>
                                 <div className={entry.specificName === "other" ? "col-md-1 col-sm-12" : "col-md-1 col-sm-12"}>
                                     <label>Days</label>
-                                    <input type="text" className="form-control" value={entry.days || 1}  onChange={(e) => updateEntry(entry.id, "days", e.target.value)}  onInput={(e) => {
+                                    <input type="text" className="form-control" value={entry.days }  onChange={(e) => updateEntry(entry.id, "days", e.target.value)}  onInput={(e) => {
                                         e.target.value = e.target.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
-                                    }}/>
+                                    }} placeholder="0" required/>
                                 </div>
                                 <div className="col-md-4 col-sm-12"/* {entry.specificName === "other" ? "col-md-2 col-sm-12" : "col-md-3 col-sm-12"} */>
                                     <div className="form-group">

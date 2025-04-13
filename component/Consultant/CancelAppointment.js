@@ -7,6 +7,7 @@ import {
   getDocs,
   doc,
   getDoc,
+  onSnapshot,
   updateDoc,
   query,
   where,
@@ -31,7 +32,7 @@ const CancelConsultantAppointment = () => {
       const width = window.innerWidth;
       if (width >= 1200) setColumnsPerRow(4);
       else if (width >= 768) setColumnsPerRow(3);
-      else setColumnsPerRow(2);
+      else setColumnsPerRow(1);
     };
     updateColumns();
     window.addEventListener("resize", updateColumns);
@@ -49,16 +50,21 @@ const CancelConsultantAppointment = () => {
   };
 
   useEffect(() => {
-    const fetchConsultants = async () => {
-      const querySnapshot = await getDocs(collection(db, "consultants"));
-      const consultantsList = querySnapshot.docs.map((doc) => ({
+    const consultantsRef = collection(db, "consultants");
+  
+    const unsubscribe = onSnapshot(consultantsRef, (snapshot) => {
+      const consultantsList = snapshot.docs.map((doc) => ({
         id: doc.id,
         name: doc.data().fname + " " + doc.data().lname,
       }));
       setConsultants(consultantsList);
-    };
-    fetchConsultants();
+    }, (error) => {
+      console.error("Error fetching consultants: ", error.message);
+    });
+  
+    return () => unsubscribe(); // Cleanup listener on unmount
   }, []);
+  
 
   const handleCheckboxChange = (patient) => {
     setSelectedPatients((prevSelected) => {
@@ -92,23 +98,28 @@ const CancelConsultantAppointment = () => {
   const isDayDisabled = (date) => !availableDays.includes(date.getDay());
 
   useEffect(() => {
-    const fetchAppointments = async () => {
-      if (!selectedConsultant) return;
-      const today = new Date().toLocaleDateString("en-CA");
-      const appointmentsQuery = query(
-        collection(db, "Consultantappointments"),
-        where("consultantId", "==", selectedConsultant.id),
-        where("date", ">=", today)
-      );
-      const querySnapshot = await getDocs(appointmentsQuery);
-      const appointments = querySnapshot.docs.map((doc) => ({
+    if (!selectedConsultant) return;
+  
+    const today = new Date().toLocaleDateString("en-CA");
+    const appointmentsQuery = query(
+      collection(db, "Consultantappointments"),
+      where("consultantId", "==", selectedConsultant.id),
+      where("date", ">=", today)
+    );
+  
+    const unsubscribe = onSnapshot(appointmentsQuery, (snapshot) => {
+      const appointments = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
       setPatients(appointments);
-    };
-    fetchAppointments();
+    }, (error) => {
+      console.error("Error listening to appointments: ", error.message);
+    });
+  
+    return () => unsubscribe(); // Cleanup on unmount or consultant change
   }, [selectedConsultant]);
+  
 
   const filteredPatients = patients.filter((patient) => {
     const matchSearch = `${patient.patientName} ${patient.reason}`
@@ -148,7 +159,7 @@ const CancelConsultantAppointment = () => {
             const patient = currentPatients[i + j];
             return patient ? (
               <React.Fragment key={j}>
-                <td>{patient.patientName} - {patient.reason}</td>
+                <td>{patient.patientName} - {patient.reason} - {patient.prescriptionDate || "None"}</td>
                 <td>
                   <input
                     type="checkbox"
@@ -219,7 +230,7 @@ const CancelConsultantAppointment = () => {
         className: "custom-toast",
       });
 
-      setTimeout(() => window.location.reload(), 2000);
+      
       setSelectedPatients([]);
       setIssueDate(null);
       setSelectedConsultant("");
@@ -236,35 +247,39 @@ const CancelConsultantAppointment = () => {
           <div className="card-box xs-pd-20-10 pd-ltr-20">
             <form onSubmit={handleCancel}>
               <h3>Consultant Cancel Appoinment Form</h3>
-              <div className="row">
+              <div className="row" style={{marginTop:"40px"}}>
                 <div className="col-md-4 col-sm-12">
-                  <label>Choose Consultant</label>
-                  <select
-                    className="form-control"
-                    value={selectedConsultant.name || ""}
-                    onChange={(e) => handleConsultantChange(e.target.value)}
-                    required
-                  >
-                    <option value="">Select Consultant</option>
-                    {consultants.map((consultant) => (
-                      <option key={consultant.id} value={consultant.name}>
-                        {consultant.name}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="form-group">
+                    <label>Choose Consultant</label>
+                    <select
+                      className="form-control"
+                      value={selectedConsultant.name || ""}
+                      onChange={(e) => handleConsultantChange(e.target.value)}
+                      required
+                    >
+                      <option value="">Select Consultant</option>
+                      {consultants.map((consultant) => (
+                        <option key={consultant.id} value={consultant.name}>
+                          {consultant.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
                 <div className="col-md-4 col-sm-12">
-                  <label>Select Date</label>
-                  <div className="form-control p-0">
-                    <DatePicker
-                      selected={issueDate}
-                      onChange={(date) => setIssueDate(date)}
-                      filterDate={(date) => !isDayDisabled(date)}
-                      placeholderText="Pick a valid day"
-                      dateFormat="yyyy-MM-dd"
-                      minDate={new Date()}
-                      className="w-100 border-0 px-2 py-1"
-                    />
+                  <div className="form-group">
+                    <label>Select Date</label>
+                    <div className="form-control p-0">
+                      <DatePicker
+                        selected={issueDate}
+                        onChange={(date) => setIssueDate(date)}
+                        filterDate={(date) => !isDayDisabled(date)}
+                        placeholderText="Pick a valid day"
+                        dateFormat="yyyy-MM-dd"
+                        minDate={new Date()}
+                        className="w-100 border-0 px-2 py-1"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -290,7 +305,7 @@ const CancelConsultantAppointment = () => {
                     <tr>
                       {Array.from({ length: columnsPerRow }).map((_, i) => (
                         <React.Fragment key={i}>
-                          <th>Patient - Reason</th>
+                          <th>Patient - Reason - Prescription Date</th>
                           <th>Select</th>
                         </React.Fragment>
                       ))}

@@ -9,7 +9,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./loading.css";
 import { db } from "./Config/FirebaseConfig"; // Ensure firebase is configured properly
 import { collection, getDocs } from "firebase/firestore";
-import { FaFileCsv, FaFileWord, FaFilePdf, FaFileExcel } from "react-icons/fa";
+import {   FaFileWord, FaFilePdf, FaFileExcel } from "react-icons/fa";
 import { FaRegHeart, FaRegCalendarAlt } from "react-icons/fa";
 import React from "react";
 import Chart from "react-apexcharts";

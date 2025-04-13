@@ -8,14 +8,14 @@ import $ from "jquery";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { db, storage } from "../Config/FirebaseConfig";
 /* import "./ViewReports.css"; */
-import { FaFileCsv, FaFileWord, FaFilePdf, FaFileExcel } from "react-icons/fa";
+import {   FaFileWord, FaFilePdf, FaFileExcel } from "react-icons/fa";
 import React from "react";
 import { CSVLink } from "react-csv";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { Document, Packer, Paragraph, Table, TableCell, TableRow } from "docx";
-import { collection, query, orderBy, getDocs } from "firebase/firestore";
+import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
 import { ref, getDownloadURL } from "firebase/storage";
 import { FaDownload } from "react-icons/fa";
 import PatientForm from "./UploadReports";
@@ -33,52 +33,47 @@ function ViewReport() {
   
 
   useEffect(() => {
-    const fetchPatientsLabReports = async () => {
-      try {
-        const PatientsLabReportsCollection = collection(db, "Patients Lab Reports");
-        const PatientsLabReportsQuery = query(PatientsLabReportsCollection, orderBy("uploadTime", "desc"));
-        const PatientsLabReportsSnapshot = await getDocs(PatientsLabReportsQuery);
+    const PatientsLabReportsCollection = collection(db, "Patients Lab Reports");
+    const PatientsLabReportsQuery = query(PatientsLabReportsCollection, orderBy("uploadTime", "desc"));
   
-        const reportsArray = PatientsLabReportsSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-          imageUrl: "", // Placeholder, will be updated later
-        }));
+    const unsubscribe = onSnapshot(PatientsLabReportsQuery, (snapshot) => {
+      const reportsArray = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+        imageUrl: "", // Placeholder, will be updated later
+      }));
+      setLoading(false);
+      setReportsData(reportsArray);
+      setFilteredReports(reportsArray);
   
-        setReportsData(reportsArray);
-        setFilteredReports(reportsArray); // Initialize filtered data
-  
-        // Fetch URLs after 3-4 seconds
-        setTimeout(async () => {
-          const updatedReports = await Promise.all(
-            reportsArray.map(async (report) => {
-              if (report.fileName) {
-                try {
-                  const fileRef = ref(storage, `Patients Lab Reports/${report.fileName}`);
-                  const imageUrl = await getDownloadURL(fileRef);
-                  return { ...report, imageUrl };
-                } catch (error) {
-                  console.warn(`Failed to get image URL for ${report.fileName}: ${error.message}`);
-                }
+      // Fetch image URLs after delay
+      setTimeout(async () => {
+        const updatedReports = await Promise.all(
+          reportsArray.map(async (report) => {
+            if (report.fileName) {
+              try {
+                const fileRef = ref(storage, `Patients Lab Reports/${report.fileName}`);
+                const imageUrl = await getDownloadURL(fileRef);
+                return { ...report, imageUrl };
+              } catch (error) {
+                console.warn(`Failed to get image URL for ${report.fileName}: ${error.message}`);
               }
-              return report;
-            })
-          );
+            }
+            return report;
+          })
+        );
   
-          setReportsData(updatedReports);
-          setFilteredReports(updatedReports);
-        }, 3000); // Delay of 3 seconds
+        setReportsData(updatedReports);
+        setFilteredReports(updatedReports);
+      }, 3000); // 3-second delay
+    }, (error) => {
+      console.error("Error fetching reports: ", error.message);
+      setLoading(false);
+    });
   
-      } catch (error) {
-        console.error("Error fetching reports: ", error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-  
-    fetchPatientsLabReports();
+    return () => unsubscribe(); // Cleanup listener on unmount
   }, []);
-  
+    
 
   const filterReports = () => {
 
@@ -370,9 +365,7 @@ const handleEdit = (id) => {
                             justifyContent: "center" // Align buttons properly in mobile view
                         }}
                         >
-                        {/* <CSVLink data={filteredReports} filename="Reports.csv" className="btn btn-primary">
-                            <FaFileCsv /> Download CSV
-                        </CSVLink> */}
+
                         <button className="btn btn-success" onClick={exportToExcel}>
                             <FaFileExcel /> Download Excel
                         </button>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import { collection, getDocs, query, orderBy, doc, updateDoc } from "firebase/firestore";
+import { collection, onSnapshot, query, orderBy, doc, updateDoc } from "firebase/firestore";
 import "./DoctorReschedule.css";
 import { db } from "../Config/FirebaseConfig";
 import { toast } from "react-toastify";
@@ -19,48 +19,43 @@ const DoctorReschedule = () => {
   const moment = require("moment");
   const navigate = useNavigate();
   useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        const appointmentsCollection = collection(db, "Appointments");
-        const appointmentsQuery = query(appointmentsCollection, orderBy("booking_time_stamp", "desc"));
-        const appointmentsSnapshot = await getDocs(appointmentsQuery);
-
-        const now = new Date();
-
-        const formattedAppointments = appointmentsSnapshot.docs
-          .map((doc) => {
-            const appointment = doc.data();
-            const appointmentDate = new Date(appointment.appointment_date.replace(/_/g, "-"));
-
-            return {
-              id: doc.id,
-              date: appointmentDate,
-              slot_start_time: appointment.slot_start_time,
-              slot_end_time: appointment.slot_end_time,
-              patient_name: appointment.patient_name,
-              reason_for_visit: appointment.reason_for_visit,
-            };
-          })
-          .filter((appointment) => {
-            // Filter logic for future appointments
-            if (appointment.date > now) {
-              return true;
-            } else if (
-              appointment.date.toDateString() === now.toDateString() &&
-              timeToMinutes(appointment.slot_start_time) >= timeToMinutes(now.toTimeString().slice(0, 5))
-            ) {
-              return true;
-            }
-            return false;
-          });
-
-        setAppointments(formattedAppointments);
-      } catch (error) {
-        console.error("Error fetching appointments:", error.message);
-      }
-    };
-
-    fetchAppointments();
+    const appointmentsCollection = collection(db, "Appointments");
+    const appointmentsQuery = query(appointmentsCollection, orderBy("booking_time_stamp", "desc"));
+  
+    const unsubscribe = onSnapshot(appointmentsQuery, (snapshot) => {
+      const now = new Date();
+  
+      const formattedAppointments = snapshot.docs
+        .map((doc) => {
+          const appointment = doc.data();
+          const appointmentDate = new Date(appointment.appointment_date.replace(/_/g, "-"));
+  
+          return {
+            id: doc.id,
+            date: appointmentDate,
+            slot_start_time: appointment.slot_start_time,
+            slot_end_time: appointment.slot_end_time,
+            patient_name: appointment.patient_name,
+            reason_for_visit: appointment.reason_for_visit,
+          };
+        })
+        .filter((appointment) => {
+          // Filter for future appointments
+          if (appointment.date > now) {
+            return true;
+          } else if (
+            appointment.date.toDateString() === now.toDateString() &&
+            timeToMinutes(appointment.slot_start_time) >= timeToMinutes(now.toTimeString().slice(0, 5))
+          ) {
+            return true;
+          }
+          return false;
+        });
+  
+      setAppointments(formattedAppointments);
+    });
+  
+    return () => unsubscribe(); // Cleanup listener on unmount
   }, []);
 
   const handleAppointmentSelect = (appointment) => {
@@ -138,10 +133,11 @@ const DoctorReschedule = () => {
         draggable: false,
         progress: undefined,
       });
-  
+      setSelectedDate("");
+      setNewSlot(null);
       setTimeout(() => {
         navigate("/appointments/RescheduleAppointment"); // Redirect to reschedule page
-        window.location.reload(); // Force refresh after navigation
+         // Force refresh after navigation
       }, 2000);
     } catch (error) {
       console.error("Error updating appointment:", error.message);

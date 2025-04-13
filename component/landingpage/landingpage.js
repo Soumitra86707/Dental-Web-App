@@ -802,7 +802,7 @@ We specialize in cosmetic dentistry, preventive care, orthodontics, restorative 
       <div className="landingpage-title" style={{color:'lightgrey',fontStyle:'bold',fontFamily:'cursive',fontSize:'45px'}}>Available Slots </div>
       <div className="landingpage-available-slots-main-container">
         <div className="landingpage-available-slots-container">
-          <div className="landingpage-available-slots-container-left">
+          <div className="landingpage-available-slots-container-left1">
             <Calendar onChange={setDate} value={date} minDate={new Date()} />
           </div>
           <div className="landingpage-available-slots-container-right">

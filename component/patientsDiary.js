@@ -29,7 +29,7 @@ function App() {
     const [dateFilter, setDateFilter] = useState("");
     const [quickFilter, setQuickFilter] = useState("1-day");
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 15;
+    const itemsPerPage = 20;
     const navigate = useNavigate();
     
     useEffect(() => {
@@ -259,22 +259,23 @@ function App() {
                                             className={`dropdown-menu dropdown-menu-end dropdown-menu-icon-list ${openDropdown === index ? "show" : ""}`}
                                             style={{ marginRight: "1000px" }}
                                         >
-                                            <li>
+                                            <li style={{ cursor: "pointer" }}>
                                                 <a
                                                     className="dropdown-item"
-                                                    onClick={() => viewPrescription(row.prescriptionId)}
+                                                    onClick={() => navigate(`/Prescription/Download/${row.prescriptionId}`)}
                                                 >
                                                     <i className="dw dw-eye"></i> View
                                                 </a>
                                             </li>
-                                            <li>
+                                            <li style={{ cursor: "pointer" }}>
                                                 <a
                                                     className="dropdown-item"
-                                                    onClick={() => editPrescription(row.prescriptionId)}
+                                                    onClick={() => navigate(`/Prescription/edit/${row.prescriptionId}`)}
                                                 >
                                                     <i className="dw dw-edit2"></i> Edit
                                                 </a>
                                             </li>
+
                                         </ul>
                                     </div>
                                 </td>

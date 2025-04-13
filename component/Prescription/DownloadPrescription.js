@@ -137,7 +137,7 @@ const DownloadPrescription = () => {
                         <div className="PrescriptionPatientsDetails" style={{ display: "flex", justifyContent: "space-between" }}>
                             <div className="prescriptionPatientsDetails1st">
                                 <h3>Name: {formData.patientSalutation} {formData.patientName}</h3>
-                                <p>Age: {formData.age}</p>
+                                <p><strong>Age:</strong> {formData.age}</p>
                             </div>
                             <div className="prescriptionPatientsDetails2nd">
                                 <p>Date & Time: {recentTime}</p>
@@ -147,7 +147,9 @@ const DownloadPrescription = () => {
                         {/* <h4 style={{ textDecoration: "underline" }}>Medicinal Diagnosis</h4> */}
                         <p><strong>Reason For Visit:</strong> {formData.reason_for_visit}</p>
                         <p><strong>On Examination:</strong> {formData.onExamination}</p>
+                        <p><strong>Radiography Report:</strong> {formData.radiographReports}</p>
                         <p><strong>Proposed Treatment Plan:</strong> {formData.proposedTreatmentPlan}</p>
+                        <p><strong>Diagnostic Report:</strong> {formData.diagnosticReports}</p>
 
                         {/* <h4 style={{ textDecoration: "underline" }}>Medicine:</h4> */}
                         <table style={{ width: "100%", background: "none", borderCollapse: "collapse", marginTop: "10px" }} className="data-table table nowrap table-striped">
@@ -180,7 +182,7 @@ const DownloadPrescription = () => {
                         </table>
 
                         {/* <h4 style={{ textDecoration: "underline" }}>Treatment Details</h4> */}
-                        <p><strong>Radiography Report:</strong> {formData.radiographReports}</p>
+                        
 
                         {/* <h4 style={{ textDecoration: "underline", marginBottom: "10px" }}>Payment & Follow-up</h4> */}
                         <p><strong>Payment Amount:</strong> {formData.paymentDetails}</p>
@@ -198,7 +200,14 @@ const DownloadPrescription = () => {
                         </div>
                     </div>
 
-                    <div style={{ display: "flex", gap: "20px", justifyContent: "center", alignItems: "center" }}>
+                    <div style={{ display: "flex",flexWrap:"wrap", gap: "30px", justifyContent: "center", alignItems: "center" }}>
+                    <button 
+                            type="button" 
+                            onClick={() => navigate(`/Diary/patientsDetails`)}
+                            style={{ marginBottom: "20px", padding: "10px 20px", fontSize: "16px", backgroundColor:"#0D6EFD", borderRadius: "15px"}}
+                        >
+                            Close
+                        </button>
                         <button 
                             type="button" 
                             onClick={editPrescription(prescriptionId)}

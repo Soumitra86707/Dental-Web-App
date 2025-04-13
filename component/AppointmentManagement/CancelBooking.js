@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { collection, getDocs, query, orderBy, deleteDoc, doc } from "firebase/firestore";
+import { collection, onSnapshot, query, orderBy, deleteDoc, doc } from "firebase/firestore";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "./DoctorCancel.css";
 import { db } from "../Config/FirebaseConfig";
-
+import { toast } from "react-toastify";
 const DoctorCancel = () => {
   const [selectedDate, setSelectedDate] = useState(new Date()); // Set initially to today's date
   const [loading, setLoading] = useState(true);
@@ -13,27 +13,23 @@ const DoctorCancel = () => {
   const [selectedSlots, setSelectedSlots] = useState([]);
 
   useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        const appointmentsCollection = collection(db, "Appointments");
-        const appointmentsQuery = query(appointmentsCollection, orderBy("appointment_date", "desc"));
-        const appointmentsSnapshot = await getDocs(appointmentsQuery);
-
-        const appointmentsData = [];
-        appointmentsSnapshot.forEach((doc) => {
-          const data = doc.data();
-          appointmentsData.push({ id: doc.id, ...data });
-        });
-
-        setBookedSlotsData(appointmentsData);
-      } catch (error) {
-        console.error("Error fetching appointments:", error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAppointments();
+    const appointmentsCollection = collection(db, "Appointments");
+    const appointmentsQuery = query(appointmentsCollection, orderBy("appointment_date", "desc"));
+  
+    const unsubscribe = onSnapshot(appointmentsQuery, (snapshot) => {
+      const appointmentsData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+  
+      setBookedSlotsData(appointmentsData);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching appointments:", error.message);
+      setLoading(false);
+    });
+  
+    return () => unsubscribe(); // Cleanup on unmount
   }, []);
   useEffect(() => {
     if (selectedDate && bookedSlotsData.length > 0) {
@@ -84,7 +80,13 @@ const DoctorCancel = () => {
       );
       setBookedSlots(updatedSlots);
       setSelectedSlots([]);
-      alert("Selected appointments have been canceled!");
+              toast.success("Selected appointments have been canceled!", {
+                autoClose: 3000, // 10 seconds
+                className: "custom-toast",
+                closeOnClick: false,
+                draggable: false,
+                progress: undefined,
+              });
     }
   };
 

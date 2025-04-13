@@ -21,7 +21,7 @@ const [columnsPerRow, setColumnsPerRow] = useState(3);
       const width = window.innerWidth;
       if (width >= 1200) setColumnsPerRow(4);
       else if (width >= 768) setColumnsPerRow(3);
-      else setColumnsPerRow(2);
+      else setColumnsPerRow(1);
     };
     updateColumns();
     window.addEventListener("resize", updateColumns);
@@ -130,7 +130,7 @@ const [columnsPerRow, setColumnsPerRow] = useState(3);
              const patient = currentPatients[i + j];
              return patient ? (
                <React.Fragment key={j}>
-                 <td>{patient.patientName} - {patient.reason_for_visit}</td>
+                 <td>{patient.patientName} - {patient.reason_for_visit} - {patient.createdAt}</td>
                  <td>
                    <input
                      type="checkbox"
@@ -140,6 +140,8 @@ const [columnsPerRow, setColumnsPerRow] = useState(3);
                         id: patient.id,
                         name: patient.patientName,
                         reason: patient.reason_for_visit,
+                        PrescribDate: patient.createdAt,
+                        phoneNumber: patient.phoneNumber,
                        })
                      }
                    />
@@ -185,6 +187,8 @@ const [columnsPerRow, setColumnsPerRow] = useState(3);
           appointmentId: appointmentId,
           prescriptionId: patient.id, // Assuming patient.id is the prescription document ID
           reason: patient.reason,
+          prescriptionDate: patient.PrescribDate,
+          patientsphoneNumber: patient.phoneNumber,
           date: appointmentDate,
           createdAt: new Date(),
         });
@@ -220,7 +224,7 @@ const [columnsPerRow, setColumnsPerRow] = useState(3);
                 <div className="card-box xs-pd-20-10 pd-ltr-20">
                     <form onSubmit={handleSubmit}>
                         <h3>Consultant Booking Appointment Form</h3>
-                        <div className="row">
+                        <div className="row" style={{marginTop:"40px"}}>
                             <div className="col-md-4 col-sm-12">
                             <div className="form-group">
                                 <label>Choose Consultant</label>
@@ -277,7 +281,7 @@ const [columnsPerRow, setColumnsPerRow] = useState(3);
                                 <tr>
                                   {Array.from({ length: columnsPerRow }).map((_, i) => (
                                     <React.Fragment key={i}>
-                                      <th>Patient - Reason</th>
+                                      <th>Patient - Reason - Prescription Date</th>
                                       <th>Select</th>
                                     </React.Fragment>
                                   ))}

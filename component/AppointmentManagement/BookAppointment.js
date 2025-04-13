@@ -250,25 +250,7 @@ const handlePhoneChange = async (e) => {
             alert("Please select at least one slot!");
             return;
           }
-/*           if (!patientsPhone) {
-            alert("Please Select Phone Number!");
-            return;
-        }
-        
-        if (patientsPhone.length !== 10 || isNaN(patientsPhone)) {
-            alert("Phone number must be exactly 10 digits!");
-            return;
-        }
-        if(!patientsName )
-          {
-            alert("Please Select or Write Patients name !");
-            return;
-          }
-          if(!reasonForVisit)
-            {
-              alert("Please Select Reason For Visit!");
-              return;
-            } */
+
         const slotStartTime = moment(selectedSlots[0], "HH:mm").tz("Asia/Kolkata");
         const slotEndTime = slotStartTime.clone().add(30, "minutes").format("HH:mm"); // Add 30 min
         let slot_no = 0; // Default slot number
@@ -464,14 +446,36 @@ const handlePhoneChange = async (e) => {
           draggable: false,
           progress: undefined,
         });
-    
+        setFormData({
+          patientsPhone: "",
+          patientsName: "",
+          custompatientsName: "",
+          age: "",
+          gender: "",
+          email: "",
+          reasonForVisit: "",
+          customReasonForVisit: "",
+          selectedIssues: [],
+          isBloodTest: "",
+          BloodTestDate: "",
+          isPregnant: "",
+          isNursing: "",
+          isTakingBirthControlPill: "",
+          medicalHistory: [],
+          appointmentDate: "",
+          slots: [],
+        });
+        setUserAge("");
+        setUserEmail("");
+        setUserGender("");
         // Redirect to dashboard after 10 seconds
         setTimeout(() => {
-          navigate(0);
+          navigate("/appointments/ViewAppointment");
         }, 2000);
+        
   
       // Reset form and slot selection
-      setFormData({
+      /* setFormData({
         patientsPhone: "",
         patientsName: "",
         custompatientsName: "",
@@ -492,7 +496,7 @@ const handlePhoneChange = async (e) => {
       });
       setUserAge("");
       setUserEmail("");
-      setUserGender("");
+      setUserGender(""); */
       
     } catch (error) {
       console.error("Error booking appointment:", error);

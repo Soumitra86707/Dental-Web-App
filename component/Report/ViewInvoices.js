@@ -8,14 +8,14 @@ import $ from "jquery";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { db, storage } from "../Config/FirebaseConfig";
 import "./ViewReports.css";
-import { FaFileCsv, FaFileWord, FaFilePdf, FaFileExcel } from "react-icons/fa";
+import {   FaFileWord, FaFilePdf, FaFileExcel } from "react-icons/fa";
 import React from "react";
 import { CSVLink } from "react-csv";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { Document, Packer, Paragraph, Table, TableCell, TableRow } from "docx";
-import { collection, query,where,orderBy, getDocs , getDoc,doc,updateDoc,addDoc } from "firebase/firestore";
+import { collection, query,where,orderBy, getDocs ,onSnapshot, getDoc,doc,updateDoc,addDoc } from "firebase/firestore";
 import {ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { FaDownload } from "react-icons/fa";
 import "./ViewReports.css";
@@ -31,17 +31,13 @@ function ViewReport() {
   const [quickFilter, setQuickFilter] = useState("1 week");
   const [reportsData, setReportsData] = useState([]);
   const [loading, setLoading] = useState(true);
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const [patientOptions, setPatientOptions] = useState([]);
-    const [selectedPatient, setSelectedPatient] = useState("");
-    const [customPatientName, setCustomPatientName] = useState("");
+
     const [selectedLab, setSelectedLab] = useState("");
     const [customLabName, setCustomLabName] = useState("");
     const [totalAmount, setTotalAmount] = useState("");
     const [paidAmount, setPaidAmount] = useState("");
     const [issueDate, setIssueDate] = useState("");
-    const [invoiceFile, setInvoiceFile] = useState(null);
-      const [filePreview, setFilePreview] = useState(null);
+
       const [isOpen, setIsOpen] = useState(false);
       const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
       const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -53,30 +49,36 @@ function ViewReport() {
       const { id } = useParams();
       const navigate = useNavigate();
       useEffect(() => {
-        const fetchPatientsLabReports = async () => {
-          try {
-            const PatientsLabReportsCollection = collection(db, "invoices");
-            const PatientsLabReportsQuery = query(PatientsLabReportsCollection, orderBy("uploadTime", "desc"));
-            const PatientsLabReportsSnapshot = await getDocs(PatientsLabReportsQuery);
+        const fetchPatientsLabReports = () => {
+          const PatientsLabReportsCollection = collection(db, "invoices");
+          const PatientsLabReportsQuery = query(
+            PatientsLabReportsCollection,
+            orderBy("uploadTime", "desc")
+          );
       
-            // Extract data without fetching URLs
-            const reportsArray = PatientsLabReportsSnapshot.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-              imageUrl: "", // Placeholder for image URLs
-            }));
+          const unsubscribe = onSnapshot(
+            PatientsLabReportsQuery,
+            async (snapshot) => {
+              const reportsArray = snapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+                imageUrl: "", // Placeholder for image URL
+              }));
       
-            setReportsData(reportsArray);
-            setFilteredReports(reportsArray); // Initialize filtered data
+              setReportsData(reportsArray);
+              setFilteredReports(reportsArray);
       
-            // Delay fetching image URLs by 3-4 seconds
-            setTimeout(() => fetchImageUrls(reportsArray), 3000);
-            
-          } catch (error) {
-            console.error("Error fetching reports: ", error.message);
-          } finally {
-            setLoading(false);
-          }
+              // Delay fetching image URLs by 3 seconds
+              setTimeout(() => fetchImageUrls(reportsArray), 3000);
+              setLoading(false);
+            },
+            (error) => {
+              console.error("Error fetching reports: ", error.message);
+              setLoading(false);
+            }
+          );
+      
+          return () => unsubscribe(); // Cleanup listener on unmount
         };
       
         const fetchImageUrls = async (reports) => {
@@ -88,10 +90,12 @@ function ViewReport() {
                   const imageUrl = await getDownloadURL(fileRef);
                   return { ...report, imageUrl };
                 } catch (error) {
-                  console.warn(`Failed to get image URL for ${report.fileName}: ${error.message}`);
+                  console.warn(
+                    `Failed to get image URL for ${report.fileName}: ${error.message}`
+                  );
                 }
               }
-              return report; // Return report without image URL if fetch fails
+              return report;
             })
           );
       
@@ -102,6 +106,7 @@ function ViewReport() {
         fetchPatientsLabReports();
       }, []);
       
+      
 
 
 
@@ -110,7 +115,7 @@ function ViewReport() {
 
 
       const [currentPage, setCurrentPage] = useState(1);
-      const itemsPerPage = 5;
+      const itemsPerPage = 20;
   
       // Calculate total pages
       const totalPages = Math.ceil(filteredReports.length / itemsPerPage);
@@ -437,7 +442,7 @@ const handleSubmit = async (e) => {
           alert("Invoice uploaded successfully!");
       }
 
-      navigate(0);
+
   } catch (error) {
       console.error("Error saving data:", error.message);
       alert("Failed to save data. Error: " + error.message);

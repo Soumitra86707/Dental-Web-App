@@ -49,8 +49,7 @@ const [examinationDate, setExaminationDate] = useState("");
             fetchExamReports(data.phoneNumber, data.patientName);
             
           } else {
-            alert("Patient record not found!");
-            navigate(0);
+
           }
         } catch (error) {
           console.error("Error fetching patient data: ", error);
@@ -201,7 +200,7 @@ const [examinationDate, setExaminationDate] = useState("");
       setExaminationDate("");
       setReportDate("");
 
-      navigate(0);
+    
     } catch (error) {
       console.error("Error saving data: ", error);
       alert("Failed to save data. Error: " + error.message);

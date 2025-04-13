@@ -422,12 +422,12 @@ const editPrescription = (prescriptionId) => () => {
                                                 </button>
                                                 <ul className={`dropdown-menu dropdown-menu-end dropdown-menu-icon-list ${openDropdown === index ? "show" : ""}`}>
 
-                                                    <li>
+                                                    <li style={{cursor:"pointer"}}>
                                                     <a className="dropdown-item" onClick={viewPrescription(row.prescriptionId)} >
                                                         <i className="dw dw-eye"></i> View
                                                     </a>
                                                     </li>
-                                                    <li>
+                                                    <li style={{cursor:"pointer"}}>
                                                     <a className="dropdown-item" onClick={editPrescription(row.prescriptionId)}>
                                                         <i className="dw dw-edit2"></i> Edit
                                                     </a>

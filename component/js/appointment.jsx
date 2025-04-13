@@ -1,35 +1,39 @@
 import { useState, useEffect } from "react";
-import { db } from "../Config/FirebaseConfig"; // Import your Firebase config
-import { collection, getDocs } from "firebase/firestore";
-import dayjs from "dayjs"; // To format dates properly
+import { db } from "../Config/FirebaseConfig";
+import { collection, onSnapshot } from "firebase/firestore";
+import dayjs from "dayjs";
 
 const useFetchAppointments = () => {
   const [appointmentsCount, setAppointmentsCount] = useState({ today: 0, total: 0 });
 
   useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "Appointments"));
-        const appointments = querySnapshot.docs.map(doc => doc.data());
+    const unsubscribe = onSnapshot(
+      collection(db, "Appointments"),
+      (snapshot) => {
+        const allAppointments = snapshot.docs.map(doc => doc.data());
 
-        const todayDate = dayjs().format("YYYY_MM_DD"); // Convert today's date to "YYYY_MM_DD" format
+        // Filter only where userType is "patient"
+        const patientAppointments = allAppointments.filter(
+          (appointment) => appointment.userType === "patient"
+        );
 
-        const todayAppointments = appointments.filter((appointment) => {
-          let appointmentDate = appointment.appointment_date; // Ensure correct field name
+        const todayDate = dayjs().format("YYYY_MM_DD");
 
-          return appointmentDate === todayDate; // Compare with formatted today's date
-        });
+        const todayAppointments = patientAppointments.filter(
+          (appointment) => appointment.appointment_date === todayDate
+        );
 
         setAppointmentsCount({
           today: todayAppointments.length,
-          total: appointments.length,
+          total: patientAppointments.length,
         });
-      } catch (error) {
+      },
+      (error) => {
         console.error("Error fetching appointments:", error);
       }
-    };
+    );
 
-    fetchAppointments();
+    return () => unsubscribe();
   }, []);
 
   return appointmentsCount;

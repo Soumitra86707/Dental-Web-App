@@ -4,20 +4,19 @@ import "../../vendors/styles/icon-font.min.css";
 import "../../plugins/datatables/css/dataTables.bootstrap4.min.css";
 import "../../plugins/datatables/css/responsive.bootstrap4.min.css";
 import "../../vendors/styles/style.css";
-import $ from "jquery";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import { db, storage } from "../Config/FirebaseConfig";
-/* import "./ViewReports.css"; */
-import { FaFileCsv, FaFileWord, FaFilePdf, FaFileExcel } from "react-icons/fa";
+
+import { FaFileWord, FaFilePdf, FaFileExcel } from "react-icons/fa";
 import React from "react";
 
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { Document, Packer, Paragraph, Table, TableCell, TableRow } from "docx";
-import { collection, query, orderBy, getDocs } from "firebase/firestore";
+import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
 import { ref, getDownloadURL } from "firebase/storage";
-import { FaDownload } from "react-icons/fa";
 import UploadExtraExpences from "./UploadExtraExpences";
 
 
@@ -31,34 +30,39 @@ function ViewReport() {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   
-
   useEffect(() => {
-    const fetchPatientsLabReports = async () => {
-      try {
-        const PatientsLabReportsCollection = collection(db, "ExtraExpenses");
-        const PatientsLabReportsQuery = query(PatientsLabReportsCollection, orderBy("createdTime", "desc"));
-        const PatientsLabReportsSnapshot = await getDocs(PatientsLabReportsQuery);
+    const fetchPatientsLabReports = () => {
+      const PatientsLabReportsCollection = collection(db, "ExtraExpenses");
+      const PatientsLabReportsQuery = query(
+        PatientsLabReportsCollection,
+        orderBy("createdTime", "desc")
+      );
   
-        const reportsArray = PatientsLabReportsSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-          imageUrl: "", // Placeholder, will be updated later
-        }));
+      const unsubscribe = onSnapshot(
+        PatientsLabReportsQuery,
+        (snapshot) => {
+          const reportsArray = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+            imageUrl: "", // Placeholder for future enhancement
+          }));
   
-        setReportsData(reportsArray);
-        setFilteredReports(reportsArray); // Initialize filtered data
+          setReportsData(reportsArray);
+          setFilteredReports(reportsArray);
+          setLoading(false);
+        },
+        (error) => {
+          console.error("Error fetching reports: ", error.message);
+          setLoading(false);
+        }
+      );
   
-        
-  
-      } catch (error) {
-        console.error("Error fetching reports: ", error.message);
-      } finally {
-        setLoading(false);
-      }
+      return () => unsubscribe(); // Cleanup listener on unmount
     };
   
     fetchPatientsLabReports();
   }, []);
+  
   
 
   const filterReports = () => {
@@ -353,9 +357,7 @@ const handleEdit = (id) => {
                             justifyContent: "center" // Align buttons properly in mobile view
                         }}
                         >
-                        {/* <CSVLink data={filteredReports} filename="Reports.csv" className="btn btn-primary">
-                            <FaFileCsv /> Download CSV
-                        </CSVLink> */}
+
                         <button className="btn btn-success" onClick={exportToExcel}>
                             <FaFileExcel /> Download Excel
                         </button>
