@@ -298,7 +298,8 @@ const handleSubmit = async (e) => {
       return;
   }
 
-  const dueAmount = (parseFloat(totalAmount) - parseFloat(paidAmount)).toFixed(2);
+  const dueAmount = parseFloat(paidAmount) > parseFloat(totalAmount) ? "0.00" : (parseFloat(totalAmount) - parseFloat(paidAmount)).toFixed(2);
+
 
   try {
       
@@ -553,9 +554,11 @@ const generateinvoiceId = (length = 20) => {
                         }}
                       >
                         <option value="">Select Lab</option>
-                        <option value="Lab A">Lab A</option>
-                        <option value="Lab B">Lab B</option>
-                        <option value="Lab C">Lab C</option>
+                        <option value="SKILLMAX DENTAL LAB">SKILLMAX DENTAL LAB</option>
+                        <option value="DENTCARE DENTAL LAB">DENTCARE DENTAL LAB</option>
+                        <option value="MASTER MIND DENTAL LAB">MASTER MIND DENTAL LAB</option>
+                        <option value="ORAL D">ORAL D</option>
+                        
                         <option value="Other">Other</option>
                       </select>
                     </div>

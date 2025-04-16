@@ -113,26 +113,50 @@ const DownloadPrescription = () => {
                     {/* The div to be converted to PDF */}
                     <div ref={printRef} style={{ padding: "20px", fontFamily: "Arial, sans-serif", margin: "0 100px 0 0" }}>
                         <h2>{doctorData.clinicName || "Dr. Nithya's Dental and Smile Design Clinic"}</h2>
-                        <div className="Clinic-LetterHead" style={{ display: "flex", justifyContent: "space-between" }}>
-                            <div className="clinic-LetterHead-Left">
-                                <strong>{doctorData.fullName || "Dr. Nithya Selvaraj, MDS"} <br /></strong>
-                                <p>{doctorData.specialization || "Prosthodontist & Implantologist"} <br />
-                                    {doctorData.registrationNumber || "Reg. No: 49867-A"}
-                                </p>
-                            </div>
-                            <div className="clinic-LetterHead-Right">
-                                <div className="ConsultantingTime" style={{ display: "flex", justifyContent: "space-between" }}>
-                                    <div className="Name">Consulting Time:</div>
-                                    <div className="Time">10:30 AM - 1:00 PM <br />
-                                        5:00 PM - 7:00 PM</div>
-                                </div>
-                                <div className="ClinicAddress">
-                                    
-                                    <div className="phonenumber">Mobile No. {doctorData.phone || "1234567890"}</div>
-                                    <div className="address">Address: {doctorData.address || "xyz, abc, 457210"}</div>
-                                </div>
-                            </div>
-                        </div>
+                        <div
+  className="Clinic-LetterHead"
+  style={{
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    width: "100%",
+    flexWrap: "wrap", // in case of smaller screens
+    gap: "20px",      // for some spacing if wrapped
+  }}
+>
+  {/* Left Section */}
+  <div className="clinic-LetterHead-Left" style={{ maxWidth: "45%" }}>
+    <strong>
+      {doctorData.fullName || "Dr. Nithya Selvaraj, MDS"}
+      <br />
+    </strong>
+    <p style={{ margin: 0 }}>
+      {doctorData.specialization || "Prosthodontist & Implantologist"}
+      <br />
+      {doctorData.registrationNumber || "Reg. No: 49867-A"}
+    </p>
+  </div>
+
+  {/* Right Section */}
+  <div className="clinic-LetterHead-Right" style={{ textAlign: "right", maxWidth: "50%" }}>
+    <div className="ConsultantingTime" style={{ marginBottom: "10px" ,display:"flex",justifyContent:"flex-end",gap:"30px",flexWrap:"wrap" }}>
+      <strong>Consulting Time:</strong>
+      <div>
+        10:00 AM - 1:30 PM
+        <br />
+        5:00 PM - 8:00 PM
+      </div>
+    </div>
+    <div className="ClinicAddress">
+      <div className="phonenumber" style={{ marginBottom: "10px" ,display:"flex",justifyContent:"flex-end",gap:"30px",flexWrap:"wrap" }}><strong>Mobile No. </strong>
+      <div>
+        {doctorData.phone || "1234567890"}
+      </div></div>
+      <div className="address">Address: {doctorData.address || "xyz, abc, 457210"}</div>
+    </div>
+  </div>
+</div>
+
                         <hr />
                         <div className="PrescriptionPatientsDetails" style={{ display: "flex", justifyContent: "space-between" }}>
                             <div className="prescriptionPatientsDetails1st">
@@ -169,12 +193,12 @@ const DownloadPrescription = () => {
                                         <td style={{ padding: "8px" }}>{index + 1}</td>
                                         <td style={{ padding: "8px" }}>{medicine.name || medicine.specificName || "N/A"}</td>
                                         <td style={{ padding: "8px" }}>
-                                            {medicine.type === "syrup" ? `${medicine.dosage} ml` :
-                                            medicine.type === "tablet" ? `${medicine.dosage} mg` :
+                                            {medicine.type === "syrup" ? `${medicine.dosage || 0} ml` :
+                                            medicine.type === "tablet" ? `${medicine.dosage || 0} mg` :
                                             medicine.dosage || "N/A"}
                                         </td>
                                         <td style={{ padding: "8px" }}>{medicine.days || "N/A"}</td>
-                                        <td style={{ padding: "8px" }}>{medicine.times ? medicine.times.join(", ") : "N/A"}</td>
+                                        <td style={{ padding: "8px" }}>{medicine.times || "N/A" ? medicine.times.join(", ") : "N/A"}</td>
                                         <td style={{ padding: "8px" }}>{medicine.food ? (medicine.food === "before" ? "Before Food" : "After Food") : "N/A"}</td>
                                     </tr>
                                 ))}

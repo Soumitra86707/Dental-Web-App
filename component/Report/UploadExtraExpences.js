@@ -48,19 +48,30 @@ const PatientForm = ({ id, setIsVisible }) => {
 
   const handleTotalAmountChange = (e) => {
     const value = e.target.value;
-    if (!isNaN(value)) {
-      setTotalAmount(value);
-      setDueAmount(value - paidAmount);
+    setTotalAmount(value);
+    const total = parseFloat(value);
+    const paid = parseFloat(paidAmount);
+    if (!isNaN(total) && !isNaN(paid)) {
+      const due = total - paid;
+      setDueAmount(due >= 0 ? due : 0);
+    } else {
+      setDueAmount("");
     }
   };
-
+  
   const handlePaidAmountChange = (e) => {
     const value = e.target.value;
-    if (!isNaN(value)) {
-      setPaidAmount(value);
-      setDueAmount(totalAmount - value);
+    setPaidAmount(value);
+    const total = parseFloat(totalAmount);
+    const paid = parseFloat(value);
+    if (!isNaN(total) && !isNaN(paid)) {
+      const due = total - paid;
+      setDueAmount(due >= 0 ? due : 0);
+    } else {
+      setDueAmount("");
     }
   };
+  
 
   const generateAppointmentId = (length = 20) => {
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

@@ -31,6 +31,7 @@ import PaymentConsultant from "./component/Consultant/paymentHistory";
 import ViewReport from "./component/Report/ViewReport";
 import ViewInvoices from "./component/Report/ViewInvoices";
 import ViewExpenses from "./component/Report/ExtraExpences";
+import PatientsBilling from "./component/Report/PatientsBiling"
 
 /* Profile */
 import Profile from "./component/profile/profile";
@@ -154,6 +155,7 @@ function App() {
             <Route path="/Report/ViewReports" element={<ViewReport />} />
             <Route path="/Report/ViewInvoices" element={<ViewInvoices />} />
             <Route path="/Report/ExtraExpenses" element={<ViewExpenses />} />
+            <Route path="/Report/PatientsBilling" element={<PatientsBilling />} />
             
             <Route path="/appointments/ViewAppointment" element={<ViewAppointment />} />
             <Route path="/appointments/BookAppointment" element={<BookAppointment />} />

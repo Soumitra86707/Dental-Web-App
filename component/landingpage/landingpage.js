@@ -47,7 +47,7 @@ import bcrypt from "bcryptjs"; // Install using npm install bcryptjs
 import FaEyeSlash from "@mui/icons-material/VisibilityOff"; */
 import { FaEye,FaEyeSlash  } from "react-icons/fa";
 import {  FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTeeth, faTeethOpen, faBed, faBedPulse, faStethoscope,faBars,faX, faFaceGrinBeam, faFaceGrinWide, faCircleH, faHouseMedicalFlag, faHospital, faHospitalUser, faSmileBeam } from '@fortawesome/free-solid-svg-icons'; // Import more icons as needed
+import { faTooth,faTeeth, faTeethOpen, faBed, faBedPulse, faStethoscope,faBars,faX, faFaceGrinBeam, faFaceGrinWide, faCircleH, faHouseMedicalFlag, faHospital, faHospitalUser, faSmileBeam } from '@fortawesome/free-solid-svg-icons'; // Import more icons as needed
 
 /* import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api'; */
 
@@ -343,7 +343,7 @@ const Landingpage = ({ onLogin }) => {
     { src: h3, details: h33 },
     { src: h4, details: h44 },
     { src: h5, details: h55 },
-    { src: h6, details: h66},
+    /* { src: h6, details: h66}, */
     { src: h7, details: h77 },
 
 
@@ -391,20 +391,32 @@ const Landingpage = ({ onLogin }) => {
   };
   const cardData = [
     { icon: faSmileBeam, title: 'Digital Smile Designing', details: 'A Smile Design is the planning process for creating your individualized treatment plan to take your smile from what it is now into a smile you can be proud of and makes you feel more confident. ' },
-    { icon: faTeethOpen, title: ' Oral prophylaxis', details: ' Oral prophylaxis is a dental procedure that involves cleaning teeth to remove plaque, tartar, stains, and other buildup. It prevents dental diseases like gum disease and tooth decay. ' },
+    { icon: faTeethOpen, title: ' Oral prophylaxis / Teeth Cleaning', details: ' Oral prophylaxis is a dental procedure that involves cleaning teeth to remove plaque, tartar, stains, and other buildup. It prevents dental diseases like gum disease and tooth decay. ' },
     { icon: faFaceGrinWide, title: 'Teeth Whitening / Bleaching', details: "Teeth whitening involves bleaching your teeth to make them lighter. It can't make your teeth brilliant white, but it can lighten the existing colour by several shades."  },
-    { icon: faTeeth, title: 'Prosthodontic treatment ', details: 'Prosthodontic treatment is a dental specialty that involves diagnosing, planning, and treating patients with missing, damaged, or deficient teeth. '  },
+    { icon: faTeeth, title: 'Crown & Bridge / Prosthodontic treatment ', details: 'Prosthodontic treatment is a dental specialty that involves diagnosing, planning, and treating patients with missing, damaged, or deficient teeth. '  },
     { icon: faTeethOpen, title: 'Root Canal Treatment', details:'A root canal Treatment is a dental procedure that treats an infected or damaged tooth by removing the infected pulp and cleaning the canals inside the tooth.'  },
-    { icon: faBed, title: 'Pedodontic Treatment', details:"It is strongly advised that all young children be examined by a paediatric dentist from an early age. The first step in treatment is the patient's first dental checkup." },
-    { icon: faBedPulse, title: 'Dental Bridges', details: 'These restorations replace missing teeth by taking support from the adjacent teeth.' },
-    { icon: faStethoscope, title: 'Tooth Extraction', details: ' A tooth extraction is a procedure to remove a tooth from the gum socket. It is a common dental treatment that can be performed by a general dentist, oral surgeon, or periodontist.' },
-    { icon: faCircleH, title: 'Dental Crowns', details: 'These can repair teeth that have cracks, fractures, or significant decay. '  },
-    { icon: faHouseMedicalFlag, title: 'Dental Implants', details: 'These custom-made restorations can replace missing teeth by taking support from the underlying bone and provide stability and strength. '  },
-    { icon: faHospital, title: 'Dentures', details: 'Solid or removable dentures can be fitted and placed by a prosthodontist. ' },
-    { icon: faHospitalUser, title: 'Headgear', details: 'In some cases, headgear may be used in addition to braces. '  },
+    { icon: faBed, title: 'Kids Dental Care / Pedodontic Treatment', details:"It is strongly advised that all young children be examined by a paediatric dentist from an early age. The first step in treatment is the patient's first dental checkup." },
+    /* { icon: faBedPulse, title: 'Dental Bridges', details: 'These restorations replace missing teeth by taking support from the adjacent teeth.' },
+  */   { icon: faStethoscope, title: 'Tooth Extraction', details: ' A tooth extraction is a procedure to remove a tooth from the gum socket. It is a common dental treatment that can be performed by a general dentist, oral surgeon, or periodontist.' },
+    /* { icon: faCircleH, title: 'Dental Crowns', details: 'These can repair teeth that have cracks, fractures, or significant decay. '  },
+ */    { icon: faHouseMedicalFlag, title: 'Dental Implants', details: 'These custom-made restorations can replace missing teeth by taking support from the underlying bone and provide stability and strength. '  },
+    { icon: faHospital, title: 'Full & Partial Removeable Dentures', details: 'Solid or removable dentures can be fitted and placed by a prosthodontist. ' },
+    /* { icon: faHospitalUser, title: 'Headgear', details: 'In some cases, headgear may be used in addition to braces. '  },
     { icon: faTeethOpen, title: 'Jaw screws', details: 'Small screws may be temporarily placed in the jaw in addition to braces. '  },
-    { icon: faTeeth, title: 'Clear Aligners', details: " Clear-aligner treatment involves taking a digital tooth scan and The computerized model suggests stages between the current and desired teeth positions. " },
+   */  { icon: faTeeth, title: 'Clear Aligners', details: " Clear-aligner treatment involves taking a digital tooth scan and The computerized model suggests stages between the current and desired teeth positions. " },
     { icon: faFaceGrinBeam, title: 'Removable retainers', details: 'Custom-fitted, clear plastic retainers that hold teeth in place. ' },
+    { 
+      icon: faTeethOpen, 
+      title: 'Orthodontic Braces', 
+      details: "Braces are used to correct misaligned teeth and jaws. They apply continuous pressure over time to gradually move teeth into the desired position for a straighter, healthier smile." 
+    },
+    
+    { 
+      icon: faTooth, 
+      title: 'Tooth Restoration / Filling', 
+      details: "Tooth restoration involves repairing decayed or damaged teeth using fillings, crowns, or other methods to restore function and appearance while preventing further decay." 
+    }
+    
    ];
 
 
@@ -505,8 +517,8 @@ const Landingpage = ({ onLogin }) => {
         <a href="#services-section" className="landingpage-login-icon">
           SERVICES
         </a>
-        <a href="#free-slot-sec" className="landingpage-login-icon">
-          CHECK FREE SLOTS
+        <a href="#free-slot-sec" className="highlight-box" style={{color:"#084458"}}>
+          BOOK APPOINTMENT
         </a>
 {/*         <a href="#app-section" className="landingpage-login-icon">
           CLADENT APP
@@ -743,25 +755,25 @@ const Landingpage = ({ onLogin }) => {
 
 
     <div className="landingpage-start-container" id="home-section" >
-    <div className="landingpage-start">
-    <div className="landingpage-start-title">Welcome to Our Clinic</div>
-    <p className="landingpage-description">
-    Discover exceptional care with our expert team. Your health and well-being are our top priorities. 
-    We combine advanced medical expertise with a compassionate approach to ensure you receive the best care possible.
-    </p>
-    <ul className="landingpage-highlights">
-      <li> Comprehensive medical services tailored to your needs</li>
-      <li> State-of-the-art facilities and cutting-edge technology</li>
-      <li> Trusted by thousands of satisfied patients</li>
-      <li> Experienced specialists in various fields of medicine</li>
-    </ul>
-    <button className="explore-btn"   onClick={() => {
-        document.getElementById("about-section").scrollIntoView({ behavior: "smooth" });
-      }}>Explore</button>
-    </div>
-    <div className="landingpage-start-img">
-    <img src={slide1} alt="Clinic Image" className="landingpage-start-img" />
-    </div>
+      <div className="landingpage-start">
+        <div className="landingpage-start-title">Welcome to Our Clinic</div>
+        <p className="landingpage-description">
+        Discover exceptional care with our expert team. Your health and well-being are our top priorities. 
+        We combine advanced medical expertise with a compassionate approach to ensure you receive the best care possible.
+        </p>
+        <ul className="landingpage-highlights">
+          <li> Comprehensive medical services tailored to your needs</li>
+          <li> State-of-the-art facilities and cutting-edge technology</li>
+          <li> Trusted by thousands of satisfied patients</li>
+          <li> Experienced specialists in various fields of medicine</li>
+        </ul>
+        <button className="explore-btn"   onClick={() => {
+            document.getElementById("about-section").scrollIntoView({ behavior: "smooth" });
+          }}>Explore</button>
+        </div>
+      <div className="landingpage-start-img">
+      <img src={slide1} alt="Clinic Image" className="landingpage-start-img" />
+      </div>
     
     </div>
     

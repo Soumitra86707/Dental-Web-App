@@ -124,7 +124,7 @@ return (
                     data-toggle="header_search"
                 ></div> */}
                 <div className="header-search">
-                    <span style={{fontSize:"25px",fontWeight:"bold",color:"#34949C"}}>Dr. Nithya's Dental & Smile Design Clinic</span>
+                    <span style={{fontSize:"22px",fontWeight:"bold",color:"#34949C"}}>Dr. Nithya's Dental & Smile Design Clinic</span>
                     {/* <form>
                         <div className="form-group mb-0">
                             <i className="dw dw-search2 search-icon"></i>
@@ -166,9 +166,9 @@ return (
                         <div className="dropdown">
                             <a className="dropdown-toggle" role="button">
                             <span className="user-icon" >
-                                <img src={oldImageUrl} alt="myIcon" style={{height:"50px", width:"50px"}} />
+                                <img src={oldImageUrl} alt="myIcon" style={{height:"40px", width:"40px"}} />
                             </span>
-                            <span className="user-name"style={{ paddingLeft: "10px" ,fontSize:"20px",fontWeight:"bold" , color:"#34949C"}}  >{doctorNane}</span>
+                            <span className="user-name"style={{ paddingLeft: "10px" ,fontSize:"17px",fontWeight:"bold" , color:"#34949C"}}  >{doctorNane}</span>
                             </a>
 
                             <div
@@ -332,6 +332,7 @@ return (
                             style={{ display: billingManagement ? "block" : "none" }}
                             >
                                 <li><Link to="/Report/ViewInvoices" className="dropdown-toggle text-decoration-none no-arrow">View & Upload <br /> Invoices</Link></li>
+                                <li><Link to="/Report/PatientsBilling" className="dropdown-toggle text-decoration-none no-arrow">Patients Billing</Link></li>
                                 <li><Link to="/Report/ExtraExpenses" className="dropdown-toggle text-decoration-none no-arrow">Extra Expenses</Link></li>
                             </ul>
                         </li>

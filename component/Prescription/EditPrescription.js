@@ -130,10 +130,10 @@ useEffect(() => {
         try {
             /* let paid = Number(paymentDetails) || 0; */
             let TotalAmount = 500;
-            let paidAmount = Number(paymentDetails); // Ensure paymentDetails is treated as a number
+            let paidAmount = Number(paymentDetails); // Ensure it's a number
             
-            let dueAmount = paidAmount > TotalAmount ? `+${paidAmount - TotalAmount}` : Math.max(0, TotalAmount - paidAmount);
-            
+            let dueAmount = paidAmount >= TotalAmount ? 0 : TotalAmount - paidAmount;
+               
             
             
     

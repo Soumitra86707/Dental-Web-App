@@ -40,6 +40,7 @@ function MonthlyProfit() {
                         patientDue: 0,
                         Paymenttoconsultant: 0,
                         PaymenttoLabratory: 0,
+                        PaymentForPatientsBilling: 0,
                         paymenttoPersonalBill: 0,
                         paymenttoWaterBill: 0,
                         paymenttoElectricBill: 0,
@@ -58,6 +59,9 @@ function MonthlyProfit() {
                 }
                 if (earning.paymentType === "Labratory") {
                     monthMap[createdMonth].PaymenttoLabratory += parseFloat(earning.PaidAmount) || 0;
+                }
+                if (earning.paymentType === "Patients Billing") {
+                    monthMap[createdMonth].PaymentForPatientsBilling += parseFloat(earning.PaidAmount) || 0;
                 }
                 if (earning.paymentType === "personal_bill") {
                     monthMap[createdMonth].paymenttoPersonalBill += parseFloat(earning.PaidAmount) || 0;
@@ -112,7 +116,7 @@ function MonthlyProfit() {
             "S.No": index + 1,
             "Month": row.month,
             "Total Earning": row.patientPaid.toFixed(2),
-            "Total Expenses": `${row.PaymenttoLabratory}(Labratory) + ${row.Paymenttoconsultant}(Consultant) + ${row.paymenttoWaterBill}(Water Bill) + ${row.paymenttoElectricBill}(Electric Bill) + ${row.paymenttoPersonalBill}(Personal Bill)`,
+            "Total Expenses": `${row.PaymenttoLabratory}(Labratory) + ${row.PaymentForPatientsBilling}(Patients Billing) + ${row.Paymenttoconsultant}(Consultant) + ${row.paymenttoWaterBill}(Water Bill) + ${row.paymenttoElectricBill}(Electric Bill) + ${row.paymenttoPersonalBill}(Personal Bill)`,
             "Total Profit": (row.patientPaid - row.drPaid > 0 ? (row.patientPaid - row.drPaid).toFixed(2) : 0),
             "Total Loss": (row.patientPaid - row.drPaid < 0 ? Math.abs(row.patientPaid - row.drPaid).toFixed(2) : 0)
         }));
@@ -136,7 +140,7 @@ function MonthlyProfit() {
             body: filteredData.map(data => [
                 data.month,
                 data.patientPaid.toFixed(2),
-                data.PaymenttoLabratory +"(Labratory ) + " + data.Paymenttoconsultant +"( Consultant ) + " + data.paymenttoWaterBill +"( Water Bill) + " + data.paymenttoElectricBill +"( Electric Bill ) + " + data.paymenttoPersonalBill +"(Personal Bill )",
+                data.PaymenttoLabratory +"(Labratory ) + " + data.PaymentForPatientsBilling +" +  (Patients Billing) + " + data.Paymenttoconsultant +"( Consultant ) + " + data.paymenttoWaterBill +"( Water Bill) + " + data.paymenttoElectricBill +"( Electric Bill ) + " + data.paymenttoPersonalBill +"(Personal Bill )",
                 (data.patientPaid - data.drPaid > 0 ? (data.patientPaid - data.drPaid).toFixed(2) : 0),
                 (data.patientPaid - data.drPaid < 0 ? Math.abs(data.patientPaid - data.drPaid).toFixed(2) : 0)
             ]),
@@ -187,7 +191,7 @@ function MonthlyProfit() {
                                     <tr key={data.month}>
                                         <td>{data.month}</td>
                                         <td>{data.patientPaid.toFixed(2)}</td>
-                                        <td>{data.PaymenttoLabratory +"(Labratory ) + " + data.Paymenttoconsultant +"( Consultant ) + " + data.paymenttoWaterBill +"( Water Bill) + " + data.paymenttoElectricBill +"( Electric Bill ) + " + data.paymenttoPersonalBill +"(Personal Bill )"}</td>
+                                        <td>{data.PaymenttoLabratory +"(Labratory ) + " + data.PaymentForPatientsBilling +" (Patients Billing) + "  + data.Paymenttoconsultant +"( Consultant ) + " + data.paymenttoWaterBill +"( Water Bill) + " + data.paymenttoElectricBill +"( Electric Bill ) + " + data.paymenttoPersonalBill +"(Personal Bill )"}</td>
                                         <td>{(data.patientPaid - data.drPaid > 0 ? data.patientPaid - data.drPaid : 0).toFixed(2)}</td>
                                         <td>{(data.patientPaid - data.drPaid < 0 ? Math.abs(data.patientPaid - data.drPaid) : 0).toFixed(2)}</td>
                                         

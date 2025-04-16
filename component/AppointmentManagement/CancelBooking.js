@@ -40,7 +40,7 @@ const DoctorCancel = () => {
         const appointmentDate = new Date(item.appointment_date.replace(/_/g, "-"));
         const appointmentTime = new Date(`${appointmentDate.toDateString()} ${item.slot_start_time}`);
         
-        return item.appointment_date === formattedDate && appointmentTime >= currentTime;
+        return item.appointment_date === formattedDate /* && appointmentTime >= currentTime */;
       });
   
       // Sort appointments by slot_start_time
@@ -69,6 +69,7 @@ const DoctorCancel = () => {
   };
 
   const handleCancel = async () => {
+    
     if (selectedDate && selectedSlots.length > 0) {
       for (const slot of selectedSlots) {
         const docRef = doc(db, "Appointments", slot.id);
@@ -105,7 +106,7 @@ const DoctorCancel = () => {
                                 <Calendar
                                     onChange={handleDateChange}
                                     value={selectedDate}
-                                    minDate={new Date()}
+                                    /* minDate={new Date()} */
                                 />
                             </div>
                         </div>
